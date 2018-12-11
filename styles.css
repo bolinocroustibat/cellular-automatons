@@ -1,0 +1,10 @@
+#cca-article {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+input{
+	border: solid 1px silver;
+	height: 30px;
+}
