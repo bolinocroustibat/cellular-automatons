@@ -1,23 +1,24 @@
 var availableColors = [
 	"#006400",
-	"#bdb76b",
-	"#8b008b",
-	"#556b2f",
+	"#ffff00",
+	"#ff0000",
+	"#00008b",
 	"#ff8c00",
 	"#ff00ff",
 	"#ffd700",
 	"#008000",
 	"#4b0082",
 	"#f0e68c",
+	"#556b2f",
 	"#add8e6",
 	"#00ff00",
+	"#bdb76b",
 	"#800000",
 	"#000080",
 	"#808000",
 	"#ffa500",
 	"#ffc0cb",
 	"#800080",
-	"#ff0000",
 	"#c0c0c0",
 	"#ffffff",
 	"#e0ffff",
@@ -31,12 +32,10 @@ var availableColors = [
 	"#00ffff",
 	"#f5f5dc",
 	"#a52a2a",
-	"#00008b",
 	"#000000",
 	"#008b8b",
 	"#a9a9a9",
-	"#f0ffff",
-	"#ffff00"
+	"#f0ffff"
 ];
 
 function CCAGenerateCanvas(width, height, resolution) {
@@ -213,23 +212,24 @@ function CCAChangeMatrixColors(currentMatrix, maxColor) {
 			// console.log(currentMatrix[i][j]);
 			// console.log("COULEURS ADJACENTES :");
 			// console.log(adjacentPixelsColors);
-			if ((currentMatrix[i][j] == maxColor) && (adjacentPixelsColors.includes(0))) { // if the color is already at maximum and there is the first color in adjacents, takes it
-				// console.log("ON PREND LA COULEUR 0");
+			let nextColor = currentMatrix[i][j] + 1;
+			if ((nextColor > maxColor) && (adjacentPixelsColors.includes(0))) { // if the color is already at maximum and there is the first color in adjacents, takes it
+				console.log("UPGRADE SQUARE COLOR TO 0 (ORIGIN)");
 				nextMatrix[i][j] = 0;
 				continue ColumnLoop;
 			}
-			else { // try to test all other adjacent colors to see if there is one exactly 1 bigger than the current
-				for (n in adjacentPixelsColors) {
-					if ((adjacentPixelsColors[n] - currentMatrix[i][j]) == 1) {
-						// console.log("ON UPGRADE LA COULEUR VERS " + adjacentPixelsColors[n]);
-						nextMatrix[i][j] = adjacentPixelsColors[n];
-						continue ColumnLoop;
-					}
+			else {
+				if (adjacentPixelsColors.includes(nextColor)) {
+					console.log("UPGRADE SQUARE COLOR TO " + nextColor);
+					nextMatrix[i][j] = nextColor;
+					continue ColumnLoop;
+				}
+				else {
+					// else, keep the current color
+					console.log("DO NOT CHANGE");
+					nextMatrix[i][j] = currentMatrix[i][j];
 				}
 			}
-			// else, keep the current color
-			// console.log("ON CHANGE RIEN");
-			nextMatrix[i][j] = currentMatrix[i][j];
 		}
 	}
 	// console.log(nextMatrix);
