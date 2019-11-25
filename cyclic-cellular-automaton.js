@@ -245,7 +245,7 @@ function fillPixel(ctx, pixelRgb, x, y) {
 
 function fillSquare(ctx, pixelRgb, x, y, resolution) {
 	// ctx.fillStyle = 'rgb(' + [pixelRgb[0],pixelRgb[1],pixelRgb[2]].join() + ')';
-	ctx.fillStyle = "rgb(" + pixelRgb[0] + "," + pixelRgb[1] + "," + pixelRgb[2] + ")";
+	ctx.fillStyle = "rgb(" + pixelRgb.r + "," + pixelRgb.g + "," + pixelRgb.b + ")";
 	ctx.fillRect(x, y, resolution, resolution);
 }
 
@@ -261,9 +261,11 @@ function CCARandomizeRGBColor(availableRGBColors) {
 
 function hexToRgb(hex) {
 	let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	return result ? {
-		0: parseInt(result[1], 16),
-		1: parseInt(result[2], 16),
-		2: parseInt(result[3], 16)
-	} : null;
+	if (!result) return { r: undefined, g: undefined, b: undefined };
+
+	return {
+		r: parseInt(result[1], 16),
+		g: parseInt(result[2], 16),
+		b: parseInt(result[3], 16)
+	};
 }
