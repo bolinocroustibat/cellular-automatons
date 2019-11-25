@@ -58,7 +58,7 @@ function CCAGenerateCanvas(width, height, resolution) {
 	let ctx = canvas.getContext('2d');
 	let img = new Image();
 	ctx.drawImage(img, 0, 0);
-	img.style.display = 'none';
+
 	// let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// let data = imageData.data;
 	// changing all image pixels and filling color state matrix, one pixel by one pixel
