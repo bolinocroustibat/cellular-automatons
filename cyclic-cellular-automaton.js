@@ -42,14 +42,13 @@ var timeoutCCA;
 
 function CCAGenerateCanvas(width, height, resolution) {
 	clearInterval(timeoutCCA);
-
-	// get the number of colors wanted
-	let nbColors = document.getElementById("nb_colors").value;
-	// build the array of available RGB colors
 	let availableRGBColors = [];
-	for (let i = 0; i < nbColors; ++i) {
+
+	let amountOfColors = document.getElementById("amount_of_colors").value;
+	for (let i = 0; i < amountOfColors; ++i) {
 		availableRGBColors.push(hexToRgb(availableColors[i]));
 	}
+
 	// set the new canvas and CSS properties
 	let canvas = document.getElementById('cca-canvas');
 	canvas.width = width;
