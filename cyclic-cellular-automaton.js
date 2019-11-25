@@ -38,11 +38,11 @@ var availableColors = [
 	"#f0ffff"
 ];
 
+var timeoutCCA;
+
 function CCAGenerateCanvas(width, height, resolution) {
-	// clear the previous canvas if there is one
-	if (!(typeof timeoutCCA === 'undefined' || timeoutCCA === null)) {
-		clearInterval(timeoutCCA);
-	}
+	clearInterval(timeoutCCA);
+
 	// get the number of colors wanted
 	let nbColors = document.getElementById("nb_colors").value;
 	// build the array of available RGB colors
@@ -103,7 +103,7 @@ function CCALoop(state, availableRGBColors, maxIterations, resolution, i) {
 
 // STOP LOOP
 function CCAStop() {
-	if (!(typeof timeoutCCA === 'undefined' || timeoutCCA === null)) clearTimeout(timeoutCCA);
+	clearTimeout(timeoutCCA);
 }
 
 function CCAChangestateColors(currentState, maxColor) {
