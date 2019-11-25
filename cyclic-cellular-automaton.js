@@ -80,11 +80,11 @@ function CCAGenerateCanvas(width, height, resolution) {
 function CCAStart(width, height, resolution = 10, maxIterations = 20) {
 	if ((width % resolution != 0) || (height % resolution != 0)) {
 		console.log("ERROR: height and width must be a multiple of resolution");
+		return
 	}
-	else {
-		let startConditions = CCAGenerateCanvas(width, height, resolution);
-		CCALoop(startConditions[0], startConditions[1], maxIterations, resolution, i = 0);
-	}
+
+	let startConditions = CCAGenerateCanvas(width, height, resolution);
+	CCALoop(startConditions[0], startConditions[1], maxIterations, resolution, i = 0);
 }
 
 // LOOP
