@@ -41,8 +41,10 @@ var availableColors = [
 var timeoutCCA;
 
 function CCAGenerateCanvas(width, height, resolution) {
-	clearInterval(timeoutCCA);
 	let availableRGBColors = [];
+	let initialState = [];
+
+	clearInterval(timeoutCCA);
 
 	let amountOfColors = document.getElementById("amount_of_colors").value;
 	for (let i = 0; i < amountOfColors; ++i) {
@@ -59,13 +61,13 @@ function CCAGenerateCanvas(width, height, resolution) {
 	let img = new Image();
 	ctx.drawImage(img, 0, 0);
 
-	// let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-	// let data = imageData.data;
 	// changing all image pixels and filling color state matrix, one pixel by one pixel
-	let initialState = [];
-	for (let y = 0; y < (height / resolution); ++y) {
-		initialState[y] = [];
-		for (let x = 0; x < (width / resolution); ++x) {
+	var rowsCount = height / resolution;
+	var colsCount = width / resolution;
+	for (let y = 0; y < rowsCount; ++y) {
+		for (let x = 0; x < colsCount; ++x) {
+			if (!initialState[y]) initialState[y] = [];
+
 			let randomRGBColorAndPosition = CCARandomizeRGBColor(availableRGBColors);
 			initialState[y][x] = randomRGBColorAndPosition[0];
 			// now, fill all pixels within this square defined by resolution
