@@ -62,18 +62,18 @@ function CCAGenerateCanvas(width, height, resolution) {
 	img.style.display = 'none';
 	// let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// let data = imageData.data;
-	// changing all image pixels and filling color matrix, one pixel by one pixel
-	let matrix = [];
-	for (let i = 0; i < (width / resolution); ++i) {
-		matrix[i] = [];
-		for (let j = 0; j < (height / resolution); ++j) {
+	// changing all image pixels and filling color state matrix, one pixel by one pixel
+	let initialState = [];
+	for (let y = 0; y < (height / resolution); ++y) {
+		initialState[y] = [];
+		for (let x = 0; x < (width / resolution); ++x) {
 			let randomRGBColorAndPosition = CCARandomizeRGBColor(availableRGBColors);
-			matrix[i][j] = randomRGBColorAndPosition[0];
+			initialState[y][x] = randomRGBColorAndPosition[0];
 			// now, fill all pixels within this square defined by resolution
-			fillSquare(ctx, randomRGBColorAndPosition[1], i * resolution, j * resolution, resolution);
+			fillSquare(ctx, randomRGBColorAndPosition[1], x * resolution, y * resolution, resolution);
 		}
 	}
-	return [matrix, availableRGBColors];
+	return [initialState, availableRGBColors];
 }
 
 function CCAStart(width, height, resolution = 10, maxIterations = 20) {
@@ -82,22 +82,20 @@ function CCAStart(width, height, resolution = 10, maxIterations = 20) {
 	}
 	else {
 		let startConditions = CCAGenerateCanvas(width, height, resolution);
-		// console.log("START CONDITIONS");
-		// console.log(startConditions);
 		CCALoop(startConditions[0], startConditions[1], maxIterations, resolution, i = 0);
 	}
 }
 
 // LOOP
-function CCALoop(matrix, availableRGBColors, maxIterations, resolution, i) {
+function CCALoop(state, availableRGBColors, maxIterations, resolution, i) {
 	let maxColor = availableRGBColors.length - 1;
-	matrix = CCAChangeMatrixColors(matrix, maxColor);
-	CCAChangeCanvasColorsFromMatrix(matrix, availableRGBColors, resolution);
+	state = CCAChangestateColors(state, maxColor);
+	CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution);
 	timeoutCCA = setTimeout(function () {
-		CCALoop(matrix, availableRGBColors, maxIterations, resolution, i)
+		CCALoop(state, availableRGBColors, maxIterations, resolution, i)
 	}, 200);
-	// console.log("##########")
-	// console.log("ITERATION: " + i);
+	console.log("##########")
+	console.log("ITERATION: " + i);
 	if (i >= maxIterations) clearTimeout(timeoutCCA);
 	if (i == undefined) var i = 0;
 	else i++;
@@ -108,144 +106,134 @@ function CCAStop() {
 	if (!(typeof timeoutCCA === 'undefined' || timeoutCCA === null)) clearTimeout(timeoutCCA);
 }
 
-function CCAChangeMatrixColors(currentMatrix, maxColor) {
-	let nextMatrix = [];
-	let matrixWidth = currentMatrix.length;
-	let matrixHeight = currentMatrix[0].length;
-	pixelLoop:
-	for (let i = 0; i < matrixWidth; ++i) {
-		nextMatrix[i] = [];
+function CCAChangestateColors(currentState, maxColor) {
+	let nextState = [];
+	let stateWidth = currentState[0].length;
+	let stateHeight = currentState.length;
+	rowLoop:
+	for (let y = 0; y < stateHeight; ++y) {
+		nextState[y] = [];
 		ColumnLoop:
-		for (let j = 0; j < matrixHeight; ++j) {
+		for (let x = 0; x < stateWidth; ++x) {
 			let adjacentPixelsColors = [];
 			// Getting LEFT-TOP pixel color (0)
-			if (currentMatrix[i - 1] == undefined) { // extreme left
-				if (currentMatrix[matrixWidth - 1][j - 1] == undefined) { //extreme left and extreme top
-					adjacentPixelsColors[0] = currentMatrix[matrixWidth - 1][matrixHeight - 1];
+			if (currentState[y - 1] == undefined) { // extreme top
+				if (currentState[stateHeight - 1][x - 1] == undefined) { // extreme left and extreme top
+					adjacentPixelsColors[0] = currentState[stateHeight - 1][stateWidth - 1];
 				}
-				else { // extreme left only
-					adjacentPixelsColors[0] = currentMatrix[matrixWidth - 1][j - 1];
+				else { // extreme top only
+					adjacentPixelsColors[0] = currentState[stateHeight - 1][x - 1];
 				}
 			}
-			else if (currentMatrix[i - 1][j - 1] == undefined) { //not extreme left but extreme top
-				adjacentPixelsColors[0] = currentMatrix[i - 1][matrixHeight - 1];
+			else if (currentState[y - 1][x - 1] == undefined) { // not extreme top but extreme left
+				adjacentPixelsColors[0] = currentState[y - 1][stateWidth - 1];
 			}
 			else {
-				adjacentPixelsColors[0] = currentMatrix[i - 1][j - 1];
+				adjacentPixelsColors[0] = currentState[y - 1][x - 1];
 			}
 			// Getting TOP pixel color (1)
-			if (currentMatrix[i][j - 1] == undefined) {
-				adjacentPixelsColors[1] = currentMatrix[i][matrixHeight - 1];
+			if (currentState[y - 1] == undefined) {
+				adjacentPixelsColors[1] = currentState[stateHeight - 1][x];
 			}
 			else {
-				adjacentPixelsColors[1] = currentMatrix[i][j - 1];
+				adjacentPixelsColors[1] = currentState[y - 1][x];
 			}
 			// Getting RIGHT-TOP pixel color (2)
-			if (currentMatrix[i + 1] == undefined) { // extreme right
-				if (currentMatrix[0][j - 1] == undefined) { //extreme right and extreme top
-					adjacentPixelsColors[2] = currentMatrix[0][matrixHeight - 1];
+			if (currentState[y - 1] == undefined) { // extreme top
+				if (currentState[stateHeight - 1][x + 1] == undefined) { // extreme right and extreme top
+					adjacentPixelsColors[2] = currentState[stateHeight - 1][stateWidth - 1];
 				}
-				else { // extreme right only
-					adjacentPixelsColors[2] = currentMatrix[0][j - 1];
+				else { // extreme top only
+					adjacentPixelsColors[2] = currentState[0][x + 1];
 				}
 			}
-			else if (currentMatrix[i + 1][j - 1] == undefined) { //not extreme right but extreme top
-				adjacentPixelsColors[2] = currentMatrix[i + 1][matrixHeight - 1];
+			else if (currentState[y - 1][x + 1] == undefined) { // not extreme top but extreme right
+				adjacentPixelsColors[2] = currentState[y - 1][0];
 			}
 			else {
-				adjacentPixelsColors[2] = currentMatrix[i + 1][j - 1];
+				adjacentPixelsColors[2] = currentState[y - 1][x + 1];
 			}
 			// Getting LEFT pixel color (3)
-			if (currentMatrix[i - 1] == undefined) {
-				adjacentPixelsColors[3] = currentMatrix[matrixWidth - 1][j];
+			if (currentState[y][x - 1] == undefined) {
+				adjacentPixelsColors[3] = currentState[y][stateWidth - 1];
 			}
 			else {
-				adjacentPixelsColors[3] = currentMatrix[i - 1][j];
+				adjacentPixelsColors[3] = currentState[y][x - 1];
 			}
 			// Getting RIGHT pixel color (4)
-			if (currentMatrix[i + 1] == undefined) {
-				adjacentPixelsColors[4] = currentMatrix[0][j];
+			if (currentState[y][x + 1] == undefined) {
+				adjacentPixelsColors[4] = currentState[y][0];
 			}
 			else {
-				adjacentPixelsColors[4] = currentMatrix[i + 1][j];
+				adjacentPixelsColors[4] = currentState[y][x + 1];
 			}
 			// Getting LEFT-DOWN pixel color (5)
-			if (currentMatrix[i - 1] == undefined) { // extreme left
-				if (currentMatrix[matrixWidth - 1][j + 1] == undefined) { //extreme left and extreme down
-					adjacentPixelsColors[5] = currentMatrix[matrixWidth - 1][0];
+			if (currentState[y + 1] == undefined) { // extreme down
+				if (currentState[0][x - 1] == undefined) { // extreme down and extreme left
+					adjacentPixelsColors[5] = currentState[0][stateWidth - 1];
 				}
-				else { // extreme left only
-					adjacentPixelsColors[5] = currentMatrix[matrixWidth - 1][j + 1];
+				else { // extreme down only
+					adjacentPixelsColors[5] = currentState[0][x - 1];
 				}
 			}
-			else if (currentMatrix[i - 1][j + 1] == undefined) { //not extreme left but extreme down
-				adjacentPixelsColors[5] = currentMatrix[i - 1][0];
+			else if (currentState[y + 1][x - 1] == undefined) { // not extreme down but extreme left
+				adjacentPixelsColors[5] = currentState[y + 1][stateWidth - 1];
 			}
 			else {
-				adjacentPixelsColors[5] = currentMatrix[i - 1][j + 1];
+				adjacentPixelsColors[5] = currentState[y + 1][x - 1];
 			}
 			// Getting DOWN pixel color (6)
-			if (currentMatrix[i][j + 1] == undefined) {
-				adjacentPixelsColors[6] = currentMatrix[i][0];
+			if (currentState[y + 1] == undefined) {
+				adjacentPixelsColors[6] = currentState[0][x];
 			}
 			else {
-				adjacentPixelsColors[6] = currentMatrix[i][j + 1];
+				adjacentPixelsColors[6] = currentState[y + 1][x];
 			}
 			// Getting RIGHT-DOWN pixel color (7)
-			if (currentMatrix[i + 1] == undefined) { // extreme right
-				if (currentMatrix[0][j + 1] == undefined) { //extreme right and extreme down
-					adjacentPixelsColors[7] = currentMatrix[0][0];
+			if (currentState[y + 1] == undefined) { // extreme down
+				if (currentState[y + 1][x + 1] == undefined) { // extreme down and extreme right
+					adjacentPixelsColors[7] = currentState[0][0];
 				}
-				else { // extreme right only
-					adjacentPixelsColors[7] = currentMatrix[0][j + 1];
+				else { // extreme down only
+					adjacentPixelsColors[7] = currentState[0][x + 1];
 				}
 			}
-			else if (currentMatrix[i + 1][j + 1] == undefined) { //not extreme right but extreme down
-				adjacentPixelsColors[7] = currentMatrix[i + 1][0];
+			else if (currentState[y + 1][x + 1] == undefined) { // not extreme down but extreme right
+				adjacentPixelsColors[7] = currentState[y + 1][0];
 			}
 			else {
-				adjacentPixelsColors[7] = currentMatrix[i + 1][j + 1];
+				adjacentPixelsColors[7] = currentState[y + 1][x + 1];
 			}
-			// IMPORTANT PART: Change the color
-			// console.log("########")
-			// console.log("COULEUR DU PIXEL [" + i + "," + j + "]");
-			// console.log(currentMatrix[i][j]);
-			// console.log("COULEURS ADJACENTES :");
-			// console.log(adjacentPixelsColors);
-			let nextColor = currentMatrix[i][j] + 1;
+			let nextColor = currentState[y][x] + 1;
 			if ((nextColor > maxColor) && (adjacentPixelsColors.includes(0))) { // if the color is already at maximum and there is the first color in adjacents, takes it
-				console.log("UPGRADE SQUARE COLOR TO 0 (ORIGIN)");
-				nextMatrix[i][j] = 0;
+				nextState[y][x] = 0;
 				continue ColumnLoop;
 			}
 			else {
 				if (adjacentPixelsColors.includes(nextColor)) {
-					console.log("UPGRADE SQUARE COLOR TO " + nextColor);
-					nextMatrix[i][j] = nextColor;
+					// console.log("UPGRADE SQUARE COLOR TO " + nextColor);
+					nextState[y][x] = nextColor;
 					continue ColumnLoop;
 				}
 				else {
 					// else, keep the current color
-					console.log("DO NOT CHANGE");
-					nextMatrix[i][j] = currentMatrix[i][j];
+					// console.log("DO NOT CHANGE");
+					nextState[y][x] = currentState[y][x];
 				}
 			}
 		}
 	}
-	// console.log(nextMatrix);
-	return nextMatrix;
+	// console.log(nextState);
+	return nextState;
 }
 
-function CCAChangeCanvasColorsFromMatrix(matrix, availableRGBColors, resolution) {
+function CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution) {
 	let ctx = document.getElementById('cca-canvas').getContext('2d');
-	let matrixWidth = matrix.length;
-	let matrixHeight = matrix[0].length;
-	for (let i = 0; i < matrixWidth; ++i) {
-		for (let j = 0; j < matrixHeight; ++j) {
-			// console.log(matrix[i][j]);
-			// console.log(availableRGBColors[matrix[i][j]]);
-			// fillPixel(ctx, availableRGBColors[matrix[i][j]], i, j);
-			fillSquare(ctx, availableRGBColors[matrix[i][j]], i * resolution, j * resolution, resolution);
+	let stateWidth = state[0].length;
+	let stateHeight = state.length;
+	for (let y = 0; y < stateHeight; ++y) {
+		for (let x = 0; x < stateWidth; ++x) {
+			fillSquare(ctx, availableRGBColors[state[y][x]], y * resolution, x * resolution, resolution);
 		}
 	}
 }
