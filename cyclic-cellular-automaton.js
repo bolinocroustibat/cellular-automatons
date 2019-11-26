@@ -101,7 +101,7 @@ function CCALoopStep(context, iteration) {
 
 	for (let x = 0; x < colsCount; x++) {
 		for (let y = 0; y < rowsCount; y++) {
-			state[x][y] = CCACellTransformation(x, y, state)
+			state[x][y] = CCACellTransformation(context, x, y)
 		}
 	}
 }
@@ -110,8 +110,42 @@ function CCAStop() {
 	clearInterval(CCARenderInterval);
 }
 
-function CCACellTransformation(x, y, state) {
-	// the algorithm goes here
+function CCACellTransformation(context, x, y) {
+	var state = context.state;
+
+	var threshold = 5;
+	var neighbours = [
+		cyclicStateEl(context, x-1, y-1),
+		cyclicStateEl(context,  x, 	y-1),
+		cyclicStateEl(context, x+1, y-1),
+
+		cyclicStateEl(context, x-1, y),
+		cyclicStateEl(context, x+1, y),
+
+		cyclicStateEl(context, x-1, y+1),
+		cyclicStateEl(context,  x,  y+1),
+		cyclicStateEl(context, x+1, y+1),
+	]
+
+	var thisCell = state[x][y];
+	var successorNeighbours = neighbours.filter(function (neighbour) { return neighbour.id > thisCell.id })
+	var randomSuccessorNeighbours = successorNeighbours[Math.floor(Math.random() * successorNeighbours.length)];
+	var newCell = successorNeighbours.length >= threshold ? randomSuccessorNeighbours : thisCell;
+
+	return newCell;
+}
+
+function cyclicStateEl (context, x, y) {
+	var state = context.state;
+	var colsCount = context.colsCount;
+	var rowsCount = context.rowsCount;
+
+	x = (x === -1) ? colsCount - 1 : x;
+	x = (x === colsCount) ? 0 : x;
+
+	y = (y === -1) ? rowsCount - 1 : y;
+	y = (y === rowsCount) ? 0 : y;
+
 	return state[x][y];
 }
 
