@@ -38,7 +38,7 @@ var availableColors = [
 	"#f0ffff"
 ];
 
-var timeoutCCA;
+var CCARenderInterval;
 
 function CCAApp(options) {
 	let canvasEl = options.canvasEl
@@ -104,14 +104,13 @@ function CCARender(context) {
 	}
 }
 
-function CCAStart(width, height, resolution = 10, maxIterations = 20) {
-	if ((width % resolution != 0) || (height % resolution != 0)) {
-		console.log("ERROR: height and width must be a multiple of resolution");
-		return
-	}
-
-	let startConditions = CCAGenerateCanvas(width, height, resolution);
-	CCALoop(startConditions[0], startConditions[1], maxIterations, resolution, i = 0);
+function CCAStart(context, maxIterations = 20) {
+	CCAStop();
+	var i = 0;
+	CCARenderInterval = setInterval(function() {
+		if (++i === maxIterations) CCAStop();
+		console.log(i);
+	}, 200);
 }
 
 // LOOP
@@ -131,7 +130,7 @@ function CCALoop(state, availableRGBColors, maxIterations, resolution, i) {
 
 // STOP LOOP
 function CCAStop() {
-	clearTimeout(timeoutCCA);
+	clearInterval(CCARenderInterval);
 }
 
 function CCAChangestateColors(currentState, maxColor) {
