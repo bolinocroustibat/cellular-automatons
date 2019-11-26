@@ -123,19 +123,47 @@ function CCAChangestateColors(currentState, maxColor) {
 			for (let dy = -1; dy <= 1; dy++) {
 				for (let dx = -1; dx <= 1; dx++) {
 					if (dy === 0 && dx === 0) continue;
-					// // TODO: all the extreme cases
-					// if (y + dy < 0) {
-					// 	if (x + dx < 0) {
-					// 		nextState[y][x] = currentState[stateHeight - 1][stateWidth - 1];
-					// 	}
-					// 	else if (!currentState[y - 1][x + 1]) {
-					// 		nextState[y][x] = currentState[stateHeight - 1][stateWidth - 1];
-					// 	}
-					// }
-					if (currentState[y + dy] != undefined) {
-						if (currentState[y + dy][x + dx] === targetColor) {
-							nextState[y][x] = targetColor;
+					// all the extreme pixels
+					if (y + dy < 0) {
+						if (x + dx < 0) { // top-left pixel
+							if (currentState[stateHeight - 1][stateWidth - 1] === targetColor) { nextState[y][x] === targetColor };
+							continue;
 						}
+						else if (x + dx > stateWidth) { // top-right pixel
+							if (currentState[stateHeight - 1][0] === targetColor) { nextState[y][x] === targetColor };
+							continue;
+						}
+						else { // top pixel
+							if (currentState[stateHeight - 1][x + dx] === targetColor) { nextState[y][x] === targetColor };
+							continue;
+						}
+					}
+					else if (y + dy >= stateHeight) {
+						if (x + dx < 0) { // down-left pixel
+							if (currentState[0][stateWidth - 1] === targetColor) { nextState[y][x] === targetColor };
+							continue;
+						}
+						else if (x + dx > stateWidth) { // down-right pixel
+							if (currentState[0][0] === targetColor) { nextState[y][x] === targetColor };
+							continue;
+						}
+						else { // down pixel
+							if (currentState[0][x + dx] === targetColor) { nextState[y][x] === targetColor };
+							continue;
+						}
+					}
+					else if (x + dx < 0) { // left pixel
+						if (currentState[y + dy][stateWidth - 1] === targetColor) { nextState[y][x] === targetColor };
+						continue;
+					}
+					else if (x + dx > stateWidth - 1) { // right pixel
+						if (currentState[y + dy][0] === targetColor) { nextState[y][x] === targetColor };
+						continue;
+					}
+					// normal pixel
+					else if (currentState[y + dy][x + dx] === targetColor) {
+						nextState[y][x] = targetColor;
+						continue
 					}
 					nextState[y][x] = currentState[y][x];
 				}
