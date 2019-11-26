@@ -40,7 +40,13 @@ var availableColors = [
 
 var timeoutCCA;
 
-function CCAApp(canvasEl, amountOfColors, width, height, resolution) {
+function CCAApp(options) {
+	let canvasEl = options.canvasEl
+	let amountOfColors = options.amountOfColors
+	let width = options.width
+	let height = options.height
+	let resolution = options.resolution
+
 	let availableRGBColors = [];
 	let state = [];
 	let rowsCount = height / resolution;

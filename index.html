@@ -17,11 +17,13 @@
 
 	<script src="cyclic-cellular-automaton.js"></script>
 	<script>
-		CCAApp(
-			document.getElementById('cca-canvas'),
-			document.getElementById('amount_of_colors').value,
-			400, 200, 10
-		);
+		CCAApp({
+			canvasEl: document.getElementById('cca-canvas'),
+			amountOfColors: document.getElementById('amount_of_colors').value,
+			width: 400,
+			height: 200,
+			resolution: 10
+		});
 
 		function start() {
 			CCAStart(400, 200, 10, 2000)
