@@ -246,33 +246,10 @@ function CCAChangestateColors(currentState, maxColor) {
 	return nextState;
 }
 
-function CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution) {
-	let ctx = document.getElementById('cca-canvas').getContext('2d');
-	let stateWidth = state[0].length;
-	let stateHeight = state.length;
-	for (let y = 0; y < stateHeight; ++y) {
-		for (let x = 0; x < stateWidth; ++x) {
-			fillSquare(ctx, availableRGBColors[state[y][x]], y * resolution, x * resolution, resolution);
-		}
-	}
-}
-
-function fillPixel(ctx, pixelRgb, x, y) {
-	// ctx.fillStyle = 'rgb(' + [pixelRgb[0],pixelRgb[1],pixelRgb[2]].join() + ')';
-	ctx.fillStyle = "rgb(" + pixelRgb[0] + "," + pixelRgb[1] + "," + pixelRgb[2] + ")";
-	ctx.fillRect(x, y, 1, 1);
-}
-
 function fillSquare(ctx, pixelRgb, x, y, resolution) {
-	// ctx.fillStyle = 'rgb(' + [pixelRgb[0],pixelRgb[1],pixelRgb[2]].join() + ')';
 	ctx.fillStyle = "rgb(" + pixelRgb.r + "," + pixelRgb.g + "," + pixelRgb.b + ")";
 	ctx.fillRect(x, y, resolution, resolution);
 }
-
-// function CCARandomizeHEXColor(nbColors) {
-// 	let n = Math.floor(Math.random() * nbColors);
-// 	return [n, availableColors[n]];
-// }
 
 function CCARandomizeRGBColor(availableRGBColors) {
 	let n = Math.floor(Math.random() * availableRGBColors.length);
