@@ -40,41 +40,62 @@ var availableColors = [
 
 var timeoutCCA;
 
-function CCAGenerateCanvas(width, height, resolution) {
+function CCAApp(canvasEl, amountOfColors, width, height, resolution) {
 	let availableRGBColors = [];
-	let initialState = [];
+	let state = [];
+	let rowsCount = height / resolution;
+	let colsCount = width / resolution;
 
-	clearInterval(timeoutCCA);
+	// initialize canvas
+	canvasEl.width = width;
+	canvasEl.height = height;
+	canvasEl.style.width = width + "px";
+	canvasEl.style.height = height + "px";
+	let ctx = canvasEl.getContext('2d');
+	let img = new Image();
+	ctx.drawImage(img, 0, 0);
 
-	let amountOfColors = document.getElementById("amount_of_colors").value;
+	// pick available colors
 	for (let i = 0; i < amountOfColors; ++i) {
 		availableRGBColors.push(hexToRgb(availableColors[i]));
 	}
 
-	// set the new canvas and CSS properties
-	let canvas = document.getElementById('cca-canvas');
-	canvas.width = width;
-	canvas.height = height;
-	canvas.style.width = width + "px";
-	canvas.style.height = height + "px";
-	let ctx = canvas.getContext('2d');
-	let img = new Image();
-	ctx.drawImage(img, 0, 0);
-
-	// changing all image pixels and filling color state matrix, one pixel by one pixel
-	var rowsCount = height / resolution;
-	var colsCount = width / resolution;
+	// set initial state
 	for (let y = 0; y < rowsCount; ++y) {
 		for (let x = 0; x < colsCount; ++x) {
-			if (!initialState[y]) initialState[y] = [];
-
-			let randomRGBColorAndPosition = CCARandomizeRGBColor(availableRGBColors);
-			initialState[y][x] = randomRGBColorAndPosition[0];
-			// now, fill all pixels within this square defined by resolution
-			fillSquare(ctx, randomRGBColorAndPosition[1], x * resolution, y * resolution, resolution);
+			if (!state[y]) state[y] = [];
+			state[y][x] = CCARandomizeRGBColor(availableRGBColors);
 		}
 	}
-	return [initialState, availableRGBColors];
+
+	var context = {
+		state: state,
+		availableRGBColors: availableRGBColors,
+		width: width,
+		height: height,
+		resolution: resolution,
+		rowsCount: rowsCount,
+		colsCount: colsCount,
+		ctx: ctx
+	}
+
+	// initial render
+	CCARender(context);
+	return context;
+}
+
+function CCARender(context) {
+	var rowsCount = context.rowsCount;
+	var colsCount = context.colsCount;
+	var resolution = context.resolution;
+	var ctx = context.ctx;
+	var state = context.state;
+
+	for (let y = 0; y < rowsCount; y++) {
+		for (let x = 0; x < colsCount; x++) {
+			fillSquare(ctx, state[y][x][1], x * resolution, y * resolution, resolution);
+		}
+	}
 }
 
 function CCAStart(width, height, resolution = 10, maxIterations = 20) {
