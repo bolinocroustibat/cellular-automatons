@@ -62,14 +62,14 @@ function CCAGenerateCanvas(width, height, resolution) {
 	img.style.display = 'none';
 	// let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	// let data = imageData.data;
-	// changing all image pixels and filling color state matrix, one pixel by one pixel
+	// changing all image cells and filling color state matrix, one cell by one cell
 	let initialState = [];
 	for (let y = 0; y < (height / resolution); ++y) {
 		initialState[y] = [];
 		for (let x = 0; x < (width / resolution); ++x) {
 			let randomRGBColorAndPosition = CCARandomizeRGBColor(availableRGBColors);
 			initialState[y][x] = randomRGBColorAndPosition[0];
-			// now, fill all pixels within this square defined by resolution
+			// now, fill all cells within this square defined by resolution
 			fillSquare(ctx, randomRGBColorAndPosition[1], x * resolution, y * resolution, resolution);
 		}
 	}
@@ -89,13 +89,13 @@ function CCAStart(width, height, resolution = 10, maxIterations = 20) {
 // LOOP
 function CCALoop(state, availableRGBColors, maxIterations, resolution, i) {
 	let maxColor = availableRGBColors.length - 1;
-	state = CCAChangestateColors(state, maxColor);
+	state = CCAChangeState(state, maxColor);
 	CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution);
 	timeoutCCA = setTimeout(function () {
 		CCALoop(state, availableRGBColors, maxIterations, resolution, i)
-	}, 200);
-	console.log("##########")
-	console.log("ITERATION: " + i);
+	}, 100);
+	// console.log("##########")
+	// console.log("ITERATION " + i);
 	if (i >= maxIterations) clearTimeout(timeoutCCA);
 	if (i == undefined) var i = 0;
 	else i++;
@@ -106,81 +106,87 @@ function CCAStop() {
 	if (!(typeof timeoutCCA === 'undefined' || timeoutCCA === null)) clearTimeout(timeoutCCA);
 }
 
-function CCAChangestateColors(currentState, maxColor) {
+function CCAChangeState(currentState, maxColor, callback) {
 	let nextState = [];
 	let stateWidth = currentState[0].length;
 	let stateHeight = currentState.length;
 	for (let y = 0; y < stateHeight; ++y) {
 		nextState[y] = [];
+		// console.log(nextState)
 		for (let x = 0; x < stateWidth; ++x) {
 			let targetColor = currentState[y][x] + 1;
 			if (targetColor > maxColor) {
 				targetColor = 0;
 			}
-			surroundingPixelsLoop:
+			// console.log("######")
+			// console.log("cell x=" + x + ", y=" + y + ": current color " + currentState[y][x] + ", target " + targetColor);
+			surroundingCellsLoop:
 			// Check the surrounding 8 cells
 			for (let dy = -1; dy <= 1; dy++) {
 				for (let dx = -1; dx <= 1; dx++) {
+					// console.log("  # neighboring cell x=" + (x + dx) + ", y=" + (y + dy))
 					if (dy === 0 && dx === 0) continue;
-					// all the extreme pixels
+					// all the extreme cells
 					if (y + dy < 0) {
-						if (x + dx < 0) { // top-left pixel
+						if (x + dx < 0) { // top-left cell
 							if (currentState[stateHeight - 1][stateWidth - 1] === targetColor) {
-								nextState[y][x] === targetColor;
-								break surroundingPixelsLoop;
+								nextState[y][x] = targetColor;
+								break surroundingCellsLoop;
 							};
 						}
-						else if (x + dx > stateWidth) { // top-right pixel
+						else if (x + dx > stateWidth) { // top-right cell
 							if (currentState[stateHeight - 1][0] === targetColor) {
-								nextState[y][x] === targetColor;
-								break surroundingPixelsLoop;
+								nextState[y][x] = targetColor;
+								break surroundingCellsLoop;
 							};
 						}
-						else { // top pixel
+						else { // top cell
 							if (currentState[stateHeight - 1][x + dx] === targetColor) {
-								nextState[y][x] === targetColor;
-								break surroundingPixelsLoop;
+								nextState[y][x] = targetColor;
+								break surroundingCellsLoop;
 							};
 						}
 					}
 					else if (y + dy >= stateHeight) {
-						if (x + dx < 0) { // down-left pixel
+						if (x + dx < 0) { // down-left cell
 							if (currentState[0][stateWidth - 1] === targetColor) {
-								nextState[y][x] === targetColor;
-								break surroundingPixelsLoop;
+								nextState[y][x] = targetColor;
+								break surroundingCellsLoop;
 							};
 						}
-						else if (x + dx > stateWidth) { // down-right pixel
+						else if (x + dx > stateWidth) { // down-right cell
 							if (currentState[0][0] === targetColor) {
-								nextState[y][x] === targetColor
-								break surroundingPixelsLoop;
+								nextState[y][x] = targetColor
+								break surroundingCellsLoop;
 							};
 						}
-						else { // down pixel
+						else { // down cell
 							if (currentState[0][x + dx] === targetColor) {
-								nextState[y][x] === targetColor
-								break surroundingPixelsLoop;
+								nextState[y][x] = targetColor
+								break surroundingCellsLoop;
 							};
 						}
 					}
-					else if (x + dx < 0) { // left pixel
+					else if (x + dx < 0) { // left cell
 						if (currentState[y + dy][stateWidth - 1] === targetColor) {
-							nextState[y][x] === targetColor;
-							break surroundingPixelsLoop;
+							nextState[y][x] = targetColor;
+							break surroundingCellsLoop;
 						};
 					}
-					else if (x + dx >= stateWidth) { // right pixel
+					else if (x + dx >= stateWidth) { // right cell
 						if (currentState[y + dy][0] === targetColor) {
-							nextState[y][x] === targetColor;
-							break surroundingPixelsLoop;
+							nextState[y][x] = targetColor;
+							break surroundingCellsLoop;
 						};
 					}
-					// normal pixel
+					// normal cell
 					else if (currentState[y + dy][x + dx] === targetColor) {
 						nextState[y][x] = targetColor;
-						break surroundingPixelsLoop;
+						break surroundingCellsLoop;
 					}
-					nextState[y][x] = currentState[y][x];
+					else {
+						nextState[y][x] = currentState[y][x];
+					}
 				}
 			}
 		}
@@ -194,27 +200,16 @@ function CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution) {
 	let stateHeight = state.length;
 	for (let y = 0; y < stateHeight; ++y) {
 		for (let x = 0; x < stateWidth; ++x) {
-			fillSquare(ctx, availableRGBColors[state[y][x]], y * resolution, x * resolution, resolution);
+			fillSquare(ctx, availableRGBColors[state[y][x]], x * resolution, y * resolution, resolution);
 		}
 	}
 }
 
-function fillPixel(ctx, pixelRgb, x, y) {
-	// ctx.fillStyle = 'rgb(' + [pixelRgb[0],pixelRgb[1],pixelRgb[2]].join() + ')';
-	ctx.fillStyle = "rgb(" + pixelRgb[0] + "," + pixelRgb[1] + "," + pixelRgb[2] + ")";
-	ctx.fillRect(x, y, 1, 1);
-}
-
-function fillSquare(ctx, pixelRgb, x, y, resolution) {
-	// ctx.fillStyle = 'rgb(' + [pixelRgb[0],pixelRgb[1],pixelRgb[2]].join() + ')';
-	ctx.fillStyle = "rgb(" + pixelRgb[0] + "," + pixelRgb[1] + "," + pixelRgb[2] + ")";
+function fillSquare(ctx, colorRgb, x, y, resolution) {
+	// ctx.fillStyle = 'rgb(' + [colorRgb[0],colorRgb[1],colorRgb[2]].join() + ')';
+	ctx.fillStyle = "rgb(" + colorRgb[0] + "," + colorRgb[1] + "," + colorRgb[2] + ")";
 	ctx.fillRect(x, y, resolution, resolution);
 }
-
-// function CCARandomizeHEXColor(nbColors) {
-// 	let n = Math.floor(Math.random() * nbColors);
-// 	return [n, availableColors[n]];
-// }
 
 function CCARandomizeRGBColor(availableRGBColors) {
 	let n = Math.floor(Math.random() * availableRGBColors.length);
