@@ -47,36 +47,24 @@ function CCAApp(options) {
 	let height = options.height
 	let resolution = options.resolution
 
-	let availableRGBColors = [];
-	let state = [];
 	let rowsCount = height / resolution;
 	let colsCount = width / resolution;
 
-	// initialize canvas
-	canvasEl.width = width;
-	canvasEl.height = height;
-	canvasEl.style.width = width + "px";
-	canvasEl.style.height = height + "px";
-	let ctx = canvasEl.getContext('2d');
-	let img = new Image();
-	ctx.drawImage(img, 0, 0);
-
-	// pick available colors
-	for (let i = 0; i < amountOfColors; ++i) {
-		availableRGBColors.push(hexToRgb(availableColors[i]));
-	}
+	let state = [];
+	let availableColors = pickColors(amountOfColors);
+	let ctx = setupCanvas(canvasEl, width, height);
 
 	// set initial state
 	for (let y = 0; y < rowsCount; ++y) {
 		for (let x = 0; x < colsCount; ++x) {
 			if (!state[y]) state[y] = [];
-			state[y][x] = CCARandomizeRGBColor(availableRGBColors);
+			state[y][x] = CCARandomizeRGBColor(availableColors);
 		}
 	}
 
 	var context = {
 		state: state,
-		availableRGBColors: availableRGBColors,
+		availableColors: availableColors,
 		width: width,
 		height: height,
 		resolution: resolution,
@@ -85,7 +73,6 @@ function CCAApp(options) {
 		ctx: ctx
 	}
 
-	// initial render
 	CCARender(context);
 	return context;
 }
@@ -246,14 +233,33 @@ function CCAChangestateColors(currentState, maxColor) {
 	return nextState;
 }
 
+function pickColors(amount) {
+	var colors = [];
+	for (let i = 0; i < amount; i++) {
+		colors.push(hexToRgb(availableColors[i]));
+	}
+	return colors;
+}
+
 function fillSquare(ctx, pixelRgb, x, y, resolution) {
 	ctx.fillStyle = "rgb(" + pixelRgb.r + "," + pixelRgb.g + "," + pixelRgb.b + ")";
 	ctx.fillRect(x, y, resolution, resolution);
 }
 
-function CCARandomizeRGBColor(availableRGBColors) {
-	let n = Math.floor(Math.random() * availableRGBColors.length);
-	return [n, availableRGBColors[n]];
+function CCARandomizeRGBColor(availableColors) {
+	let n = Math.floor(Math.random() * availableColors.length);
+	return [n, availableColors[n]];
+}
+
+function setupCanvas(canvasEl, width, height) {
+	canvasEl.width = width;
+	canvasEl.height = height;
+	canvasEl.style.width = width + 'px';
+	canvasEl.style.height = height + 'px';
+	let ctx = canvasEl.getContext('2d');
+	let img = new Image();
+	ctx.drawImage(img, 0, 0);
+	return ctx;
 }
 
 function hexToRgb(hex) {
