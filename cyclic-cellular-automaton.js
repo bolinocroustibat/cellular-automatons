@@ -54,15 +54,6 @@ function CCAApp(options) {
 	let availableColors = pickColors(amountOfColors);
 	let ctx = setupCanvas(canvasEl, width, height);
 
-	// set initial state
-	for (let x = 0; x < colsCount; x++) {
-		for (let y = 0; y < rowsCount; y++) {
-			if (!state[x]) state[x] = [];
-			var randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
-			state[x][y] = randomColor;
-		}
-	}
-
 	var context = {
 		state: state,
 		availableColors: availableColors,
@@ -74,6 +65,7 @@ function CCAApp(options) {
 		ctx: ctx
 	}
 
+	setRandomState(context)
 	CCARender(context);
 	return context;
 }
@@ -121,6 +113,21 @@ function CCAStop() {
 function CCACellTransformation(x, y, state) {
 	// the algorithm goes here
 	return state[x][y];
+}
+
+function setRandomState(context) {
+	var state = context.state;
+	var colsCount = context.colsCount;
+	var rowsCount = context.rowsCount;
+	var availableColors = context.availableColors;
+
+	for (let x = 0; x < colsCount; x++) {
+		for (let y = 0; y < rowsCount; y++) {
+			if (!state[x]) state[x] = [];
+			var randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+			state[x][y] = randomColor;
+		}
+	}
 }
 
 function pickColors(amount) {
