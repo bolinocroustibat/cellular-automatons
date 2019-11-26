@@ -103,141 +103,32 @@ function CCAStart(context, maxIterations = 20) {
 }
 
 function CCALoopStep(context, iteration) {
+	var rowsCount = context.rowsCount;
+	var colsCount = context.colsCount;
 	var state = context.state;
 
-	// trivial demo state transformation example:
-	state[0][iteration] = state[0][0];
+	for (let y = 0; y < rowsCount; y++) {
+		for (let x = 0; x < colsCount; x++) {
+			state[y][x] = CCACellTransformation(x, y, state)
+		}
+	}
 }
 
 function CCAStop() {
 	clearInterval(CCARenderInterval);
 }
 
-function CCAChangestateColors(currentState, maxColor) {
-	let nextState = [];
-	let stateWidth = currentState[0].length;
-	let stateHeight = currentState.length;
-	rowLoop:
-	for (let y = 0; y < stateHeight; ++y) {
-		nextState[y] = [];
-		ColumnLoop:
-		for (let x = 0; x < stateWidth; ++x) {
-			let adjacentPixelsColors = [];
-			// Getting LEFT-TOP pixel color (0)
-			if (currentState[y - 1] == undefined) { // extreme top
-				if (currentState[stateHeight - 1][x - 1] == undefined) { // extreme left and extreme top
-					adjacentPixelsColors[0] = currentState[stateHeight - 1][stateWidth - 1];
-				}
-				else { // extreme top only
-					adjacentPixelsColors[0] = currentState[stateHeight - 1][x - 1];
-				}
-			}
-			else if (currentState[y - 1][x - 1] == undefined) { // not extreme top but extreme left
-				adjacentPixelsColors[0] = currentState[y - 1][stateWidth - 1];
-			}
-			else {
-				adjacentPixelsColors[0] = currentState[y - 1][x - 1];
-			}
-			// Getting TOP pixel color (1)
-			if (currentState[y - 1] == undefined) {
-				adjacentPixelsColors[1] = currentState[stateHeight - 1][x];
-			}
-			else {
-				adjacentPixelsColors[1] = currentState[y - 1][x];
-			}
-			// Getting RIGHT-TOP pixel color (2)
-			if (currentState[y - 1] == undefined) { // extreme top
-				if (currentState[stateHeight - 1][x + 1] == undefined) { // extreme right and extreme top
-					adjacentPixelsColors[2] = currentState[stateHeight - 1][stateWidth - 1];
-				}
-				else { // extreme top only
-					adjacentPixelsColors[2] = currentState[0][x + 1];
-				}
-			}
-			else if (currentState[y - 1][x + 1] == undefined) { // not extreme top but extreme right
-				adjacentPixelsColors[2] = currentState[y - 1][0];
-			}
-			else {
-				adjacentPixelsColors[2] = currentState[y - 1][x + 1];
-			}
-			// Getting LEFT pixel color (3)
-			if (currentState[y][x - 1] == undefined) {
-				adjacentPixelsColors[3] = currentState[y][stateWidth - 1];
-			}
-			else {
-				adjacentPixelsColors[3] = currentState[y][x - 1];
-			}
-			// Getting RIGHT pixel color (4)
-			if (currentState[y][x + 1] == undefined) {
-				adjacentPixelsColors[4] = currentState[y][0];
-			}
-			else {
-				adjacentPixelsColors[4] = currentState[y][x + 1];
-			}
-			// Getting LEFT-DOWN pixel color (5)
-			if (currentState[y + 1] == undefined) { // extreme down
-				if (currentState[0][x - 1] == undefined) { // extreme down and extreme left
-					adjacentPixelsColors[5] = currentState[0][stateWidth - 1];
-				}
-				else { // extreme down only
-					adjacentPixelsColors[5] = currentState[0][x - 1];
-				}
-			}
-			else if (currentState[y + 1][x - 1] == undefined) { // not extreme down but extreme left
-				adjacentPixelsColors[5] = currentState[y + 1][stateWidth - 1];
-			}
-			else {
-				adjacentPixelsColors[5] = currentState[y + 1][x - 1];
-			}
-			// Getting DOWN pixel color (6)
-			if (currentState[y + 1] == undefined) {
-				adjacentPixelsColors[6] = currentState[0][x];
-			}
-			else {
-				adjacentPixelsColors[6] = currentState[y + 1][x];
-			}
-			// Getting RIGHT-DOWN pixel color (7)
-			if (currentState[y + 1] == undefined) { // extreme down
-				if (currentState[y + 1][x + 1] == undefined) { // extreme down and extreme right
-					adjacentPixelsColors[7] = currentState[0][0];
-				}
-				else { // extreme down only
-					adjacentPixelsColors[7] = currentState[0][x + 1];
-				}
-			}
-			else if (currentState[y + 1][x + 1] == undefined) { // not extreme down but extreme right
-				adjacentPixelsColors[7] = currentState[y + 1][0];
-			}
-			else {
-				adjacentPixelsColors[7] = currentState[y + 1][x + 1];
-			}
-			let nextColor = currentState[y][x] + 1;
-			if ((nextColor > maxColor) && (adjacentPixelsColors.includes(0))) { // if the color is already at maximum and there is the first color in adjacents, takes it
-				nextState[y][x] = 0;
-				continue ColumnLoop;
-			}
-			else {
-				if (adjacentPixelsColors.includes(nextColor)) {
-					// console.log("UPGRADE SQUARE COLOR TO " + nextColor);
-					nextState[y][x] = nextColor;
-					continue ColumnLoop;
-				}
-				else {
-					// else, keep the current color
-					// console.log("DO NOT CHANGE");
-					nextState[y][x] = currentState[y][x];
-				}
-			}
-		}
-	}
-	// console.log(nextState);
-	return nextState;
+function CCACellTransformation(x, y, state) {
+	// the algorithm goes here
+	return state[y][x];
 }
 
 function pickColors(amount) {
 	var colors = [];
 	for (let i = 0; i < amount; i++) {
-		colors.push(hexToRgb(availableColors[i]));
+		var color = hexToRgb(availableColors[i])
+		color.id = i
+		colors.push(color);
 	}
 	return colors;
 }
