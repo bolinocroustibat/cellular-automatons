@@ -55,11 +55,11 @@ function CCAApp(options) {
 	let ctx = setupCanvas(canvasEl, width, height);
 
 	// set initial state
-	for (let y = 0; y < rowsCount; ++y) {
-		for (let x = 0; x < colsCount; ++x) {
-			if (!state[y]) state[y] = [];
+	for (let x = 0; x < colsCount; x++) {
+		for (let y = 0; y < rowsCount; y++) {
+			if (!state[x]) state[x] = [];
 			var randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
-			state[y][x] = randomColor;
+			state[x][y] = randomColor;
 		}
 	}
 
@@ -85,9 +85,9 @@ function CCARender(context) {
 	var ctx = context.ctx;
 	var state = context.state;
 
-	for (let y = 0; y < rowsCount; y++) {
-		for (let x = 0; x < colsCount; x++) {
-			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution);
+	for (let x = 0; x < colsCount; x++) {
+		for (let y = 0; y < rowsCount; y++) {
+			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution);
 		}
 	}
 }
@@ -107,9 +107,9 @@ function CCALoopStep(context, iteration) {
 	var colsCount = context.colsCount;
 	var state = context.state;
 
-	for (let y = 0; y < rowsCount; y++) {
-		for (let x = 0; x < colsCount; x++) {
-			state[y][x] = CCACellTransformation(x, y, state)
+	for (let x = 0; x < colsCount; x++) {
+		for (let y = 0; y < rowsCount; y++) {
+			state[x][y] = CCACellTransformation(x, y, state)
 		}
 	}
 }
@@ -120,7 +120,7 @@ function CCAStop() {
 
 function CCACellTransformation(x, y, state) {
 	// the algorithm goes here
-	return state[y][x];
+	return state[x][y];
 }
 
 function pickColors(amount) {
