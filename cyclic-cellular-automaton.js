@@ -58,7 +58,8 @@ function CCAApp(options) {
 	for (let y = 0; y < rowsCount; ++y) {
 		for (let x = 0; x < colsCount; ++x) {
 			if (!state[y]) state[y] = [];
-			state[y][x] = CCARandomizeRGBColor(availableColors);
+			var randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
+			state[y][x] = randomColor;
 		}
 	}
 
@@ -86,7 +87,7 @@ function CCARender(context) {
 
 	for (let y = 0; y < rowsCount; y++) {
 		for (let x = 0; x < colsCount; x++) {
-			fillSquare(ctx, state[y][x][1], x * resolution, y * resolution, resolution);
+			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution);
 		}
 	}
 }
@@ -244,11 +245,6 @@ function pickColors(amount) {
 function fillSquare(ctx, pixelRgb, x, y, resolution) {
 	ctx.fillStyle = "rgb(" + pixelRgb.r + "," + pixelRgb.g + "," + pixelRgb.b + ")";
 	ctx.fillRect(x, y, resolution, resolution);
-}
-
-function CCARandomizeRGBColor(availableColors) {
-	let n = Math.floor(Math.random() * availableColors.length);
-	return [n, availableColors[n]];
 }
 
 function setupCanvas(canvasEl, width, height) {
