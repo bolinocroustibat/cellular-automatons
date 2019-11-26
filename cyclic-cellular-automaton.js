@@ -109,26 +109,18 @@ function CCAStart(context, maxIterations = 20) {
 	var i = 0;
 	CCARenderInterval = setInterval(function() {
 		if (++i === maxIterations) CCAStop();
-		console.log(i);
+		CCALoopStep(context, i);
+		CCARender(context);
 	}, 200);
 }
 
-// LOOP
-function CCALoop(state, availableRGBColors, maxIterations, resolution, i) {
-	let maxColor = availableRGBColors.length - 1;
-	state = CCAChangestateColors(state, maxColor);
-	CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution);
-	timeoutCCA = setTimeout(function () {
-		CCALoop(state, availableRGBColors, maxIterations, resolution, i)
-	}, 200);
-	console.log("##########")
-	console.log("ITERATION: " + i);
-	if (i >= maxIterations) clearTimeout(timeoutCCA);
-	if (i == undefined) var i = 0;
-	else i++;
+function CCALoopStep(context, iteration) {
+	var state = context.state;
+
+	// trivial demo state transformation example:
+	state[0][iteration] = state[0][0];
 }
 
-// STOP LOOP
 function CCAStop() {
 	clearInterval(CCARenderInterval);
 }
