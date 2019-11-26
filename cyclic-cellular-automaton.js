@@ -110,15 +110,14 @@ function CCAChangestateColors(currentState, maxColor) {
 	let nextState = [];
 	let stateWidth = currentState[0].length;
 	let stateHeight = currentState.length;
-	rowLoop:
 	for (let y = 0; y < stateHeight; ++y) {
 		nextState[y] = [];
-		ColumnLoop:
 		for (let x = 0; x < stateWidth; ++x) {
 			let targetColor = currentState[y][x] + 1;
 			if (targetColor > maxColor) {
 				targetColor = 0;
 			}
+			surroundingPixelsLoop:
 			// Check the surrounding 8 cells
 			for (let dy = -1; dy <= 1; dy++) {
 				for (let dx = -1; dx <= 1; dx++) {
@@ -127,43 +126,43 @@ function CCAChangestateColors(currentState, maxColor) {
 					if (y + dy < 0) {
 						if (x + dx < 0) { // top-left pixel
 							if (currentState[stateHeight - 1][stateWidth - 1] === targetColor) { nextState[y][x] === targetColor };
-							continue;
+							break surroundingPixelsLoop;
 						}
 						else if (x + dx > stateWidth) { // top-right pixel
 							if (currentState[stateHeight - 1][0] === targetColor) { nextState[y][x] === targetColor };
-							continue;
+							break surroundingPixelsLoop;
 						}
 						else { // top pixel
 							if (currentState[stateHeight - 1][x + dx] === targetColor) { nextState[y][x] === targetColor };
-							continue;
+							break surroundingPixelsLoop;
 						}
 					}
 					else if (y + dy >= stateHeight) {
 						if (x + dx < 0) { // down-left pixel
 							if (currentState[0][stateWidth - 1] === targetColor) { nextState[y][x] === targetColor };
-							continue;
+							break surroundingPixelsLoop;
 						}
 						else if (x + dx > stateWidth) { // down-right pixel
 							if (currentState[0][0] === targetColor) { nextState[y][x] === targetColor };
-							continue;
+							break surroundingPixelsLoop;
 						}
 						else { // down pixel
 							if (currentState[0][x + dx] === targetColor) { nextState[y][x] === targetColor };
-							continue;
+							break surroundingPixelsLoop;
 						}
 					}
 					else if (x + dx < 0) { // left pixel
 						if (currentState[y + dy][stateWidth - 1] === targetColor) { nextState[y][x] === targetColor };
-						continue;
+						break surroundingPixelsLoop;
 					}
-					else if (x + dx > stateWidth - 1) { // right pixel
+					else if (x + dx >= stateWidth) { // right pixel
 						if (currentState[y + dy][0] === targetColor) { nextState[y][x] === targetColor };
-						continue;
+						break surroundingPixelsLoop;
 					}
 					// normal pixel
 					else if (currentState[y + dy][x + dx] === targetColor) {
 						nextState[y][x] = targetColor;
-						continue
+						break surroundingPixelsLoop;
 					}
 					nextState[y][x] = currentState[y][x];
 				}
