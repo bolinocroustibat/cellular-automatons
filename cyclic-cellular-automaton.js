@@ -76,26 +76,26 @@ function CCAGenerateCanvas(width, height, resolution) {
 	return [initialState, availableRGBColors];
 }
 
-function CCAStart(width, height, resolution = 10, maxIterations = 20) {
+function CCAStart(width, height, resolution = 10, threshold = 1, maxIterations = 20) {
 	if ((width % resolution != 0) || (height % resolution != 0)) {
 		console.log("ERROR: height and width must be a multiple of resolution");
 	}
 	else {
 		let startConditions = CCAGenerateCanvas(width, height, resolution);
-		CCALoop(startConditions[0], startConditions[1], maxIterations, resolution, i = 0);
+		CCALoop(startConditions[0], startConditions[1], threshold, maxIterations, resolution, i = 0);
 	}
 }
 
 // LOOP
-function CCALoop(state, availableRGBColors, maxIterations, resolution, i) {
+function CCALoop(state, availableRGBColors, threshold, maxIterations, resolution, i) {
 	let maxColor = availableRGBColors.length - 1;
-	state = CCAChangeState(state, maxColor);
+	state = CCAChangeState(state, maxColor, threshold);
 	CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution);
 	timeoutCCA = setTimeout(function () {
-		CCALoop(state, availableRGBColors, maxIterations, resolution, i)
+		CCALoop(state, availableRGBColors, threshold, maxIterations, resolution, i)
 	}, 100);
-	// console.log("##########")
-	// console.log("ITERATION " + i);
+	console.log("##########")
+	console.log("ITERATION " + i);
 	if (i >= maxIterations) clearTimeout(timeoutCCA);
 	if (i == undefined) var i = 0;
 	else i++;
@@ -106,7 +106,7 @@ function CCAStop() {
 	if (!(typeof timeoutCCA === 'undefined' || timeoutCCA === null)) clearTimeout(timeoutCCA);
 }
 
-function CCAChangeState(currentState, maxColor, callback) {
+function CCAChangeState(currentState, maxColor, threshold) {
 	let nextState = [];
 	let stateWidth = currentState[0].length;
 	let stateHeight = currentState.length;
@@ -114,14 +114,11 @@ function CCAChangeState(currentState, maxColor, callback) {
 		nextState[y] = [];
 		// console.log(nextState)
 		for (let x = 0; x < stateWidth; ++x) {
-			let targetColor = currentState[y][x] + 1;
-			if (targetColor > maxColor) {
-				targetColor = 0;
-			}
 			// console.log("######")
 			// console.log("cell x=" + x + ", y=" + y + ": current color " + currentState[y][x] + ", target " + targetColor);
+			// get the surrounding cells states
+			let surroundingCells = [];
 			surroundingCellsLoop:
-			// Check the surrounding 8 cells
 			for (let dy = -1; dy <= 1; dy++) {
 				for (let dx = -1; dx <= 1; dx++) {
 					// console.log("  # neighboring cell x=" + (x + dx) + ", y=" + (y + dy))
@@ -129,65 +126,52 @@ function CCAChangeState(currentState, maxColor, callback) {
 					// all the extreme cells
 					if (y + dy < 0) {
 						if (x + dx < 0) { // top-left cell
-							if (currentState[stateHeight - 1][stateWidth - 1] === targetColor) {
-								nextState[y][x] = targetColor;
-								break surroundingCellsLoop;
-							};
+							surroundingCells.push(currentState[stateHeight - 1][stateWidth - 1]);
 						}
 						else if (x + dx > stateWidth) { // top-right cell
-							if (currentState[stateHeight - 1][0] === targetColor) {
-								nextState[y][x] = targetColor;
-								break surroundingCellsLoop;
-							};
+							surroundingCells.push(currentState[stateHeight - 1][0]);
 						}
 						else { // top cell
-							if (currentState[stateHeight - 1][x + dx] === targetColor) {
-								nextState[y][x] = targetColor;
-								break surroundingCellsLoop;
-							};
+							surroundingCells.push(currentState[stateHeight - 1][x + dx]);
 						}
 					}
 					else if (y + dy >= stateHeight) {
 						if (x + dx < 0) { // down-left cell
-							if (currentState[0][stateWidth - 1] === targetColor) {
-								nextState[y][x] = targetColor;
-								break surroundingCellsLoop;
-							};
+							surroundingCells.push(currentState[0][stateWidth - 1]);
 						}
 						else if (x + dx > stateWidth) { // down-right cell
-							if (currentState[0][0] === targetColor) {
-								nextState[y][x] = targetColor
-								break surroundingCellsLoop;
-							};
+							surroundingCells.push(currentState[0][0]);
 						}
 						else { // down cell
-							if (currentState[0][x + dx] === targetColor) {
-								nextState[y][x] = targetColor
-								break surroundingCellsLoop;
-							};
+							surroundingCells.push(currentState[0][x + dx]);
 						}
 					}
 					else if (x + dx < 0) { // left cell
-						if (currentState[y + dy][stateWidth - 1] === targetColor) {
-							nextState[y][x] = targetColor;
-							break surroundingCellsLoop;
-						};
+						surroundingCells.push(currentState[y + dy][stateWidth - 1]);
 					}
 					else if (x + dx >= stateWidth) { // right cell
-						if (currentState[y + dy][0] === targetColor) {
-							nextState[y][x] = targetColor;
-							break surroundingCellsLoop;
-						};
+						surroundingCells.push(currentState[y + dy][0]);
 					}
 					// normal cell
-					else if (currentState[y + dy][x + dx] === targetColor) {
-						nextState[y][x] = targetColor;
-						break surroundingCellsLoop;
-					}
 					else {
-						nextState[y][x] = currentState[y][x];
+						surroundingCells.push(currentState[y][x]);
 					}
 				}
+			}
+			// first get the target color
+			let targetColor = currentState[y][x] + 1;
+			if (targetColor > maxColor) {
+				targetColor = 0;
+			}
+			// count the number of surrounding cells with target color
+			let count = 0;
+			for (let i = 0; i < surroundingCells.length; ++i) {
+				if (surroundingCells[i] == targetColor)
+					count++;
+			}
+			// finally, change the cell color
+			if (count >= threshold) {
+				nextState[y][x] == targetColor;
 			}
 		}
 	}
