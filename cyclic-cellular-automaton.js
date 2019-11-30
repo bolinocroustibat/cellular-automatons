@@ -128,9 +128,10 @@ function CCACellTransformation(context, x, y) {
 	]
 
 	var thisCell = state[x][y];
-	var successorNeighbours = neighbours.filter(function (neighbour) { return neighbour.id > thisCell.id })
-	var randomSuccessorNeighbours = successorNeighbours[Math.floor(Math.random() * successorNeighbours.length)];
-	var newCell = successorNeighbours.length >= threshold ? randomSuccessorNeighbours : thisCell;
+	var nextColorId = nextCellColorId(thisCell);
+	var plusOneSuccessorNeighbours = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
+
+	var newCell = (plusOneSuccessorNeighbours.length >= threshold) ? plusOneSuccessorNeighbours[0] : thisCell;
 
 	return newCell;
 }
@@ -199,4 +200,12 @@ function hexToRgb(hex) {
 		g: parseInt(result[2], 16),
 		b: parseInt(result[3], 16)
 	};
+}
+
+function nextCellColorId(cell) {
+	var cellId = cell.id;
+	if (cellId >= availableColors.length) {
+		return 0;
+	}
+	return cellId + 1;
 }
