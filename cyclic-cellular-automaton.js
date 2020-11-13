@@ -90,12 +90,12 @@ function CCAStart(width, height, resolution = 10, threshold = 1, maxIterations =
 function CCALoop(state, availableRGBColors, threshold, maxIterations, resolution, i) {
 	let maxColor = availableRGBColors.length - 1;
 	state = CCAChangeState(state, maxColor, threshold);
-	CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution);
+	CCAChangeCanvasColorsFromState(state, availableRGBColors, resolution);
 	timeoutCCA = setTimeout(function () {
 		CCALoop(state, availableRGBColors, threshold, maxIterations, resolution, i)
 	}, 100);
-	console.log("##########")
-	console.log("ITERATION " + i);
+	// console.log("##########")
+	// console.log("ITERATION " + i);
 	if (i >= maxIterations) clearTimeout(timeoutCCA);
 	if (i == undefined) var i = 0;
 	else i++;
@@ -171,14 +171,17 @@ function CCAChangeState(currentState, maxColor, threshold) {
 			}
 			// finally, change the cell color
 			if (count >= threshold) {
-				nextState[y][x] == targetColor;
+				nextState[y][x] = targetColor;
+			}
+			else {
+				nextState[y][x] = currentState[y][x];
 			}
 		}
 	}
 	return nextState;
 }
 
-function CCAChangeCanvasColorsFromstate(state, availableRGBColors, resolution) {
+function CCAChangeCanvasColorsFromState(state, availableRGBColors, resolution) {
 	let ctx = document.getElementById('cca-canvas').getContext('2d');
 	let stateWidth = state[0].length;
 	let stateHeight = state.length;
