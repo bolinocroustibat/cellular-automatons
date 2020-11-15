@@ -1,4 +1,4 @@
-var availableColors = [
+var allColors = [
 	"#006400",
 	"#ffff00",
 	"#ff0000",
@@ -40,23 +40,28 @@ var availableColors = [
 
 var CCARenderInterval;
 
-function CCAApp(options) {
-	let canvasEl = options.canvasEl
-	let amountOfColors = options.amountOfColors
-	let width = options.width
-	let height = options.height
-	let resolution = options.resolution
+function CCACreateContext(options) {
+
+	clearInterval(CCARenderInterval);
+
+	let canvasEl = options.canvasEl;
+	let numberOfColors = options.numberOfColors;
+	let threshold = options.threshold;
+	let width = options.width;
+	let height = options.height;
+	let resolution = options.resolution;
 
 	let rowsCount = height / resolution;
 	let colsCount = width / resolution;
 
 	let state = [];
-	let availableColors = pickColors(amountOfColors);
+	let colors = pickColors(numberOfColors);
 	let ctx = setupCanvas(canvasEl, width, height);
 
-	var context = {
+	let context = {
 		state: state,
-		availableColors: availableColors,
+		colors: colors,
+		threshold: threshold,
 		width: width,
 		height: height,
 		resolution: resolution,
@@ -71,52 +76,49 @@ function CCAApp(options) {
 }
 
 function CCARender(context) {
-	var rowsCount = context.rowsCount;
-	var colsCount = context.colsCount;
-	var resolution = context.resolution;
-	var ctx = context.ctx;
-	var state = context.state;
+	let rowsCount = context.rowsCount;
+	let colsCount = context.colsCount;
+	let resolution = context.resolution;
+	let ctx = context.ctx;
+	let state = context.state;
 
-	for (let x = 0; x < colsCount; x++) {
-		for (let y = 0; y < rowsCount; y++) {
-			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution);
+	for (let y = 0; y < rowsCount; y++) {
+		for (let x = 0; x < colsCount; x++) {
+			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution);
 		}
 	}
 }
 
-function CCAStart(context, maxIterations = 20) {
-	CCAStop();
-	var i = 0;
+function CCAStart(context, maxIterations = 500) {
+	let i = 0;
 	CCARenderInterval = setInterval(function() {
-		if (++i === maxIterations) CCAStop();
+		if (++i === maxIterations) clearInterval(CCARenderInterval);
 		CCALoopStep(context, i);
 		CCARender(context);
-	}, 200);
+	}, 50);
 }
 
 function CCALoopStep(context, iteration) {
-	var rowsCount = context.rowsCount;
-	var colsCount = context.colsCount;
-	var state = context.state;
+	let rowsCount = context.rowsCount;
+	let colsCount = context.colsCount;
+	let state = context.state;
 
-	for (let x = 0; x < colsCount; x++) {
-		for (let y = 0; y < rowsCount; y++) {
-			state[x][y] = CCACellTransformation(context, x, y)
+	for (let y = 0; y < rowsCount; y++) {
+		for (let x = 0; x < colsCount; x++) {
+			state[y][x] = CCACellTransformation(context, x, y)
 		}
 	}
 }
 
-function CCAStop() {
-	clearInterval(CCARenderInterval);
-}
-
 function CCACellTransformation(context, x, y) {
-	var state = context.state;
 
-	var threshold = 5;
-	var neighbours = [
+	let state = context.state;
+
+	let threshold = context.threshold;
+
+	let neighbours = [
 		cyclicStateEl(context, x-1, y-1),
-		cyclicStateEl(context,  x, 	y-1),
+		cyclicStateEl(context,  x,  y-1),
 		cyclicStateEl(context, x+1, y-1),
 
 		cyclicStateEl(context, x-1, y),
@@ -127,19 +129,19 @@ function CCACellTransformation(context, x, y) {
 		cyclicStateEl(context, x+1, y+1),
 	]
 
-	var thisCell = state[x][y];
-	var nextColorId = nextCellColorId(thisCell);
-	var plusOneSuccessorNeighbours = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
+	let thisCell = state[y][x];
+	let nextColorId = nextCellColorId(thisCell, context.colors);
+	let plusOneSuccessorNeighbours = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
 
-	var newCell = (plusOneSuccessorNeighbours.length >= threshold) ? plusOneSuccessorNeighbours[0] : thisCell;
+	let newCell = (plusOneSuccessorNeighbours.length >= threshold) ? plusOneSuccessorNeighbours[0] : thisCell;
 
 	return newCell;
 }
 
-function cyclicStateEl (context, x, y) {
+function cyclicStateEl(context, x, y) {
 	var state = context.state;
-	var colsCount = context.colsCount;
-	var rowsCount = context.rowsCount;
+	let colsCount = context.colsCount;
+	let rowsCount = context.rowsCount;
 
 	x = (x === -1) ? colsCount - 1 : x;
 	x = (x === colsCount) ? 0 : x;
@@ -147,28 +149,28 @@ function cyclicStateEl (context, x, y) {
 	y = (y === -1) ? rowsCount - 1 : y;
 	y = (y === rowsCount) ? 0 : y;
 
-	return state[x][y];
+	return state[y][x];
 }
 
 function setRandomState(context) {
-	var state = context.state;
-	var colsCount = context.colsCount;
-	var rowsCount = context.rowsCount;
-	var availableColors = context.availableColors;
+	let state = context.state;
+	let colsCount = context.colsCount;
+	let rowsCount = context.rowsCount;
+	let colors = context.colors;
 
-	for (let x = 0; x < colsCount; x++) {
-		for (let y = 0; y < rowsCount; y++) {
-			if (!state[x]) state[x] = [];
-			var randomColor = availableColors[Math.floor(Math.random() * availableColors.length)];
-			state[x][y] = randomColor;
+	for (let y = 0; y < rowsCount; y++) {
+		for (let x = 0; x < colsCount; x++) {
+			if (!state[y]) state[y] = [];
+			var randomColor = colors[Math.floor(Math.random() * colors.length)];
+			state[y][x] = randomColor;
 		}
 	}
 }
 
 function pickColors(amount) {
-	var colors = [];
+	let colors = [];
 	for (let i = 0; i < amount; i++) {
-		var color = hexToRgb(availableColors[i])
+		let color = hexToRgb(allColors[i])
 		color.id = i
 		colors.push(color);
 	}
@@ -202,9 +204,9 @@ function hexToRgb(hex) {
 	};
 }
 
-function nextCellColorId(cell) {
-	var cellId = cell.id;
-	if (cellId >= availableColors.length) {
+function nextCellColorId(cell, colors) {
+	let cellId = cell.id;
+	if (cellId >= (colors.length - 1)) {
 		return 0;
 	}
 	return cellId + 1;

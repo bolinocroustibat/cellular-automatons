@@ -7,9 +7,13 @@
 <body>
 	<article id="cca-article">
 		<form id="form_crowd">
-			<input type="number" id="amount_of_colors" value="4" min="2" max="42">
+			Number of colors:<input type="number" id="number_of_colors" value="8" min="2" max="37">
+			<br/>
+			Threshold:<input type="number" id="threshold" value="2" min="1" max="8">
+			<br/>
+			<input type="button" value="reset with those values" onclick="createContext()">
+			<br/>
 			<input type="button" value="start" onclick="start()">
-			<input type="button" value="stop it" onclick="stop()">
 		</form>
 		<br>
 		<canvas id="cca-canvas"></canvas>
@@ -17,21 +21,24 @@
 
 	<script src="cyclic-cellular-automaton.js"></script>
 	<script>
-		var CCAAppContext = CCAApp({
-			canvasEl: document.getElementById('cca-canvas'),
-			amountOfColors: document.getElementById('amount_of_colors').value,
-			width: 400,
-			height: 200,
-			resolution: 10
-		});
+
+		var CCAcontext;
+
+		function createContext() {
+			CCAcontext = CCACreateContext({
+				canvasEl: document.getElementById('cca-canvas'),
+				numberOfColors: document.getElementById('number_of_colors').value,
+				threshold: document.getElementById('threshold').value,
+				width: 600,
+				height: 400,
+				resolution: 2
+			});
+		}
 
 		function start() {
-			CCAStart(CCAAppContext, 20)
+			CCAStart(CCAcontext, 400)
 		}
 
-		function stop() {
-			CCAStop()
-		}
 	</script>
 </body>
 
