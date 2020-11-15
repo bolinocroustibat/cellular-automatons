@@ -127,8 +127,8 @@ function setRandomState(context) {
 	}
 }
 
-function fillSquare(ctx, pixelRgb, x, y, resolution) {
-	ctx.fillStyle = "rgb(" + pixelRgb.r + "," + pixelRgb.g + "," + pixelRgb.b + ")";
+function fillSquare(ctx, colorRgb, x, y, resolution) {
+	ctx.fillStyle = "rgb(" + colorRgb[0] + "," + colorRgb[1] + "," + colorRgb[2] + ")";
 	ctx.fillRect(x, y, resolution, resolution);
 }
 
@@ -151,110 +151,18 @@ const nextCellColorId = (cell, colors) => {
 	return cellId + 1;
 }
 
-const random = (min, max) => {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+var pickColors = (numberOfColors) => {
 
-function hslToHex(h, s, l) { // h = hue, s = saturation, l = lightness
-	h /= 360;
-	s /= 100;
-	l /= 100;
-	let r, g, b;
-	if (s == 0) {
-		r = g = b = l; // achromatic
-	} else {
-		var hue2rgb = function hue2rgb(p, q, t) {
-			if (t < 0) t += 1;
-			if (t > 1) t -= 1;
-			if (t < 1 / 6) return p + (q - p) * 6 * t;
-			if (t < 1 / 2) return q;
-			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-			return p;
-		}
-		var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-		var p = 2 * l - q;
-		r = hue2rgb(p, q, h + 1 / 3);
-		g = hue2rgb(p, q, h);
-		b = hue2rgb(p, q, h - 1 / 3);
-	}
-	const toHex = x => {
-		const hex = Math.round(x * 255).toString(16);
-		return hex.length === 1 ? '0' + hex : hex;
-	};
-	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-};
+	let minRandomColor = chroma.random();
+	let maxRandomColor = chroma.random();
 
-var pickColors = (total, mode = 'lab', padding = .175, parts = 4) => {
-	// modified version of http://www.husl-colors.org/syntax/
-	let colors = [];
-	const part = Math.floor(total / parts);
-	const reminder = total % parts;
-
-	// hues to pick from
-	const baseHue = random(0, 360);
-	const hues = [0, 60, 120, 180, 240, 300].map(offset => {
-		return (baseHue + offset) % 360;
-	});
-
-	//  low saturated color
-	const baseSaturation = random(5, 40);
-	const baseLightness = random(0, 20);
-	const rangeLightness = 90 - baseLightness;
-
-	colors.push(hslToHex(
-		hues[0],
-		baseSaturation,
-		baseLightness * random(.25, .75)
-	));
-
-	for (let i = 0; i < (part - 1); i++) {
-		colors.push(hslToHex(
-			hues[0],
-			baseSaturation,
-			baseLightness + (rangeLightness * Math.pow(i / (part - 1), 1.5))
-		));
-	}
-
-	// random shades
-	const minSat = random(50, 70);
-	const maxSat = minSat + 30;
-	const minLight = random(45, 80);
-	const maxLight = Math.min(minLight + 40, 95);
-
-	for (let i = 0; i < (part + reminder - 1); i++) {
-		colors.push(hslToHex(
-			hues[random(0, hues.length - 1)],
-			random(minSat, maxSat),
-			random(minLight, maxLight)
-		))
-	}
-
-	colors.push(hslToHex(
-		hues[0],
-		baseSaturation,
-		rangeLightness
-	));
-
-	colors = chroma.scale(colors).padding(padding).mode(mode).colors(total);
+	let colors = chroma.scale([minRandomColor, maxRandomColor]).padding(0.05).colors(numberOfColors);
 
 	let rgbColorsWithId = [];
 	for (let i = 0; i < colors.length; i++) {
-		let color = hexToRgb(colors[i])
-		color.id = i
-		rgbColorsWithId.push(color);
+		let rgbColor = chroma(colors[i]).rgb()
+		rgbColor.id = i
+		rgbColorsWithId.push(rgbColor);
 	}
-	console.log(rgbColorsWithId)
 	return rgbColorsWithId;
-}
-
-
-function hexToRgb(hex) {
-	let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-	if (!result) return { r: undefined, g: undefined, b: undefined };
-
-	return {
-		r: parseInt(result[1], 16),
-		g: parseInt(result[2], 16),
-		b: parseInt(result[3], 16)
-	};
 }
