@@ -1,43 +1,3 @@
-var allColors = [
-	"#006400",
-	"#ffff00",
-	"#ff0000",
-	"#00008b",
-	"#ff8c00",
-	"#ff00ff",
-	"#ffd700",
-	"#008000",
-	"#4b0082",
-	"#f0e68c",
-	"#556b2f",
-	"#add8e6",
-	"#00ff00",
-	"#bdb76b",
-	"#800000",
-	"#000080",
-	"#808000",
-	"#ffa500",
-	"#ffc0cb",
-	"#800080",
-	"#c0c0c0",
-	"#ffffff",
-	"#e0ffff",
-	"#90ee90",
-	"#d3d3d3",
-	"#ffb6c1",
-	"#9932cc",
-	"#8b0000",
-	"#e9967a",
-	"#0000ff",
-	"#00ffff",
-	"#f5f5dc",
-	"#a52a2a",
-	"#000000",
-	"#008b8b",
-	"#a9a9a9",
-	"#f0ffff"
-];
-
 var CCARenderInterval;
 
 function CCACreateContext(options) {
@@ -91,7 +51,7 @@ function CCARender(context) {
 
 function CCAStart(context, maxIterations = 500) {
 	let i = 0;
-	CCARenderInterval = setInterval(function() {
+	CCARenderInterval = setInterval(function () {
 		if (++i === maxIterations) clearInterval(CCARenderInterval);
 		CCALoopStep(context, i);
 		CCARender(context);
@@ -117,16 +77,16 @@ function CCACellTransformation(context, x, y) {
 	let threshold = context.threshold;
 
 	let neighbours = [
-		cyclicStateEl(context, x-1, y-1),
-		cyclicStateEl(context,  x,  y-1),
-		cyclicStateEl(context, x+1, y-1),
+		cyclicStateEl(context, x - 1, y - 1),
+		cyclicStateEl(context, x, y - 1),
+		cyclicStateEl(context, x + 1, y - 1),
 
-		cyclicStateEl(context, x-1, y),
-		cyclicStateEl(context, x+1, y),
+		cyclicStateEl(context, x - 1, y),
+		cyclicStateEl(context, x + 1, y),
 
-		cyclicStateEl(context, x-1, y+1),
-		cyclicStateEl(context,  x,  y+1),
-		cyclicStateEl(context, x+1, y+1),
+		cyclicStateEl(context, x - 1, y + 1),
+		cyclicStateEl(context, x, y + 1),
+		cyclicStateEl(context, x + 1, y + 1),
 	]
 
 	let thisCell = state[y][x];
@@ -167,16 +127,6 @@ function setRandomState(context) {
 	}
 }
 
-function pickColors(amount) {
-	let colors = [];
-	for (let i = 0; i < amount; i++) {
-		let color = hexToRgb(allColors[i])
-		color.id = i
-		colors.push(color);
-	}
-	return colors;
-}
-
 function fillSquare(ctx, pixelRgb, x, y, resolution) {
 	ctx.fillStyle = "rgb(" + pixelRgb.r + "," + pixelRgb.g + "," + pixelRgb.b + ")";
 	ctx.fillRect(x, y, resolution, resolution);
@@ -193,6 +143,111 @@ function setupCanvas(canvasEl, width, height) {
 	return ctx;
 }
 
+const nextCellColorId = (cell, colors) => {
+	let cellId = cell.id;
+	if (cellId >= (colors.length - 1)) {
+		return 0;
+	}
+	return cellId + 1;
+}
+
+const random = (min, max) => {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function hslToHex(h, s, l) { // h = hue, s = saturation, l = lightness
+	h /= 360;
+	s /= 100;
+	l /= 100;
+	let r, g, b;
+	if (s == 0) {
+		r = g = b = l; // achromatic
+	} else {
+		var hue2rgb = function hue2rgb(p, q, t) {
+			if (t < 0) t += 1;
+			if (t > 1) t -= 1;
+			if (t < 1 / 6) return p + (q - p) * 6 * t;
+			if (t < 1 / 2) return q;
+			if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+			return p;
+		}
+		var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+		var p = 2 * l - q;
+		r = hue2rgb(p, q, h + 1 / 3);
+		g = hue2rgb(p, q, h);
+		b = hue2rgb(p, q, h - 1 / 3);
+	}
+	const toHex = x => {
+		const hex = Math.round(x * 255).toString(16);
+		return hex.length === 1 ? '0' + hex : hex;
+	};
+	return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+};
+
+var pickColors = (total, mode = 'lab', padding = .175, parts = 4) => {
+	// modified version of http://www.husl-colors.org/syntax/
+	let colors = [];
+	const part = Math.floor(total / parts);
+	const reminder = total % parts;
+
+	// hues to pick from
+	const baseHue = random(0, 360);
+	const hues = [0, 60, 120, 180, 240, 300].map(offset => {
+		return (baseHue + offset) % 360;
+	});
+
+	//  low saturated color
+	const baseSaturation = random(5, 40);
+	const baseLightness = random(0, 20);
+	const rangeLightness = 90 - baseLightness;
+
+	colors.push(hslToHex(
+		hues[0],
+		baseSaturation,
+		baseLightness * random(.25, .75)
+	));
+
+	for (let i = 0; i < (part - 1); i++) {
+		colors.push(hslToHex(
+			hues[0],
+			baseSaturation,
+			baseLightness + (rangeLightness * Math.pow(i / (part - 1), 1.5))
+		));
+	}
+
+	// random shades
+	const minSat = random(50, 70);
+	const maxSat = minSat + 30;
+	const minLight = random(45, 80);
+	const maxLight = Math.min(minLight + 40, 95);
+
+	for (let i = 0; i < (part + reminder - 1); i++) {
+		colors.push(hslToHex(
+			hues[random(0, hues.length - 1)],
+			random(minSat, maxSat),
+			random(minLight, maxLight)
+		))
+	}
+
+	colors.push(hslToHex(
+		hues[0],
+		baseSaturation,
+		rangeLightness
+	));
+
+	colors = chroma.scale(colors).padding(padding).mode(mode).colors(total);
+
+	let rgbColorsWithId = [];
+	for (let i = 0; i < colors.length; i++) {
+		let color = hexToRgb(colors[i])
+		color.id = i
+		rgbColorsWithId.push(color);
+	}
+	console.log(rgbColorsWithId)
+	return rgbColorsWithId;
+}
+
+
 function hexToRgb(hex) {
 	let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 	if (!result) return { r: undefined, g: undefined, b: undefined };
@@ -202,12 +257,4 @@ function hexToRgb(hex) {
 		g: parseInt(result[2], 16),
 		b: parseInt(result[3], 16)
 	};
-}
-
-function nextCellColorId(cell, colors) {
-	let cellId = cell.id;
-	if (cellId >= (colors.length - 1)) {
-		return 0;
-	}
-	return cellId + 1;
 }

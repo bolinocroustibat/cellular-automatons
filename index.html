@@ -19,12 +19,14 @@
 		<canvas id="cca-canvas"></canvas>
 	</article>
 
+	<script src="chroma.min.js"></script>
 	<script src="cyclic-cellular-automaton.js"></script>
 	<script>
 
 		var CCAcontext;
 
 		function createContext() {
+
 			CCAcontext = CCACreateContext({
 				canvasEl: document.getElementById('cca-canvas'),
 				numberOfColors: document.getElementById('number_of_colors').value,
