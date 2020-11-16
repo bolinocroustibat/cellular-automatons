@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 var CCArenderInterval;
+=======
+var CCA2DrenderInterval;
+>>>>>>> aa303b5... Consistent naming to differentiate 1D & 2D
 
-function CCACreateContext(options) {
+function CCA2DcreateContext(options) {
 
+<<<<<<< HEAD
 	clearInterval(CCArenderInterval);
+=======
+	clearInterval(CCA2DrenderInterval);
+>>>>>>> aa303b5... Consistent naming to differentiate 1D & 2D
 
 	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;

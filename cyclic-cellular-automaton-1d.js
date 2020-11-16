@@ -1,8 +1,8 @@
-var CCA1dRenderInterval;
+var CCA1DrenderInterval;
 
-function CCA1CreateContext(options) {
+function CCA1DcreateContext(options) {
 
-	clearInterval(CCA1dRenderInterval);
+	clearInterval(CCA1DrenderInterval);
 
 	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;
@@ -12,7 +12,7 @@ function CCA1CreateContext(options) {
 
 	let state = [];
 	let colors = pickColors(numberOfColors);
-	let ctx = setupCanvas1(canvasEl, width, height);
+	let ctx = CCA1DsetupCanvas(canvasEl, width, height);
 
 	let context = {
 		state: state,
@@ -22,8 +22,8 @@ function CCA1CreateContext(options) {
 		height: height,
 		ctx: ctx
 	}
-	setRandomState1(context)
-	CCARender1(0, context);
+	CCA1DsetRandomState(context)
+	CCA1Drender(0, context);
 	return context;
 }
 
@@ -32,7 +32,7 @@ function fillpixel1(ctx, colorRgb, x, y) {
 	ctx.fillRect(x, y, 1, 1);
 }
 
-function setupCanvas1(canvasEl, width, height) {
+function CCA1DsetupCanvas(canvasEl, width, height) {
 	canvasEl.width = width;
 	canvasEl.height = height;
 	canvasEl.style.width = width + 'px';
@@ -43,7 +43,7 @@ function setupCanvas1(canvasEl, width, height) {
 	return ctx;
 }
 
-function setRandomState1(context) {
+function CCA1DsetRandomState(context) {
 	let state = context.state;
 	let colors = context.colors;
 	if (!state) state = [];
@@ -53,7 +53,7 @@ function setRandomState1(context) {
 	}
 }
 
-function CCARender1(line, context) {
+function CCA1Drender(line, context) {
 	let ctx = context.ctx;
 	let state = context.state;
 	for (let x = 0; x < context.width; x++) {
@@ -61,16 +61,16 @@ function CCARender1(line, context) {
 	}
 }
 
-function CCAStart1(context) {
+function CCA1Dstart(context) {
 	let line = 0;
-	CCARenderInterval = setInterval(function () {
-		if (++line === context.height) clearInterval(CCA1dRenderInterval);
-		CCALoopCells1(context);
-		CCARender1(line, context);
+	CCA1DrenderInterval = setInterval(function () {
+		if (++line === context.height) clearInterval(CCA1DrenderInterval);
+		CCA1DloopCells(context);
+		CCA1Drender(line, context);
 	}, 50);
 }
 
-function CCALoopCells1(context) {
+function CCA1DloopCells(context) {
 	let width = context.width;
 	let state = context.state;
 	let threshold = context.threshold;
@@ -82,7 +82,6 @@ function CCALoopCells1(context) {
 		let thisCell = state[x];
 		let nextColorId = nextCellColorId(thisCell, context.colors);
 		let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
-		console.log(successorNeighboursCount);
 		state[x] = (successorNeighboursCount.length >= threshold) ? successorNeighboursCount[0] : thisCell;
 	}
 }

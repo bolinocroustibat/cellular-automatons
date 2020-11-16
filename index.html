@@ -12,9 +12,9 @@
 			<br/>
 			Threshold:<input type="number" id="threshold" value="2" min="1" max="8">
 			<br/>
-			<input type="button" value="reset with those values" onclick="createContext()">
+			<input type="button" value="reset with those values" onclick="resetCCA2D()">
 			<br/>
-			<input type="button" value="start" onclick="start()">
+			<input type="button" value="start" onclick="startCCA2D()">
 		</form>
 		<br>
 		<canvas id="cca2d-canvas"></canvas>
@@ -24,11 +24,11 @@
 	<script src="cyclic-cellular-automaton-2d.js"></script>
 	<script>
 
-		var CCAcontext;
+		var CCA2Dcontext;
 
-		function createContext() {
+		function resetCCA2D() {
 
-			CCAcontext = CCACreateContext({
+			CCA2Dcontext = CCA2DcreateContext({
 				canvasEl: document.getElementById('cca2d-canvas'),
 				numberOfColors: document.getElementById('number_of_colors').value,
 				threshold: document.getElementById('threshold').value,
@@ -38,8 +38,8 @@
 			});
 		}
 
-		function start() {
-			CCAStart(CCAcontext, 400)
+		function startCCA2D() {
+			CCA2Dstart(CCA2Dcontext, 400)
 		}
 
 	</script>
@@ -51,9 +51,9 @@
 			<br/>
 			Threshold:<input type="number" id="threshold" value="1" min="1" max="2">
 			<br/>
-			<input type="button" value="reset with those values" onclick="createContext1()">
+			<input type="button" value="reset with those values" onclick="resetCCA1D()">
 			<br/>
-			<input type="button" value="start" onclick="start1()">
+			<input type="button" value="start" onclick="startCCA1D()">
 		</form>
 		<br>
 		<canvas id="cca1d-canvas"></canvas>
@@ -61,21 +61,21 @@
 	<script src="cyclic-cellular-automaton-1d.js"></script>
 	<script>
 
-		var CCA1context1;
+		var CCA1Dcontext;
 
-		function createContext1() {
+		function resetCCA1D() {
 
-			CCAcontext1 = CCA1CreateContext({
+			CCA1Dcontext = CCA1DcreateContext({
 				canvasEl: document.getElementById('cca1d-canvas'),
 				numberOfColors: document.getElementById('number_of_colors').value,
 				threshold: document.getElementById('threshold').value,
-				width: 10,
-				height: 10,
+				width: 600,
+				height: 50,
 			});
 		}
 
-		function start1() {
-			CCAStart1(CCAcontext1, 400)
+		function startCCA1D() {
+			CCA1Dstart(CCA1Dcontext, 400)
 		}
 
 	</script>
