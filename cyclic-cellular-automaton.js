@@ -53,12 +53,12 @@ function CCAStart(context, maxIterations = 500) {
 	let i = 0;
 	CCARenderInterval = setInterval(function () {
 		if (++i === maxIterations) clearInterval(CCARenderInterval);
-		CCALoopStep(context, i);
+		CCALoopCells(context);
 		CCARender(context);
 	}, 50);
 }
 
-function CCALoopStep(context, iteration) {
+function CCALoopCells(context) {
 	let rowsCount = context.rowsCount;
 	let colsCount = context.colsCount;
 	let state = context.state;
@@ -77,28 +77,28 @@ function CCACellTransformation(context, x, y) {
 	let threshold = context.threshold;
 
 	let neighbours = [
-		cyclicStateEl(context, x - 1, y - 1),
-		cyclicStateEl(context, x, y - 1),
-		cyclicStateEl(context, x + 1, y - 1),
+		getCellColorId(context, x - 1, y - 1),
+		getCellColorId(context, x, y - 1),
+		getCellColorId(context, x + 1, y - 1),
 
-		cyclicStateEl(context, x - 1, y),
-		cyclicStateEl(context, x + 1, y),
+		getCellColorId(context, x - 1, y),
+		getCellColorId(context, x + 1, y),
 
-		cyclicStateEl(context, x - 1, y + 1),
-		cyclicStateEl(context, x, y + 1),
-		cyclicStateEl(context, x + 1, y + 1),
+		getCellColorId(context, x - 1, y + 1),
+		getCellColorId(context, x, y + 1),
+		getCellColorId(context, x + 1, y + 1),
 	]
 
 	let thisCell = state[y][x];
 	let nextColorId = nextCellColorId(thisCell, context.colors);
-	let plusOneSuccessorNeighbours = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
+	let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
 
-	let newCell = (plusOneSuccessorNeighbours.length >= threshold) ? plusOneSuccessorNeighbours[0] : thisCell;
+	let newCell = (successorNeighboursCount.length >= threshold) ? successorNeighboursCount[0] : thisCell;
 
 	return newCell;
 }
 
-function cyclicStateEl(context, x, y) {
+function getCellColorId(context, x, y) {
 	var state = context.state;
 	let colsCount = context.colsCount;
 	let rowsCount = context.rowsCount;
@@ -143,7 +143,7 @@ function setupCanvas(canvasEl, width, height) {
 	return ctx;
 }
 
-const nextCellColorId = (cell, colors) => {
+function nextCellColorId(cell, colors) {
 	let cellId = cell.id;
 	if (cellId >= (colors.length - 1)) {
 		return 0;
@@ -151,7 +151,7 @@ const nextCellColorId = (cell, colors) => {
 	return cellId + 1;
 }
 
-var pickColors = (numberOfColors) => {
+function pickColors(numberOfColors) {
 
 	let minRandomColor = chroma.random();
 	let maxRandomColor = chroma.random();
