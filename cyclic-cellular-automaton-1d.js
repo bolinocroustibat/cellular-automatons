@@ -67,7 +67,6 @@ function CCAStart1(context) {
 		if (++line === context.height) clearInterval(CCA1dRenderInterval);
 		CCALoopCells1(context);
 		CCARender1(line, context);
-		stop();
 	}, 50);
 }
 
