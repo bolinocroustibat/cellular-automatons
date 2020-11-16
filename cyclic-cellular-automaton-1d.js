@@ -27,7 +27,7 @@ function CCA1DcreateContext(options) {
 	return context;
 }
 
-function fillpixel1(ctx, colorRgb, x, y) {
+function fillPixel(ctx, colorRgb, x, y) {
 	ctx.fillStyle = "rgb(" + colorRgb[0] + "," + colorRgb[1] + "," + colorRgb[2] + ")";
 	ctx.fillRect(x, y, 1, 1);
 }
@@ -57,7 +57,7 @@ function CCA1Drender(line, context) {
 	let ctx = context.ctx;
 	let state = context.state;
 	for (let x = 0; x < context.width; x++) {
-		fillpixel1(ctx, state[x], x, line, 1);
+		fillPixel(ctx, state[x], x, line, 1);
 	}
 }
 
@@ -76,8 +76,8 @@ function CCA1DloopCells(context) {
 	let threshold = context.threshold;
 	for (let x = 0; x < width; x++) {
 		let neighbours = [
-			getCellState(context, x - 1),
-			getCellState(context, x + 1),
+			CCA1DgetCellColorId(context, x - 1),
+			CCA1DgetCellColorId(context, x + 1),
 		]
 		let thisCell = state[x];
 		let nextColorId = nextCellColorId(thisCell, context.colors);
@@ -86,7 +86,7 @@ function CCA1DloopCells(context) {
 	}
 }
 
-function getCellState(context, x) {
+function CCA1DgetCellColorId(context, x) {
 	let state = context.state;
 	let width = context.width;
 	x = (x === -1) ? width - 1 : x;
