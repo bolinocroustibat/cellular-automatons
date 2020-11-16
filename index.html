@@ -1,24 +1,47 @@
 <html>
 
 <head>
-	<script src="cyclic-cellular-automaton.js"></script>
 	<link href="styles.css" rel="stylesheet" />
 </head>
 
 <body>
-	<article id="cca-article" style='text-align:center;'>
-		<form id="form_crowd">
-			<input type="number" id="nb_colors" value="4" min="2" max="42" style="width:30px;">
-			<input type="button" value="start"
-				onclick="CCAStart(width=400, height=300, resolution=10, threshold=1, maxIterations=100);">
-			<input type="button" value="stop it" onclick="CCAStop();">
+	<article id="cca-article">
+		<form>
+			Number of colors:<input type="number" id="number_of_colors" value="8" min="2" max="37">
+			<br/>
+			Threshold:<input type="number" id="threshold" value="2" min="1" max="8">
+			<br/>
+			<input type="button" value="reset with those values" onclick="createContext()">
+			<br/>
+			<input type="button" value="start" onclick="start()">
 		</form>
 		<br>
 		<canvas id="cca-canvas"></canvas>
-		<script>
-			CCAGenerateCanvas(width = 400, height = 300, resolution = 10);
-		</script>
 	</article>
+
+	<script src="chroma.min.js"></script>
+	<script src="cyclic-cellular-automaton.js"></script>
+	<script>
+
+		var CCAcontext;
+
+		function createContext() {
+
+			CCAcontext = CCACreateContext({
+				canvasEl: document.getElementById('cca-canvas'),
+				numberOfColors: document.getElementById('number_of_colors').value,
+				threshold: document.getElementById('threshold').value,
+				width: 600,
+				height: 400,
+				resolution: 2
+			});
+		}
+
+		function start() {
+			CCAStart(CCAcontext, 400)
+		}
+
+	</script>
 </body>
 
 </html>
