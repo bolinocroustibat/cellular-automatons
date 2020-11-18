@@ -51,23 +51,25 @@ function CCARender(context) {
 
 function CCAStart(context, maxIterations = 500) {
 	let i = 0;
-	CCARenderInterval = setInterval(function () {
-		if (++i === maxIterations) clearInterval(CCARenderInterval);
-		CCALoopCells(context);
+	CCArenderInterval = setInterval(function () {
+		if (++i === maxIterations) clearInterval(CCArenderInterval);
+		let newState = CCALoopCells(context);
+		context.state = newState;
 		CCARender(context);
-	}, 50);
+	}, 1);
 }
 
 function CCALoopCells(context) {
 	let rowsCount = context.rowsCount;
 	let colsCount = context.colsCount;
-	let state = context.state;
-
+	let newState = [];
 	for (let y = 0; y < rowsCount; y++) {
+		if (!newState[y]) newState[y] = [];
 		for (let x = 0; x < colsCount; x++) {
-			state[y][x] = CCACellTransformation(context, x, y)
+			newState[y][x] = CCACellTransformation(context, x, y)
 		}
 	}
+	return newState;
 }
 
 function CCACellTransformation(context, x, y) {
@@ -99,7 +101,7 @@ function CCACellTransformation(context, x, y) {
 }
 
 function getCellColorId(context, x, y) {
-	var state = context.state;
+	let state = context.state;
 	let colsCount = context.colsCount;
 	let rowsCount = context.rowsCount;
 
@@ -121,7 +123,7 @@ function setRandomState(context) {
 	for (let y = 0; y < rowsCount; y++) {
 		for (let x = 0; x < colsCount; x++) {
 			if (!state[y]) state[y] = [];
-			var randomColor = colors[Math.floor(Math.random() * colors.length)];
+			let randomColor = colors[Math.floor(Math.random() * colors.length)];
 			state[y][x] = randomColor;
 		}
 	}
