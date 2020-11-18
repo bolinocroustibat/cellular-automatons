@@ -46,7 +46,7 @@ function CCA1DsetRandomState(context) {
 	let colors = context.colors;
 	if (!state) state = [];
 	for (let x = 0; x < context.width; x++) {
-		var randomColor = colors[Math.floor(Math.random() * colors.length)];
+		let randomColor = colors[Math.floor(Math.random() * colors.length)];
 		state[x] = randomColor;
 	}
 }
@@ -63,7 +63,7 @@ function CCA1Dstart(context) {
 	let line = 0;
 	CCA1DrenderInterval = setInterval(function () {
 		if (++line === context.height) clearInterval(CCA1DrenderInterval);
-		newState = CCA1DloopCells(context);
+		let newState = CCA1DloopCells(context);
 		context.state = newState;
 		CCA1Drender(line, context);
 	}, 50);
