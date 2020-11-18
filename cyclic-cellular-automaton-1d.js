@@ -6,7 +6,6 @@ function CCA1DcreateContext(options) {
 
 	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;
-	let threshold = options.threshold;
 	let width = options.width;
 	let height = options.height;
 
@@ -17,7 +16,6 @@ function CCA1DcreateContext(options) {
 	let context = {
 		state: state,
 		colors: colors,
-		threshold: threshold,
 		width: width,
 		height: height,
 		ctx: ctx
@@ -65,25 +63,28 @@ function CCA1Dstart(context) {
 	let line = 0;
 	CCA1DrenderInterval = setInterval(function () {
 		if (++line === context.height) clearInterval(CCA1DrenderInterval);
-		CCA1DloopCells(context);
+		newState = CCA1DloopCells(context);
+		context.state = newState;
 		CCA1Drender(line, context);
 	}, 50);
 }
 
 function CCA1DloopCells(context) {
+	let newState = [];
 	let width = context.width;
 	let state = context.state;
-	let threshold = context.threshold;
 	for (let x = 0; x < width; x++) {
 		let neighbours = [
 			CCA1DgetCellColorId(context, x - 1),
+			CCA1DgetCellColorId(context, x),
 			CCA1DgetCellColorId(context, x + 1),
 		]
 		let thisCell = state[x];
 		let nextColorId = nextCellColorId(thisCell, context.colors);
 		let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
-		state[x] = (successorNeighboursCount.length >= threshold) ? successorNeighboursCount[0] : thisCell;
+		newState[x] = (successorNeighboursCount.length >= 1) ? successorNeighboursCount[0] : thisCell;
 	}
+	return newState;
 }
 
 function CCA1DgetCellColorId(context, x) {

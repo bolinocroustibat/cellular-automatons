@@ -10,9 +10,9 @@
 	<article>
 		<h2>Cyclic Cellular Automaton 2D</h2>
 		<form>
-			Number of colors:<input type="number" id="number_of_colors" value="8" min="2" max="37">
+			Number of colors:<input type="number" id="cca2d_nb-colors" value="8" min="2" max="37">
 			<br/>
-			Threshold:<input type="number" id="threshold" value="2" min="1" max="8">
+			Threshold:<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
 			<br/>
 			<input type="button" value="reset with those values" onclick="resetCCA2D()">
 			<br/>
@@ -31,8 +31,8 @@
 
 			CCA2Dcontext = CCA2DcreateContext({
 				canvasEl: document.getElementById('cca2d-canvas'),
-				numberOfColors: document.getElementById('number_of_colors').value,
-				threshold: document.getElementById('threshold').value,
+				numberOfColors: document.getElementById('cca2d_nb-colors').value,
+				threshold: document.getElementById('cca2d_threshold').value,
 				width: 600,
 				height: 400,
 				resolution: 2
@@ -48,9 +48,7 @@
 	<article>
 		<h2>Cyclic Cellular Automaton 1D</h2>
 		<form>
-			Number of colors:<input type="number" id="number_of_colors" value="4" min="2" max="37">
-			<br/>
-			Threshold:<input type="number" id="threshold" value="1" min="1" max="2">
+			Number of colors:<input type="number" id="cca1d_nb-colors" value="4" min="2" max="37">
 			<br/>
 			<input type="button" value="reset with those values" onclick="resetCCA1D()">
 			<br/>
@@ -68,15 +66,14 @@
 
 			CCA1Dcontext = CCA1DcreateContext({
 				canvasEl: document.getElementById('cca1d-canvas'),
-				numberOfColors: document.getElementById('number_of_colors').value,
-				threshold: document.getElementById('threshold').value,
+				numberOfColors: document.getElementById('cca1d_nb-colors').value,
 				width: 600,
-				height: 50,
+				height: 400,
 			});
 		}
 
 		function startCCA1D() {
-			CCA1Dstart(CCA1Dcontext, 400)
+			CCA1Dstart(CCA1Dcontext, 5)
 		}
 
 	</script>
