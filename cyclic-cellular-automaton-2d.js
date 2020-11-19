@@ -49,7 +49,7 @@ function CCARender(context) {
 	}
 }
 
-function CCAStart(context, maxIterations = 1000) {
+function CCA2Dstart(context, maxIterations = 1000) {
 	if (context) {
 		let i = 0;
 		CCA2DrenderInterval = setInterval(function () {
