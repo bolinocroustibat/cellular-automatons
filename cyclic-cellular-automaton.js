@@ -1,8 +1,8 @@
-var CCARenderInterval;
+var CCArenderInterval;
 
 function CCACreateContext(options) {
 
-	clearInterval(CCARenderInterval);
+	clearInterval(CCArenderInterval);
 
 	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;
@@ -49,14 +49,16 @@ function CCARender(context) {
 	}
 }
 
-function CCAStart(context, maxIterations = 500) {
-	let i = 0;
-	CCArenderInterval = setInterval(function () {
-		if (++i === maxIterations) clearInterval(CCArenderInterval);
-		let newState = CCALoopCells(context);
-		context.state = newState;
-		CCARender(context);
-	}, 1);
+function CCAStart(context, maxIterations = 1000) {
+	if (context) {
+		let i = 0;
+		CCArenderInterval = setInterval(function () {
+			if (++i === maxIterations) clearInterval(CCArenderInterval);
+			let newState = CCALoopCells(context);
+			context.state = newState;
+			CCARender(context);
+		}, 1);
+	}
 }
 
 function CCALoopCells(context) {
