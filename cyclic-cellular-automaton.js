@@ -54,14 +54,14 @@ function CCAStart(context, maxIterations = 1000) {
 		let i = 0;
 		CCArenderInterval = setInterval(function () {
 			if (++i === maxIterations) clearInterval(CCArenderInterval);
-			let newState = CCALoopCells(context);
+			let newState = CCASetNewState(context);
 			context.state = newState;
 			CCARender(context);
 		}, 1);
 	}
 }
 
-function CCALoopCells(context) {
+function CCASetNewState(context) {
 	let rowsCount = context.rowsCount;
 	let colsCount = context.colsCount;
 	let newState = [];
