@@ -42,8 +42,8 @@ function CCARender(context) {
 	let ctx = context.ctx;
 	let state = context.state;
 
-	for (let y = 0; y < rowsCount; y++) {
-		for (let x = 0; x < colsCount; x++) {
+	for (let y = 0; y < rowsCount; ++y) {
+		for (let x = 0; x < colsCount; ++x) {
 			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution);
 		}
 	}
@@ -65,9 +65,9 @@ function CCASetNewState(context) {
 	let rowsCount = context.rowsCount;
 	let colsCount = context.colsCount;
 	let newState = [];
-	for (let y = 0; y < rowsCount; y++) {
+	for (let y = 0; y < rowsCount; ++y) {
 		if (!newState[y]) newState[y] = [];
-		for (let x = 0; x < colsCount; x++) {
+		for (let x = 0; x < colsCount; ++x) {
 			newState[y][x] = CCACellTransformation(context, x, y)
 		}
 	}
@@ -122,8 +122,8 @@ function setRandomState(context) {
 	let rowsCount = context.rowsCount;
 	let colors = context.colors;
 
-	for (let y = 0; y < rowsCount; y++) {
-		for (let x = 0; x < colsCount; x++) {
+	for (let y = 0; y < rowsCount; ++y) {
+		for (let x = 0; x < colsCount; ++x) {
 			if (!state[y]) state[y] = [];
 			let randomColor = colors[Math.floor(Math.random() * colors.length)];
 			state[y][x] = randomColor;
@@ -163,7 +163,7 @@ function pickColors(numberOfColors) {
 	let colors = chroma.scale([minRandomColor, maxRandomColor]).padding(0.05).colors(numberOfColors);
 
 	let rgbColorsWithId = [];
-	for (let i = 0; i < colors.length; i++) {
+	for (let i = 0; i < colors.length; ++i) {
 		let rgbColor = chroma(colors[i]).rgb()
 		rgbColor.id = i
 		rgbColorsWithId.push(rgbColor);
