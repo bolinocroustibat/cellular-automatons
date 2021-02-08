@@ -1,0 +1,23 @@
+{
+  "name": "cyclic-cellular-automaton",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bolinocroustibat/cyclic-cellular-automaton.git"
+  },
+  "author": "Adrien Carpentier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bolinocroustibat/cyclic-cellular-automaton/issues"
+  },
+  "homepage": "https://github.com/bolinocroustibat/cyclic-cellular-automaton#readme",
+  "dependencies": {
+    "bootstrap": "^5.0.0-beta1",
+    "chroma-js": "^2.1.0"
+  }
+}

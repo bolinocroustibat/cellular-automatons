@@ -1,13 +1,15 @@
 <html>
 
 <head>
-	<link href="styles.css" rel="stylesheet" />
-	<script src="chroma.min.js"></script>
+
+	<script src="node_modules/chroma.min.js"></script>
 	<script src="cca-common.js"></script>
+	<link href="node_modules/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+	<link href="styles.css" type="text/css" rel="stylesheet" />
 </head>
 
 <body>
-	<article>
+	<!-- <article>
 		<h2>Cyclic Cellular Automaton 2D</h2>
 		<form>
 			Number of colors:<input type="number" id="cca2d_nb-colors" value="8" min="2" max="37">
@@ -43,7 +45,7 @@
 			CCA2Dstart(CCA2Dcontext, 400)
 		}
 
-	</script>
+	</script> -->
 
 	<article>
 		<h2>Cyclic Cellular Automaton 1D</h2>
@@ -67,8 +69,8 @@
 			CCA1Dcontext = CCA1DcreateContext({
 				canvasEl: document.getElementById('cca1d-canvas'),
 				numberOfColors: document.getElementById('cca1d_nb-colors').value,
-				width: 600,
-				height: 400,
+				width: window.innerWidth,
+				height: window.innerHeight,
 			});
 		}
 
