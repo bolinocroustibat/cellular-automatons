@@ -29,13 +29,16 @@
 			</div>
 		</div>
 		<div id="toolbar-2d">
-			Number of colors:<input type="number" id="cca2d_nb-colors" value="8" min="2" max="37">
-			<br/>
-			Threshold:<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
-			<br/>
-			<input type="button" value="reset with those values" onclick="resetCCA2D()">
-			<br/>
-			<input type="button" value="start" onclick="startCCA2D()">
+			<div class="input-group input-group-sm mb-3">
+				<span class="input-group-text" id="inputGroup-sizing-sm">Number of colors</span>
+				<input type="number" class="form-control" id="cca2d_nb-colors" value="8" min="2" max="37">
+				<span class="input-group-text" id="inputGroup-sizing-sm">Threshold</span>
+				<input type="number" class="form-control" id="cca2d_threshold" value="2" min="1" max="8">
+			</div>
+			<div class="input-group input-group-sm mb-3">
+				<input type="button" class="form-control" value="reset with those values" onclick="resetCCA2D()">
+				<input type="button" class="form-control" value="start" onclick="startCCA2D()">
+			</div>
 		</div>
 	</div>
 
