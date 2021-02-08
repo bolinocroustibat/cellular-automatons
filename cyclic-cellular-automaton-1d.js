@@ -11,7 +11,7 @@ function CCA1DcreateContext(options) {
 
 	let state = [];
 	let colors = pickColors(numberOfColors);
-	let ctx = CCA1DsetupCanvas(canvasEl, width, height);
+	let ctx = setupCanvas(canvasEl, width, height);
 
 	let context = {
 		state: state,
@@ -28,17 +28,6 @@ function CCA1DcreateContext(options) {
 function fillPixel(ctx, colorRgb, x, y) {
 	ctx.fillStyle = "rgb(" + colorRgb[0] + "," + colorRgb[1] + "," + colorRgb[2] + ")";
 	ctx.fillRect(x, y, 1, 1);
-}
-
-function CCA1DsetupCanvas(canvasEl, width, height) {
-	canvasEl.width = width;
-	canvasEl.height = height;
-	canvasEl.style.width = width + 'px';
-	canvasEl.style.height = height + 'px';
-	let ctx = canvasEl.getContext('2d');
-	let img = new Image();
-	ctx.drawImage(img, 0, 0);
-	return ctx;
 }
 
 function CCA1DsetRandomState(context) {

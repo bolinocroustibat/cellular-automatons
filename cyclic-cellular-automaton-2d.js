@@ -31,11 +31,11 @@ function CCA2DcreateContext(options) {
 	}
 
 	setRandomState(context)
-	CCARender(context);
+	CCA2Drender(context);
 	return context;
 }
 
-function CCARender(context) {
+function CCA2Drender(context) {
 	let rowsCount = context.rowsCount;
 	let colsCount = context.colsCount;
 	let resolution = context.resolution;
@@ -56,7 +56,7 @@ function CCA2Dstart(context, maxIterations = 1000) {
 			if (++i === maxIterations) clearInterval(CCA2DrenderInterval);
 			let newState = CCASetNewState(context);
 			context.state = newState;
-			CCARender(context);
+			CCA2Drender(context);
 		}, 1);
 	}
 }
