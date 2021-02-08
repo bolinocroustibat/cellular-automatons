@@ -1,41 +1,34 @@
 <html>
 
 <head>
-	<link href="styles.css" rel="stylesheet" />
-	<script src="chroma.min.js"></script>
+
+	<script src="node_modules/chroma-js/chroma.min.js"></script>
 	<script src="cca-common.js"></script>
-</head>
-
-<body>
-	<article>
-		<h2>Cyclic Cellular Automaton 2D</h2>
-		<form>
-			Number of colors:<input type="number" id="cca2d_nb-colors" value="8" min="2" max="37">
-			<br/>
-			Threshold:<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
-			<br/>
-			<input type="button" value="reset with those values" onclick="resetCCA2D()">
-			<br/>
-			<input type="button" value="start" onclick="startCCA2D()">
-		</form>
-		<br>
-		<canvas id="cca2d-canvas"></canvas>
-	</article>
-
+	<script src="cca-1d.js"></script>
 	<script src="cca-2d.js"></script>
 	<script>
 
+		var CCA1Dcontext;
 		var CCA2Dcontext;
 
-		function resetCCA2D() {
+		function startCCA1D() {
+			CCA1Dcontext = CCA1DcreateContext({
+				canvasEl: document.getElementById("cca-canvas"),
+				numberOfColors: document.getElementById("cca1d_nb-colors").value,
+				width: window.innerWidth,
+				height: window.innerHeight - 120,
+			});
+			CCA1Dstart(CCA1Dcontext)
+		}
 
+		function resetCCA2D() {
 			CCA2Dcontext = CCA2DcreateContext({
-				canvasEl: document.getElementById('cca2d-canvas'),
+				canvasEl: document.getElementById("cca-canvas"),
 				numberOfColors: document.getElementById('cca2d_nb-colors').value,
 				threshold: document.getElementById('cca2d_threshold').value,
-				width: 600,
-				height: 400,
-				resolution: 2
+				width: window.innerWidth,
+				height: window.innerHeight - 120,
+				resolution: 4
 			});
 		}
 
@@ -44,39 +37,42 @@
 		}
 
 	</script>
+	<link href="styles.css" type="text/css" rel="stylesheet" />
+</head>
 
-	<article>
-		<h2>Cyclic Cellular Automaton 1D</h2>
-		<form>
-			Number of colors:<input type="number" id="cca1d_nb-colors" value="4" min="2" max="37">
-			<br/>
-			<input type="button" value="reset with those values" onclick="resetCCA1D()">
-			<br/>
+<body>
+
+	<div id="toolbar">
+		<select id="CCAdimension" class="form-select" onchange="changeCCAdimension()">
+			<option value="1">1 dimension</option>
+			<option value="2" selected>2 dimensions</option>
+			<option value="3" disabled>3 dimensions</option>
+		</select>
+		<div id="toolbar-1d">
+			<label>
+				Number of colors:&nbsp;
+				<input type="number" id="cca1d_nb-colors" name="cca1d_nb-colors" value="4" min="2" max="37">
+			</label>
+			<br>
 			<input type="button" value="start" onclick="startCCA1D()">
-		</form>
-		<br>
-		<canvas id="cca1d-canvas"></canvas>
-	</article>
-	<script src="cca-1d.js"></script>
-	<script>
+		</div>
+		<div id="toolbar-2d">
+			<label>
+				Number of colors:&nbsp;
+				<input type="number" id="cca2d_nb-colors" value="8" min="2" max="37">
+			</label>
+			<label>
+				Threshold:&nbsp;
+				<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
+			</label>
+			<input type="button" value="reset with those values" onclick="resetCCA2D()">
+			<br>
+			<input type="button" value="start" onclick="startCCA2D()">
+		</div>
+	</div>
 
-		var CCA1Dcontext;
+	<canvas id="cca-canvas"></canvas>
 
-		function resetCCA1D() {
-
-			CCA1Dcontext = CCA1DcreateContext({
-				canvasEl: document.getElementById('cca1d-canvas'),
-				numberOfColors: document.getElementById('cca1d_nb-colors').value,
-				width: 600,
-				height: 400,
-			});
-		}
-
-		function startCCA1D() {
-			CCA1Dstart(CCA1Dcontext)
-		}
-
-	</script>
 </body>
 
 </html>
