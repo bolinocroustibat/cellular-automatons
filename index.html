@@ -6,6 +6,38 @@
 	<script src="cca-common.js"></script>
 	<script src="cca-1d.js"></script>
 	<script src="cca-2d.js"></script>
+	<script>
+
+		var CCA1Dcontext;
+		var CCA2Dcontext;
+
+		function resetCCA1D() {
+			CCA1Dcontext = CCA1DcreateContext({
+				numberOfColors: document.getElementById("cca1d_nb-colors").value,
+				width: window.innerWidth,
+				height: window.innerHeight,
+			});
+		}
+
+		function startCCA1D() {
+			CCA1Dstart(CCA1Dcontext)
+		}
+
+		function resetCCA2D() {
+			CCA2Dcontext = CCA2DcreateContext({
+				numberOfColors: document.getElementById('cca2d_nb-colors').value,
+				threshold: document.getElementById('cca2d_threshold').value,
+				width: 600,
+				height: 400,
+				resolution: 2
+			});
+		}
+
+		function startCCA2D() {
+			CCA2Dstart(CCA2Dcontext, 400)
+		}
+
+	</script>
 	<link href="node_modules/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 </head>
@@ -43,54 +75,6 @@
 	</div>
 
 	<canvas id="cca-canvas"></canvas>
-
-	
-	<!-- <h2>Cyclic Cellular Automaton 2D</h2>
-	<form>
-		Number of colors:<input type="number" id="cca2d_nb-colors" value="8" min="2" max="37">
-		<br/>
-		Threshold:<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
-		<br/>
-		<input type="button" value="reset with those values" onclick="resetCCA2D()">
-		<br/>
-		<input type="button" value="start" onclick="startCCA2D()">
-	</form>
-	<br> -->
-
-
-	<script>
-
-		var CCA1Dcontext;
-
-		function resetCCA1D() {
-			CCA1Dcontext = CCA1DcreateContext({
-				numberOfColors: document.getElementById("cca1d_nb-colors").value,
-				width: window.innerWidth,
-				height: window.innerHeight,
-			});
-		}
-
-		function startCCA1D() {
-			CCA1Dstart(CCA1Dcontext)
-		}
-
-		var CCA2Dcontext;
-
-		function resetCCA2D() {
-			CCA2Dcontext = CCA2DcreateContext({
-				numberOfColors: document.getElementById('cca2d_nb-colors').value,
-				threshold: document.getElementById('cca2d_threshold').value,
-				width: 600,
-				height: 400,
-				resolution: 2
-			});
-		}
-
-		function startCCA2D() {
-			CCA2Dstart(CCA2Dcontext, 400)
-		}
-
-	</script>
 
 </body>
 
