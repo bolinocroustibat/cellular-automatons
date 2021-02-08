@@ -2,9 +2,11 @@ var CCA2DrenderInterval;
 
 function CCA2DcreateContext(options) {
 
+	console.log("create 2D context")
+
 	clearInterval(CCA2DrenderInterval);
 
-	let canvasEl = options.canvasEl;
+	let canvasEl = document.getElementById("cca-canvas");
 	let numberOfColors = options.numberOfColors;
 	let threshold = options.threshold;
 	let width = options.width;

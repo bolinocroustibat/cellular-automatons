@@ -1,3 +1,15 @@
+function changeCCAdimension() {
+	let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
+	if (CCAdimension == "1") {
+		document.getElementById("toolbar-1d").style.display = "flex";
+		document.getElementById("toolbar-2d").style.display = "none";
+	}
+	else if (CCAdimension == "2") {
+		document.getElementById("toolbar-1d").style.display = "none";
+		document.getElementById("toolbar-2d").style.display = "flex";
+	}
+}
+
 
 function setupCanvas(canvasEl, width, height) {
 	canvasEl.width = width;
@@ -5,6 +17,7 @@ function setupCanvas(canvasEl, width, height) {
 	canvasEl.style.width = width + 'px';
 	canvasEl.style.height = height + 'px';
 	let ctx = canvasEl.getContext('2d');
+	console.log(ctx)
 	let img = new Image();
 	ctx.drawImage(img, 0, 0);
 	return ctx;
