@@ -10,7 +10,6 @@ function changeCCAdimension() {
 	}
 }
 
-
 function setupCanvas(canvasEl, width, height) {
 	canvasEl.width = width;
 	canvasEl.height = height;

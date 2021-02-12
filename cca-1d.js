@@ -4,7 +4,7 @@ function CCA1DcreateContext(options) {
 
 	clearInterval(CCA1DrenderInterval);
 
-	let canvasEl = document.getElementById("cca-canvas");
+	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;
 	let width = options.width;
 	let height = options.height;

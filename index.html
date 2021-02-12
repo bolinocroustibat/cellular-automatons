@@ -13,6 +13,7 @@
 
 		function resetCCA1D() {
 			CCA1Dcontext = CCA1DcreateContext({
+				canvas: document.getElementById("cca-canvas"),
 				numberOfColors: document.getElementById("cca1d_nb-colors").value,
 				width: window.innerWidth,
 				height: window.innerHeight,
@@ -25,6 +26,7 @@
 
 		function resetCCA2D() {
 			CCA2Dcontext = CCA2DcreateContext({
+				canvas: document.getElementById("cca-canvas"),
 				numberOfColors: document.getElementById('cca2d_nb-colors').value,
 				threshold: document.getElementById('cca2d_threshold').value,
 				width: 600,
