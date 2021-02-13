@@ -11,27 +11,24 @@
 		var CCA1Dcontext;
 		var CCA2Dcontext;
 
-		function resetCCA1D() {
+		function startCCA1D() {
 			CCA1Dcontext = CCA1DcreateContext({
-				canvas: document.getElementById("cca-canvas"),
+				canvasEl: document.getElementById("cca-canvas"),
 				numberOfColors: document.getElementById("cca1d_nb-colors").value,
 				width: window.innerWidth,
 				height: window.innerHeight,
 			});
-		}
-
-		function startCCA1D() {
 			CCA1Dstart(CCA1Dcontext)
 		}
 
 		function resetCCA2D() {
 			CCA2Dcontext = CCA2DcreateContext({
-				canvas: document.getElementById("cca-canvas"),
+				canvasEl: document.getElementById("cca-canvas"),
 				numberOfColors: document.getElementById('cca2d_nb-colors').value,
 				threshold: document.getElementById('cca2d_threshold').value,
-				width: 600,
-				height: 400,
-				resolution: 2
+				width: 1000,
+				height: 800,
+				resolution: 4
 			});
 		}
 
@@ -47,30 +44,31 @@
 <body>
 
 	<div class="btn-toolbar" role="toolbar">
-		<select id="CCAdimension" class="form-select" onchange="changeCCAdimension()">
-			<option value="1" selected>1 dimension</option>
-			<option value="2">2 dimensions</option>
-			<!-- <option value="3">3 dimensions</option> -->
-		</select>
+		<div class="input-group input-group-xl m-2">
+			<select id="CCAdimension" class="form-select" onchange="changeCCAdimension()">
+				<option value="1" selected>1 dimension</option>
+				<option value="2">2 dimensions</option>
+				<!-- <option value="3">3 dimensions</option> -->
+			</select>
+		</div>
 		<div id="toolbar-1d">
-			<div class="input-group input-group-sm mb-3">
+			<div class="input-group input-group-sm m-2">
 				<span class="input-group-text" id="inputGroup-sizing-sm">Number of colors</span>
 				<input type="number" class="form-control" id="cca1d_nb-colors" value="4" min="2" max="37">
 			</div>
-			<div class="input-group input-group-sm mb-3">
-				<input type="button" class="form-control" value="reset with those values" onclick="resetCCA1D()">
+			<div class="input-group input-group-sm m-2">
 				<input type="button" class="form-control" value="start" onclick="startCCA1D()">
 			</div>
 		</div>
 		<div id="toolbar-2d">
-			<div class="input-group input-group-sm mb-3">
+			<div class="input-group input-group-sm m-2">
 				<span class="input-group-text" id="inputGroup-sizing-sm">Number of colors</span>
 				<input type="number" class="form-control" id="cca2d_nb-colors" value="8" min="2" max="37">
-				<span class="input-group-text" id="inputGroup-sizing-sm">Threshold</span>
+				<span class="input-group-text ml-3" id="inputGroup-sizing-sm">Threshold</span>
 				<input type="number" class="form-control" id="cca2d_threshold" value="2" min="1" max="8">
 			</div>
-			<div class="input-group input-group-sm mb-3">
-				<input type="button" class="form-control" value="reset with those values" onclick="resetCCA2D()">
+			<div class="input-group input-group-sm m-2">
+				<input type="button" class="form-control" value="reset" onclick="resetCCA2D()">
 				<input type="button" class="form-control" value="start" onclick="startCCA2D()">
 			</div>
 		</div>

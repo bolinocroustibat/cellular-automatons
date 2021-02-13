@@ -1,4 +1,6 @@
 function changeCCAdimension() {
+	clearInterval(CCA1DrenderInterval);
+	clearInterval(CCA2DrenderInterval);
 	let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
 	if (CCAdimension == "1") {
 		document.getElementById("toolbar-1d").style.display = "flex";
