@@ -11,13 +11,16 @@
 		var CCA1Dcontext;
 		var CCA2Dcontext;
 
-		function startCCA1D() {
+		function resetCCA1D() {
 			CCA1Dcontext = CCA1DcreateContext({
 				canvasEl: document.getElementById("cca-canvas"),
 				numberOfColors: document.getElementById("cca1d_nb-colors").value,
 				width: window.innerWidth,
-				height: window.innerHeight - 120,
+				height: window.innerHeight - 110,
 			});
+		}
+
+		function startCCA1D() {
 			CCA1Dstart(CCA1Dcontext)
 		}
 
@@ -27,7 +30,7 @@
 				numberOfColors: document.getElementById('cca2d_nb-colors').value,
 				threshold: document.getElementById('cca2d_threshold').value,
 				width: window.innerWidth,
-				height: window.innerHeight - 120,
+				height: window.innerHeight - 110,
 				resolution: 4
 			});
 		}
@@ -36,8 +39,25 @@
 			CCA2Dstart(CCA2Dcontext, 400)
 		}
 
+		function changeCCAdimension() {
+			let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
+			if (CCAdimension == "1") {
+				document.getElementById("toolbar-1d").style.display = "block";
+				document.getElementById("toolbar-2d").style.display = "none";
+				clearInterval(CCA2DrenderInterval);
+				resetCCA1D();
+			}
+			else if (CCAdimension == "2") {
+				document.getElementById("toolbar-1d").style.display = "none";
+				document.getElementById("toolbar-2d").style.display = "block";
+				clearInterval(CCA1DrenderInterval);
+				resetCCA2D();
+			}
+		}
+
 	</script>
 	<link href="styles.css" type="text/css" rel="stylesheet" />
+
 </head>
 
 <body>
