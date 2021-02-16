@@ -54,6 +54,11 @@
 			});
 		}
 
+		function startCCA1D() {
+			resetCCA1D();
+			CCA1Dstart(CCA1Dcontext);
+		}
+
 		function resetCCA2D() {
 			CCA2Dcontext = CCA2DcreateContext({
 				canvasEl: document.getElementById('canvas'),
@@ -65,6 +70,11 @@
 			});
 		}
 
+		function startCCA2D() {
+			resetCCA2D();
+			CCA2Dstart(CCA2Dcontext, 400)
+		}
+
 		function resetEntropy() {
 			entropyContext = entropyCreateContext({
 				canvasEl: document.getElementById('canvas'),
@@ -73,6 +83,11 @@
 				height: 400,
 				resolution: 2,
 			});
+		}
+
+		function startEntropy() {
+			resetEntropy();
+			entropyStart(entropyContext, 2500);
 		}
 
 	</script>
@@ -95,7 +110,7 @@
 				<input type="number" id="cca1d_color-count" name="cca1d_color-count" value="4" min="2" max="37">
 			</label>
 			<br>
-			<input type="button" value="start" onclick="CCA1Dstart(CCA1Dcontext)">
+			<input type="button" value="start" onclick="startCCA1D()">
 		</div>
 		<div id="toolbar-2d">
 			<label>
@@ -108,7 +123,7 @@
 			</label>
 			<input type="button" value="reset with those values" onclick="resetCCA2D()">
 			<br>
-			<input type="button" value="start" onclick="CCA2Dstart(CCA2Dcontext, 400)">
+			<input type="button" value="start" onclick="startCCA2D()">
 		</div>
 		<div id="toolbar-entropy">
 			<label>
@@ -117,7 +132,7 @@
 			</label>
 			<input type="button" value="reset with those values" onclick="resetEntropy();">
 			<br>
-			<input type="button" value="start" onclick="entropyStart(entropyContext, 2500);">
+			<input type="button" value="start" onclick="startEntropy()">
 		</div>
 	</div>
 
