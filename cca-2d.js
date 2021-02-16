@@ -7,8 +7,8 @@ function CCA2DcreateContext(options) {
 	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;
 	let threshold = options.threshold;
-	let width = options.width;
-	let height = options.height;
+	let width = options.width % 2 == 0 ? options.width : options.width-1;
+	let height = options.height % 2 == 0 ? options.height : options.height-1;
 	let resolution = options.resolution;
 
 	let rowsCount = height / resolution;

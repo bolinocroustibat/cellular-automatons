@@ -55,7 +55,7 @@ function CCA1Dstart(context) {
 		let newState = CCA1DloopCells(context);
 		context.state = newState;
 		CCA1Drender(line, context);
-	}, 50);
+	}, 25);
 }
 
 function CCA1DloopCells(context) {

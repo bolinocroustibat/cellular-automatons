@@ -3,12 +3,12 @@ function changeCCAdimension() {
 	clearInterval(CCA2DrenderInterval);
 	let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
 	if (CCAdimension == "1") {
-		document.getElementById("toolbar-1d").style.display = "flex";
+		document.getElementById("toolbar-1d").style.display = "block";
 		document.getElementById("toolbar-2d").style.display = "none";
 	}
 	else if (CCAdimension == "2") {
 		document.getElementById("toolbar-1d").style.display = "none";
-		document.getElementById("toolbar-2d").style.display = "flex";
+		document.getElementById("toolbar-2d").style.display = "block";
 	}
 }
 
