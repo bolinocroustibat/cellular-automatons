@@ -21,3 +21,16 @@ body {
 #toolbar-1d {
 	display:none
 }
+
+#toolbar-entropy {
+	display:none
+}
+
+#canvas-container {
+	padding: 10px;
+}
+
+#canvas-container canvas {
+	display: block;
+	margin: auto;
+}
