@@ -3,7 +3,7 @@
 <head>
 
 	<script src="node_modules/chroma-js/chroma.min.js"></script>
-	<script src="cca-common.js"></script>
+	<script src="common.js"></script>
 	<script src="cca-1d.js"></script>
 	<script src="cca-2d.js"></script>
 	<script>
@@ -20,10 +20,6 @@
 			});
 		}
 
-		function startCCA1D() {
-			CCA1Dstart(CCA1Dcontext)
-		}
-
 		function resetCCA2D() {
 			CCA2Dcontext = CCA2DcreateContext({
 				canvasEl: document.getElementById("cca-canvas"),
@@ -35,11 +31,7 @@
 			});
 		}
 
-		function startCCA2D() {
-			CCA2Dstart(CCA2Dcontext, 400)
-		}
-
-		function changeCCAdimension() {
+		function selectGenerativeArt() {
 			let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
 			if (CCAdimension == "1") {
 				document.getElementById("toolbar-1d").style.display = "block";
@@ -55,6 +47,10 @@
 			}
 		}
 
+		window.onload = function() {
+			selectGenerativeArt();
+		}
+
 	</script>
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 
@@ -63,7 +59,7 @@
 <body>
 
 	<div id="toolbar">
-		<select id="CCAdimension" class="form-select" onchange="changeCCAdimension()">
+		<select id="CCAdimension" class="form-select" onchange="selectGenerativeArt()">
 			<option value="1">1 dimension</option>
 			<option value="2" selected>2 dimensions</option>
 			<option value="3" disabled>3 dimensions</option>
@@ -74,7 +70,7 @@
 				<input type="number" id="cca1d_nb-colors" name="cca1d_nb-colors" value="4" min="2" max="37">
 			</label>
 			<br>
-			<input type="button" value="start" onclick="startCCA1D()">
+			<input type="button" value="start" onclick="CCA1Dstart(CCA1Dcontext)">
 		</div>
 		<div id="toolbar-2d">
 			<label>
@@ -87,7 +83,7 @@
 			</label>
 			<input type="button" value="reset with those values" onclick="resetCCA2D()">
 			<br>
-			<input type="button" value="start" onclick="startCCA2D()">
+			<input type="button" value="start" onclick="CCA2Dstart(CCA2Dcontext, 400)">
 		</div>
 	</div>
 
