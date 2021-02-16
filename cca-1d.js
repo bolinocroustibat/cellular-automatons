@@ -20,6 +20,7 @@ function CCA1DcreateContext(options) {
 		height: height,
 		ctx: ctx
 	}
+
 	CCA1DsetRandomState(context)
 	CCA1Drender(0, context);
 	return context;
@@ -55,7 +56,7 @@ function CCA1Dstart(context) {
 		let newState = CCA1DloopCells(context);
 		context.state = newState;
 		CCA1Drender(line, context);
-	}, 25);
+	}, 20);
 }
 
 function CCA1DloopCells(context) {

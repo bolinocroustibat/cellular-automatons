@@ -7,10 +7,9 @@ function CCA2DcreateContext(options) {
 	let canvasEl = options.canvasEl;
 	let numberOfColors = options.numberOfColors;
 	let threshold = options.threshold;
-	let width = options.width % 2 == 0 ? options.width : options.width-1;
-	let height = options.height % 2 == 0 ? options.height : options.height-1;
 	let resolution = options.resolution;
-
+	let width = options.width - (options.width % resolution);
+	let height = options.height - (options.height % resolution);
 	let rowsCount = height / resolution;
 	let colsCount = width / resolution;
 
@@ -30,7 +29,7 @@ function CCA2DcreateContext(options) {
 		ctx: ctx
 	}
 
-	setRandomState(context)
+	CCA2DsetRandomState(context)
 	CCA2Drender(context);
 	return context;
 }
@@ -116,7 +115,7 @@ function getCellColorId(context, x, y) {
 	return state[y][x];
 }
 
-function setRandomState(context) {
+function CCA2DsetRandomState(context) {
 	let state = context.state;
 	let colsCount = context.colsCount;
 	let rowsCount = context.rowsCount;
