@@ -3,6 +3,7 @@ function setupCanvas(canvasEl, width, height) {
 	canvasEl.height = height;
 	canvasEl.style.width = width + 'px';
 	canvasEl.style.height = height + 'px';
+	canvasEl.style.margin = "auto";
 	let ctx = canvasEl.getContext('2d');
 	let img = new Image();
 	ctx.drawImage(img, 0, 0);
