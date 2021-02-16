@@ -4,7 +4,6 @@ function setupCanvas(canvasEl, width, height) {
 	canvasEl.style.width = width + 'px';
 	canvasEl.style.height = height + 'px';
 	let ctx = canvasEl.getContext('2d');
-	console.log(ctx)
 	let img = new Image();
 	ctx.drawImage(img, 0, 0);
 	return ctx;
