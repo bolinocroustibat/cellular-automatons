@@ -1,7 +1,10 @@
+<!DOCTYPE html>
+
 <html>
 
 <head>
 
+	<script src="node_modules/tweakpane/dist/tweakpane.min.js"></script>
 	<script src="node_modules/chroma-js/chroma.min.js"></script>
 	<script src="common.js"></script>
 	<script src="cca-1d.js"></script>
@@ -9,136 +12,159 @@
 	<script src="entropy.js"></script>
 	<script>
 
+		var pane;
 		var CCA1Dcontext;
 		var CCA2Dcontext;
 		var entropyContext;
 
-		window.onload = function() {
-			selectGenerativeArt();
-		}
+		window.onload = function () {
 
-		function selectGenerativeArt() {
-			let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
-			if (CCAdimension == "1") {
-				document.getElementById("toolbar-1d").style.display = "block";
-				document.getElementById("toolbar-2d").style.display = "none";
-				document.getElementById("toolbar-entropy").style.display = "none";
+			pane = new Tweakpane();
+			const artSelector = pane.addInput(
+				{ art: '2' },
+				'art',
+				{
+					index: 1,
+					label: "Algorithm",
+					options:
+					{
+						"1 dimension Cyclic Cellular Automaton": '1',
+						"2 dimensions Cyclic Cellular Automaton": '2',
+						"2 dimensions Entropy Automaton": "E"
+					}
+				}
+			);
+			pane.addSeparator();
+			const cca1dColorsCountPane = pane.addInput(
+				{ cca1dColorsCount: 4 },
+				'cca1dColorsCount',
+				{ label: "Number of colors", min: 2, max: 5, step: 1 }
+			);
+			const cca2dColorsCountPane = pane.addInput(
+				{ cca2dColorsCount: 8 },
+				'cca2dColorsCount',
+				{ label: "Number of colors", min: 2, max: 20, step: 1 }
+			);
+			const cca2dThresholdPane = pane.addInput(
+				{ cca2dThreshold: 2 },
+				'cca2dThreshold',
+				{ label: "Threshold", min: 1, max: 8, step: 1 }
+			);
+			const cca2dResolutionPane = pane.addInput(
+				{ cca2dResolution: 6 },
+				'cca2dResolution',
+				{ label: "Resolution", min: 4, max: 10, step: 1 }
+			);
+			const entropyColorsCountPane = pane.addInput(
+				{ entropyColorsCount: 4 },
+				'entropyColorsCount',
+				{ label: "Number of colors", min: 2, max: 20, step: 1 }
+			);
+			const entropyResolutionPane = pane.addInput(
+				{ entropyResolution: 8 },
+				'entropyResolution',
+				{ label: "Resolution", min: 6, max: 10, step: 1 }
+			);
+			cca1dColorsCountPane.hidden = true;
+			cca2dColorsCountPane.hidden = false;
+			cca2dThresholdPane.hidden = false;
+			cca2dResolutionPane.hidden = false;
+			entropyColorsCountPane.hidden = true;
+			entropyResolutionPane.hidden = true;
+			const resetBtn = pane.addButton({
+				title: 'Reset with those values',
+			});
+			pane.addSeparator();
+			const startBtn = pane.addButton({
+				index: 10,
+				title: 'Start',
+			});
+
+			resetContext();
+
+			artSelector.on('change', function (value) {
+
+				if (value == "1") {
+					cca1dColorsCountPane.hidden = false;
+					cca2dColorsCountPane.hidden = true;
+					cca2dThresholdPane.hidden = true;
+					cca2dResolutionPane.hidden = true;
+					entropyColorsCountPane.hidden = true;
+					entropyResolutionPane.hidden = true;
+				}
+
+				else if (value == "2") {
+					cca1dColorsCountPane.hidden = true;
+					cca2dColorsCountPane.hidden = false;
+					cca2dThresholdPane.hidden = false;
+					cca2dResolutionPane.hidden = false;
+					entropyColorsCountPane.hidden = true;
+					entropyResolutionPane.hidden = true;
+				}
+
+				else if (value == "E") {
+					cca1dColorsCountPane.hidden = true;
+					cca2dColorsCountPane.hidden = true;
+					cca2dThresholdPane.hidden = true;
+					cca2dResolutionPane.hidden = true;
+					entropyColorsCountPane.hidden = false;
+					entropyResolutionPane.hidden = false;
+				}
+
+				resetContext();
+
+			});
+
+			resetBtn.on('click', () => {
+				clearInterval(CCA1DrenderInterval);
 				clearInterval(CCA2DrenderInterval);
 				clearInterval(entropyRenderInterval);
-				resetCCA1D();
-			}
-			else if (CCAdimension == "2") {
-				document.getElementById("toolbar-1d").style.display = "none";
-				document.getElementById("toolbar-2d").style.display = "block";
-				document.getElementById("toolbar-entropy").style.display = "none";
-				clearInterval(CCA1DrenderInterval);
-				clearInterval(entropyRenderInterval);
-				resetCCA2D();
-			}
-			else if (CCAdimension == "E") {
-				document.getElementById("toolbar-1d").style.display = "none";
-				document.getElementById("toolbar-2d").style.display = "none";
-				document.getElementById("toolbar-entropy").style.display = "block";
+				resetContext();
+			});
+
+			startBtn.on('click', () => {
 				clearInterval(CCA1DrenderInterval);
 				clearInterval(CCA2DrenderInterval);
-				resetEntropy();
+				clearInterval(entropyRenderInterval);
+				if (settings.art == '1') {
+					CCA1Dstart(CCA1Dcontext);
+				}
+				else if (settings.art == '2') {
+					CCA2Dstart(CCA2Dcontext, 400);
+				}
+				else if (settings.art == 'E') {
+					entropyStart(entropyContext, 2500);
+				}
+			});
+
+		}
+
+
+		function resetContext() {
+			settings = pane.exportPreset();
+			settings.canvasEl = document.getElementById('canvas');
+			settings.width = window.innerWidth;
+			settings.height = window.innerHeight;
+			if (settings.art == '1') {
+				CCA1Dcontext = CCA1DcreateContext(settings);
 			}
-		}
-
-		function resetCCA1D() {
-			CCA1Dcontext = CCA1DcreateContext({
-				canvasEl: document.getElementById('canvas'),
-				numberOfColors: document.getElementById("cca1d_color-count").value,
-				width: window.innerWidth - 20,
-				height: window.innerHeight - 130,
-			});
-		}
-
-		function startCCA1D() {
-			resetCCA1D();
-			CCA1Dstart(CCA1Dcontext);
-		}
-
-		function resetCCA2D() {
-			CCA2Dcontext = CCA2DcreateContext({
-				canvasEl: document.getElementById('canvas'),
-				numberOfColors: document.getElementById('cca2d_color-count').value,
-				threshold: document.getElementById('cca2d_threshold').value,
-				width: window.innerWidth - 20,
-				height: window.innerHeight - 130,
-				resolution: 4
-			});
-		}
-
-		function startCCA2D() {
-			resetCCA2D();
-			CCA2Dstart(CCA2Dcontext, 400)
-		}
-
-		function resetEntropy() {
-			entropyContext = entropyCreateContext({
-				canvasEl: document.getElementById('canvas'),
-				numberOfColors: document.getElementById('entropy_color-count').value,
-				width: 400,
-				height: 400,
-				resolution: 2,
-			});
-		}
-
-		function startEntropy() {
-			resetEntropy();
-			entropyStart(entropyContext, 2500);
+			else if (settings.art == '2') {
+				CCA2Dcontext = CCA2DcreateContext(settings);
+			}
+			else if (settings.art == 'E') {
+				entropyContext = entropyCreateContext(settings);
+			}
 		}
 
 	</script>
+
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 
 </head>
 
 <body>
 
-	<div id="toolbar">
-		<select id="CCAdimension" onchange="selectGenerativeArt()">
-			<option value="1">1 dimension Cyclic Cellular Automaton</option>
-			<option value="2" selected>2 dimensions Cyclic Cellular Automaton</option>
-			<option value="3" disabled>3 dimensions Cyclic Cellular Automaton</option>
-			<option value="E">2 dimensions Entropy Automaton</option>
-		</select>
-		<div id="toolbar-1d">
-			<label>
-				Number of colors:&nbsp;
-				<input type="number" id="cca1d_color-count" name="cca1d_color-count" value="4" min="2" max="37">
-			</label>
-			<br>
-			<input type="button" value="start" onclick="startCCA1D()">
-		</div>
-		<div id="toolbar-2d">
-			<label>
-				Number of colors:&nbsp;
-				<input type="number" id="cca2d_color-count" value="8" min="2" max="37">
-			</label>
-			<label>
-				Threshold:&nbsp;
-				<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
-			</label>
-			<input type="button" value="reset with those values" onclick="resetCCA2D()">
-			<br>
-			<input type="button" value="start" onclick="startCCA2D()">
-		</div>
-		<div id="toolbar-entropy">
-			<label>
-				Number of colors:&nbsp;
-				<input type="number" id="entropy_color-count" value="4" min="2" max="42">
-			</label>
-			<input type="button" value="reset with those values" onclick="resetEntropy();">
-			<br>
-			<input type="button" value="start" onclick="startEntropy()">
-		</div>
-	</div>
-
-	<div id="canvas-container">
-		<canvas id="canvas"></canvas>
-	</div>
+	<canvas id="canvas"></canvas>
 
 </body>
 

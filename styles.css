@@ -1,36 +1,5 @@
 body {
 	display: block;
-	font-family: verdana;
-	font-size: 13px;
-	color: #DDD;
 	margin: 0px;
 	background-color: #111;
-}
-
-#toolbar {
-	padding: 10px;
-	height: 89px;
-	border-bottom: 1px solid #999;
-}
-
-#toolbar input {
-	margin-right: 15px;
-	margin-top: 10px;
-}
-
-#toolbar-1d {
-	display:none
-}
-
-#toolbar-entropy {
-	display:none
-}
-
-#canvas-container {
-	padding: 10px;
-}
-
-#canvas-container canvas {
-	display: block;
-	margin: auto;
 }

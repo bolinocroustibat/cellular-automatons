@@ -1,20 +1,20 @@
 var CCA2DrenderInterval;
 
-function CCA2DcreateContext(options) {
+function CCA2DcreateContext(settings) {
 
 	clearInterval(CCA2DrenderInterval);
 
-	let canvasEl = options.canvasEl;
-	let numberOfColors = options.numberOfColors;
-	let threshold = options.threshold;
-	let resolution = options.resolution;
-	let width = options.width - (options.width % resolution);
-	let height = options.height - (options.height % resolution);
+	let canvasEl = settings.canvasEl;
+	let colorsCount = settings.cca2dColorsCount;
+	let threshold = settings.cca2dThreshold;
+	let resolution = settings.cca2dResolution;
+	let width = settings.width - (settings.width % resolution);
+	let height = settings.height - (settings.height % resolution);
 	let rowsCount = height / resolution;
 	let colsCount = width / resolution;
 
 	let state = [];
-	let colors = pickColors(numberOfColors);
+	let colors = pickColors(colorsCount);
 	let ctx = setupCanvas(canvasEl, width, height);
 
 	let context = {
@@ -40,7 +40,6 @@ function CCA2Drender(context) {
 	let resolution = context.resolution;
 	let ctx = context.ctx;
 	let state = context.state;
-
 	for (let y = 0; y < rowsCount; ++y) {
 		for (let x = 0; x < colsCount; ++x) {
 			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution);

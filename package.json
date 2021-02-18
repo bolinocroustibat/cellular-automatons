@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/bolinocroustibat/cyclic-cellular-automaton#readme",
   "dependencies": {
-    "chroma-js": "^2.1.0"
+    "chroma-js": "^2.1.0",
+    "tweakpane": "^1.5.9"
   }
 }

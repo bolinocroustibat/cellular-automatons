@@ -5,12 +5,12 @@ function CCA1DcreateContext(options) {
 	clearInterval(CCA1DrenderInterval);
 
 	let canvasEl = options.canvasEl;
-	let numberOfColors = options.numberOfColors;
+	let colorsCount = options.cca1dColorsCount;
 	let width = options.width;
 	let height = options.height;
 
 	let state = [];
-	let colors = pickColors(numberOfColors);
+	let colors = pickColors(colorsCount);
 	let ctx = setupCanvas(canvasEl, width, height);
 
 	let context = {
