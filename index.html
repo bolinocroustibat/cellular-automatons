@@ -2,6 +2,7 @@
 
 <head>
 
+	<script src="node_modules/tweakpane/dist/tweakpane.min.js"></script>
 	<script src="node_modules/chroma-js/chroma.min.js"></script>
 	<script src="common.js"></script>
 	<script src="cca-1d.js"></script>
@@ -16,6 +17,16 @@
 		window.onload = function() {
 			selectGenerativeArt();
 		}
+
+		const PARAMS = {
+			factor: 123,
+			title: 'test',
+			color: '#0f0',
+		};
+		const pane = new Tweakpane();
+		pane.addInput(PARAMS, 'factor');
+		pane.addInput(PARAMS, 'title');
+		pane.addInput(PARAMS, 'color');
 
 		function selectGenerativeArt() {
 			let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
@@ -96,7 +107,7 @@
 </head>
 
 <body>
-
+	
 	<div id="toolbar">
 		<select id="CCAdimension" onchange="selectGenerativeArt()">
 			<option value="1">1 dimension Cyclic Cellular Automaton</option>
