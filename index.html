@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 
 <html>
 
@@ -12,145 +12,161 @@
 	<script src="entropy.js"></script>
 	<script>
 
+		var toolbar;
+		const PARAMS = {
+			art: '2',
+			cca1dColorCount: 4,
+			cca2dColorCount: 8,
+			cca2dThreshold: 2,
+			entropyColorCount: 4,
+		};
+		var artSelector;
+		var settings;
+		var restBtn;
+		var startBtn;
+
 		var CCA1Dcontext;
 		var CCA2Dcontext;
 		var entropyContext;
 
-		window.onload = function() {
-			selectGenerativeArt();
-			const PARAMS = {
-				factor: 123,
-				title: 'test',
-				color: '#0f0',
-			};
-			const pane = new Tweakpane();
-			pane.addInput(PARAMS, 'factor');
-			pane.addInput(PARAMS, 'title');
-			pane.addInput(PARAMS, 'color');
-		}
+		window.onload = function () {
 
-		function selectGenerativeArt() {
-			let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
-			if (CCAdimension == "1") {
-				document.getElementById("toolbar-1d").style.display = "block";
-				document.getElementById("toolbar-2d").style.display = "none";
-				document.getElementById("toolbar-entropy").style.display = "none";
-				clearInterval(CCA2DrenderInterval);
-				clearInterval(entropyRenderInterval);
-				resetCCA1D();
-			}
-			else if (CCAdimension == "2") {
-				document.getElementById("toolbar-1d").style.display = "none";
-				document.getElementById("toolbar-2d").style.display = "block";
-				document.getElementById("toolbar-entropy").style.display = "none";
-				clearInterval(CCA1DrenderInterval);
-				clearInterval(entropyRenderInterval);
-				resetCCA2D();
-			}
-			else if (CCAdimension == "E") {
-				document.getElementById("toolbar-1d").style.display = "none";
-				document.getElementById("toolbar-2d").style.display = "none";
-				document.getElementById("toolbar-entropy").style.display = "block";
-				clearInterval(CCA1DrenderInterval);
-				clearInterval(CCA2DrenderInterval);
-				resetEntropy();
-			}
-		}
+			initTweakPane();
 
-		function resetCCA1D() {
-			CCA1Dcontext = CCA1DcreateContext({
-				canvasEl: document.getElementById('canvas'),
-				numberOfColors: document.getElementById("cca1d_color-count").value,
-				width: window.innerWidth - 20,
-				height: window.innerHeight - 130,
+			toolbar.addInput(
+				PARAMS, 'cca2dColorCount',
+				{ min: 2, max: 37, step: 1 }
+			);
+			toolbar.addInput(
+				PARAMS, 'cca2dThreshold',
+				{ min: 1, max: 8, step: 1 }
+			);
+			resetBtn = toolbar.addButton({
+				title: 'Reset with those values',
 			});
-		}
-
-		function startCCA1D() {
-			resetCCA1D();
-			CCA1Dstart(CCA1Dcontext);
-		}
-
-		function resetCCA2D() {
-			CCA2Dcontext = CCA2DcreateContext({
-				canvasEl: document.getElementById('canvas'),
-				numberOfColors: document.getElementById('cca2d_color-count').value,
-				threshold: document.getElementById('cca2d_threshold').value,
-				width: window.innerWidth - 20,
-				height: window.innerHeight - 130,
-				resolution: 4
+			toolbar.addSeparator();
+			startBtn = toolbar.addButton({
+				title: 'Start2S',
 			});
-		}
 
-		function startCCA2D() {
-			resetCCA2D();
-			CCA2Dstart(CCA2Dcontext, 400)
-		}
+			resetContext();
 
-		function resetEntropy() {
-			entropyContext = entropyCreateContext({
-				canvasEl: document.getElementById('canvas'),
-				numberOfColors: document.getElementById('entropy_color-count').value,
-				width: 400,
-				height: 400,
-				resolution: 2,
+			artSelector.on('change', function (value) {
+
+				initTweakPane();
+
+				if (value == "1") {
+					clearInterval(CCA2DrenderInterval);
+					clearInterval(entropyRenderInterval);
+					toolbar.addInput(
+						PARAMS, 'cca1dColorCount',
+						{ min: 2, max: 37, step: 1 }
+					);
+					const startBtn = toolbar.addButton({
+						title: 'Start1',
+					});
+				}
+
+				else if (value == "2") {
+					clearInterval(CCA1DrenderInterval);
+					clearInterval(entropyRenderInterval);
+					toolbar.addInput(
+						PARAMS, 'cca2dColorCount',
+						{ min: 2, max: 37, step: 1 }
+					);
+					toolbar.addInput(
+						PARAMS, 'cca2dThreshold',
+						{ min: 1, max: 8, step: 1 }
+					);
+					const resetBtn = toolbar.addButton({
+						title: 'Reset with those values',
+					});
+					toolbar.addSeparator();
+					const startBtn = toolbar.addButton({
+						title: 'Start2',
+					});
+				}
+
+				else if (value == "E") {
+					clearInterval(CCA1DrenderInterval);
+					clearInterval(CCA2DrenderInterval);
+					toolbar.addInput(
+						PARAMS, 'entropyColorCount',
+						{ min: 2, max: 42, step: 1 }
+					);
+					const resetBtn = toolbar.addButton({
+						title: 'Reset with those values',
+					});
+					toolbar.addSeparator();
+					const startBtn = toolbar.addButton({
+						title: 'StartE',
+					});
+				}
+
+				resetContext();
+
 			});
+
+			resetBtn.on('click', () => {
+				resetContext();
+			});
+
+			startBtn.on('click', () => {
+				if (settings.art == '1') {
+					CCA1Dstart(CCA1Dcontext);
+				}
+				else if (settings.art == '2') {
+					CCA2Dstart(CCA2Dcontext, 400);
+				}
+				else if (settings.art == 'E') {
+					entropyStart(entropyContext, 2500);
+				}
+			});
+
 		}
 
-		function startEntropy() {
-			resetEntropy();
-			entropyStart(entropyContext, 2500);
+		function resetContext() {
+			settings = toolbar.exportPreset();
+			settings.canvasEl = document.getElementById('canvas');
+			settings.width = window.innerWidth;
+			settings.height = window.innerHeight;
+			settings.resolution = 4;
+			if (settings.art == '1') {
+				CCA1Dcontext = CCA1DcreateContext(settings);
+			}
+			else if (settings.art == '2') {
+				CCA2Dcontext = CCA2DcreateContext(settings);
+			}
+			else if (settings.art == 'E') {
+				entropyContext = entropyCreateContext(settings);
+			}
+		}
+
+		function initTweakPane() {
+			toolbar = new Tweakpane();
+			artSelector = toolbar.addInput(
+				PARAMS, 'art',
+				{
+					options:
+					{
+						"1 dimension Cyclic Cellular Automaton": '1',
+						"2 dimensions Cyclic Cellular Automaton": '2',
+						"2 dimensions Entropy Automaton": "E"
+					}
+				}
+			);
+			toolbar.addSeparator();
 		}
 
 	</script>
+
 	<link href="styles.css" type="text/css" rel="stylesheet" />
 
 </head>
 
 <body>
-	
-	<div id="toolbar">
-		<select id="CCAdimension" onchange="selectGenerativeArt()">
-			<option value="1">1 dimension Cyclic Cellular Automaton</option>
-			<option value="2" selected>2 dimensions Cyclic Cellular Automaton</option>
-			<option value="3" disabled>3 dimensions Cyclic Cellular Automaton</option>
-			<option value="E">2 dimensions Entropy Automaton</option>
-		</select>
-		<div id="toolbar-1d">
-			<label>
-				Number of colors:&nbsp;
-				<input type="number" id="cca1d_color-count" name="cca1d_color-count" value="4" min="2" max="37">
-			</label>
-			<br>
-			<input type="button" value="start" onclick="startCCA1D()">
-		</div>
-		<div id="toolbar-2d">
-			<label>
-				Number of colors:&nbsp;
-				<input type="number" id="cca2d_color-count" value="8" min="2" max="37">
-			</label>
-			<label>
-				Threshold:&nbsp;
-				<input type="number" id="cca2d_threshold" value="2" min="1" max="8">
-			</label>
-			<input type="button" value="reset with those values" onclick="resetCCA2D()">
-			<br>
-			<input type="button" value="start" onclick="startCCA2D()">
-		</div>
-		<div id="toolbar-entropy">
-			<label>
-				Number of colors:&nbsp;
-				<input type="number" id="entropy_color-count" value="4" min="2" max="42">
-			</label>
-			<input type="button" value="reset with those values" onclick="resetEntropy();">
-			<br>
-			<input type="button" value="start" onclick="startEntropy()">
-		</div>
-	</div>
 
-	<div id="canvas-container">
-		<canvas id="canvas"></canvas>
-	</div>
+	<canvas id="canvas"></canvas>
 
 </body>
 

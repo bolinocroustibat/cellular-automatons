@@ -21,7 +21,7 @@ function entropyCreateContext(options) {
 
 	clearInterval(entropyRenderInterval);
 
-	let nbColors = options.numberOfColors;
+	let colorsCount = options.entropyColorCount;
 	let canvasEl = options.canvasEl;
 	let resolution = options.resolution;
 	let width = options.width - (options.width % resolution);
@@ -31,7 +31,7 @@ function entropyCreateContext(options) {
 	let colsCount = width / resolution;
 
 	let currentMatrix = [];
-	let colors = pickColors(nbColors);
+	let colors = pickColors(colorsCount);
 	let ctx = setupCanvas(canvasEl, width, height);
 
 	let context = {
