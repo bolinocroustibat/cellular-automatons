@@ -1,3 +1,5 @@
+<!DOCTYPE html> 
+
 <html>
 
 <head>
@@ -16,17 +18,16 @@
 
 		window.onload = function() {
 			selectGenerativeArt();
+			const PARAMS = {
+				factor: 123,
+				title: 'test',
+				color: '#0f0',
+			};
+			const pane = new Tweakpane();
+			pane.addInput(PARAMS, 'factor');
+			pane.addInput(PARAMS, 'title');
+			pane.addInput(PARAMS, 'color');
 		}
-
-		const PARAMS = {
-			factor: 123,
-			title: 'test',
-			color: '#0f0',
-		};
-		const pane = new Tweakpane();
-		pane.addInput(PARAMS, 'factor');
-		pane.addInput(PARAMS, 'title');
-		pane.addInput(PARAMS, 'color');
 
 		function selectGenerativeArt() {
 			let CCAdimension = document.getElementById('CCAdimension').selectedOptions[0].value;
