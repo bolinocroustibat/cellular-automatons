@@ -130,14 +130,15 @@
 			settings.canvasEl = document.getElementById('canvas');
 			settings.width = window.innerWidth;
 			settings.height = window.innerHeight;
-			settings.resolution = 4;
 			if (settings.art == '1') {
 				CCA1Dcontext = CCA1DcreateContext(settings);
 			}
 			else if (settings.art == '2') {
+				settings.resolution = 4;
 				CCA2Dcontext = CCA2DcreateContext(settings);
 			}
 			else if (settings.art == 'E') {
+				settings.resolution = 8;
 				entropyContext = entropyCreateContext(settings);
 			}
 		}
