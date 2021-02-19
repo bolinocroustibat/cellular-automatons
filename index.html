@@ -12,47 +12,69 @@
 	<script src="entropy.js"></script>
 	<script>
 
-		var toolbar;
-		const PARAMS = {
-			art: '2',
-			cca1dColorCount: 4,
-			cca2dColorCount: 8,
-			cca2dThreshold: 2,
-			cca2dResolution: 4,
-			entropyColorCount: 4,
-			entropyResolution: 8,
-		};
-		var artSelector;
-		var settings;
-		var restBtn;
-		var startBtn;
-
+		var pane;
 		var CCA1Dcontext;
 		var CCA2Dcontext;
 		var entropyContext;
 
 		window.onload = function () {
 
-			initTweakPane();
-
-			toolbar.addInput(
-				PARAMS, 'cca2dColorCount',
-				{ min: 2, max: 37, step: 1 }
+			pane = new Tweakpane();
+			const artSelector = pane.addInput(
+				{ art: '2' },
+				'art',
+				{
+					index: 1,
+					options:
+					{
+						"1 dimension Cyclic Cellular Automaton": '1',
+						"2 dimensions Cyclic Cellular Automaton": '2',
+						"2 dimensions Entropy Automaton": "E"
+					}
+				}
 			);
-			toolbar.addInput(
-				PARAMS, 'cca2dThreshold',
+			pane.addSeparator();
+			const cca1dColorCountPane = pane.addInput(
+				{ cca1dColorCount: 4 },
+				'cca1dColorCount',
+				{ min: 2, max: 5, step: 1 }
+			);
+			const cca2dColorCountPane = pane.addInput(
+				{ cca2dColorCount: 8 },
+				'cca2dColorCount',
+				{ min: 2, max: 20, step: 1 }
+			);
+			const cca2dThresholdPane = pane.addInput(
+				{ cca2dThreshold: 2 },
+				'cca2dThreshold',
 				{ min: 1, max: 8, step: 1 }
 			);
-			toolbar.addInput(
-				PARAMS, 'cca2dResolution',
+			const cca2dResolutionPane = pane.addInput(
+				{ cca2dResolution: 4 }, 'cca2dResolution',
 				{ min: 4, max: 10, step: 1 }
 			);
-			resetBtn = toolbar.addButton({
+			const entropyColorCountPane = pane.addInput(
+				{ entropyColorCount: 4 },
+				'entropyColorCount',
+				{ min: 2, max: 20, step: 1 }
+			);
+			const entropyResolutionPane = pane.addInput(
+				{entropyResolution: 8},
+				'entropyResolution',
+				{ min: 6, max: 10, step: 1 }
+			);
+			cca1dColorCountPane.hidden = true;
+			cca2dColorCountPane.hidden = false;
+			cca2dThresholdPane.hidden = false;
+			cca2dResolutionPane.hidden = false;
+			entropyColorCountPane.hidden = true;
+			entropyResolutionPane.hidden = true;
+			const resetBtn = pane.addButton({
 				title: 'Reset with those values',
 			});
-			toolbar.addSeparator();
-			var resetBtn;
-			var startBtn = toolbar.addButton({
+			pane.addSeparator();
+			const startBtn = pane.addButton({
+				index: 10,
 				title: 'Start',
 			});
 
@@ -60,56 +82,31 @@
 
 			artSelector.on('change', function (value) {
 
-				initTweakPane();
-
 				if (value == "1") {
-					toolbar.addInput(
-						PARAMS, 'cca1dColorCount',
-						{ min: 2, max: 37, step: 1 }
-					);
-					startBtn = toolbar.addButton({
-						title: 'Start1',
-					});
+					cca1dColorCountPane.hidden = false;
+					cca2dColorCountPane.hidden = true;
+					cca2dThresholdPane.hidden = true;
+					cca2dResolutionPane.hidden = true;
+					entropyColorCountPane.hidden = true;
+					entropyResolutionPane.hidden = true;
 				}
 
 				else if (value == "2") {
-					toolbar.addInput(
-						PARAMS, 'cca2dColorCount',
-						{ min: 2, max: 37, step: 1 }
-					);
-					toolbar.addInput(
-						PARAMS, 'cca2dThreshold',
-						{ min: 1, max: 8, step: 1 }
-					);
-					toolbar.addInput(
-						PARAMS, 'cca2dResolution',
-						{ min: 4, max: 10, step: 1 }
-					);
-					resetBtn = toolbar.addButton({
-						title: 'Reset with those values',
-					});
-					toolbar.addSeparator();
-					startBtn = toolbar.addButton({
-						title: 'Start2',
-					});
+					cca1dColorCountPane.hidden = true;
+					cca2dColorCountPane.hidden = false;
+					cca2dThresholdPane.hidden = false;
+					cca2dResolutionPane.hidden = false;
+					entropyColorCountPane.hidden = true;
+					entropyResolutionPane.hidden = true;
 				}
 
 				else if (value == "E") {
-					toolbar.addInput(
-						PARAMS, 'entropyColorCount',
-						{ min: 2, max: 42, step: 1 }
-					);
-					toolbar.addInput(
-						PARAMS, 'entropyResolution',
-						{ min: 6, max: 10, step: 1 }
-					);
-					resetBtn = toolbar.addButton({
-						title: 'Reset with those values',
-					});
-					toolbar.addSeparator();
-					startBtn = toolbar.addButton({
-						title: 'StartE',
-					});
+					cca1dColorCountPane.hidden = true;
+					cca2dColorCountPane.hidden = true;
+					cca2dThresholdPane.hidden = true;
+					cca2dResolutionPane.hidden = true;
+					entropyColorCountPane.hidden = false;
+					entropyResolutionPane.hidden = false;
 				}
 
 				resetContext();
@@ -137,8 +134,9 @@
 
 		}
 
+
 		function resetContext() {
-			settings = toolbar.exportPreset();
+			settings = pane.exportPreset();
 			settings.canvasEl = document.getElementById('canvas');
 			settings.width = window.innerWidth;
 			settings.height = window.innerHeight;
@@ -151,22 +149,6 @@
 			else if (settings.art == 'E') {
 				entropyContext = entropyCreateContext(settings);
 			}
-		}
-
-		function initTweakPane() {
-			toolbar = new Tweakpane();
-			artSelector = toolbar.addInput(
-				PARAMS, 'art',
-				{
-					options:
-					{
-						"1 dimension Cyclic Cellular Automaton": '1',
-						"2 dimensions Cyclic Cellular Automaton": '2',
-						"2 dimensions Entropy Automaton": "E"
-					}
-				}
-			);
-			toolbar.addSeparator();
 		}
 
 	</script>
