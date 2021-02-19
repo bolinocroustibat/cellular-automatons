@@ -23,7 +23,7 @@ function entropyCreateContext(options) {
 
 	let colorsCount = options.entropyColorCount;
 	let canvasEl = options.canvasEl;
-	let resolution = options.resolution;
+	let resolution = options.entropyResolution;
 	let width = options.width - (options.width % resolution);
 	let height = options.height - (options.height % resolution);
 

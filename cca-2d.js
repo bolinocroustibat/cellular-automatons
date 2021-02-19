@@ -7,7 +7,7 @@ function CCA2DcreateContext(settings) {
 	let canvasEl = settings.canvasEl;
 	let numberOfColors = settings.cca2dColorCount;
 	let threshold = settings.cca2dThreshold;
-	let resolution = settings.resolution;
+	let resolution = settings.cca2dResolution;
 	let width = settings.width - (settings.width % resolution);
 	let height = settings.height - (settings.height % resolution);
 	let rowsCount = height / resolution;
