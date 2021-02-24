@@ -25,6 +25,7 @@
 				'art',
 				{
 					index: 1,
+					label: "Algorithm",
 					options:
 					{
 						"1 dimension Cyclic Cellular Automaton": '1',
@@ -37,31 +38,32 @@
 			const cca1dColorCountPane = pane.addInput(
 				{ cca1dColorCount: 4 },
 				'cca1dColorCount',
-				{ min: 2, max: 5, step: 1 }
+				{ label: "Number of colors", min: 2, max: 5, step: 1 }
 			);
 			const cca2dColorCountPane = pane.addInput(
 				{ cca2dColorCount: 8 },
 				'cca2dColorCount',
-				{ min: 2, max: 20, step: 1 }
+				{ label: "Number of colors", min: 2, max: 20, step: 1 }
 			);
 			const cca2dThresholdPane = pane.addInput(
 				{ cca2dThreshold: 2 },
 				'cca2dThreshold',
-				{ min: 1, max: 8, step: 1 }
+				{ label: "Threshold", min: 1, max: 8, step: 1 }
 			);
 			const cca2dResolutionPane = pane.addInput(
-				{ cca2dResolution: 4 }, 'cca2dResolution',
-				{ min: 4, max: 10, step: 1 }
+				{ cca2dResolution: 6 },
+				'cca2dResolution',
+				{ label: "Resolution", min: 4, max: 10, step: 1 }
 			);
 			const entropyColorCountPane = pane.addInput(
 				{ entropyColorCount: 4 },
 				'entropyColorCount',
-				{ min: 2, max: 20, step: 1 }
+				{ label: "Number of colors", min: 2, max: 20, step: 1 }
 			);
 			const entropyResolutionPane = pane.addInput(
-				{entropyResolution: 8},
+				{ entropyResolution: 8 },
 				'entropyResolution',
-				{ min: 6, max: 10, step: 1 }
+				{ label: "Resolution", min: 6, max: 10, step: 1 }
 			);
 			cca1dColorCountPane.hidden = true;
 			cca2dColorCountPane.hidden = false;
@@ -121,6 +123,9 @@
 			});
 
 			startBtn.on('click', () => {
+				clearInterval(CCA1DrenderInterval);
+				clearInterval(CCA2DrenderInterval);
+				clearInterval(entropyRenderInterval);
 				if (settings.art == '1') {
 					CCA1Dstart(CCA1Dcontext);
 				}
