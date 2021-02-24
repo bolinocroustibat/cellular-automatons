@@ -154,9 +154,8 @@
 
 		}
 
-
 		function resetContext() {
-			settings = pane.exportPreset();
+			var settings = pane.exportPreset();
 			settings.canvasEl = document.getElementById('canvas');
 			settings.width = window.innerWidth;
 			settings.height = window.innerHeight;
@@ -169,6 +168,10 @@
 			else if (settings.art == 'E') {
 				entropyContext = entropyCreateContext(settings);
 			}
+		}
+
+		window.onresize = function() {
+			resetContext();
 		}
 
 	</script>
