@@ -80,12 +80,6 @@
 				'entropyResolution',
 				{ label: "Resolution", min: 6, max: 10, step: 1 }
 			);
-			cca1dColorsCountPane.hidden = true;
-			cca2dColorsCountPane.hidden = false;
-			cca2dThresholdPane.hidden = false;
-			cca2dResolutionPane.hidden = false;
-			entropyColorsCountPane.hidden = true;
-			entropyResolutionPane.hidden = true;
 			const resetBtn = pane.addButton({
 				title: 'Reset with those values',
 			});
@@ -94,6 +88,14 @@
 				index: 10,
 				title: 'Start',
 			});
+
+			// Set default
+			cca1dColorsCountPane.hidden = true;
+			cca2dColorsCountPane.hidden = false;
+			cca2dThresholdPane.hidden = false;
+			cca2dResolutionPane.hidden = false;
+			entropyColorsCountPane.hidden = true;
+			entropyResolutionPane.hidden = true;
 
 			resetContext();
 
@@ -155,7 +157,7 @@
 			clearInterval(CCA1DrenderInterval);
 			clearInterval(CCA2DrenderInterval);
 			clearInterval(entropyRenderInterval);
-			var settings = pane.exportPreset();
+			settings = pane.exportPreset();
 			settings.canvasEl = document.getElementById('canvas');
 			settings.width = window.innerWidth;
 			settings.height = window.innerHeight;
