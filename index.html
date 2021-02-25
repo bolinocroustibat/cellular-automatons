@@ -131,9 +131,6 @@
 			});
 
 			resetBtn.on('click', () => {
-				clearInterval(CCA1DrenderInterval);
-				clearInterval(CCA2DrenderInterval);
-				clearInterval(entropyRenderInterval);
 				resetContext();
 			});
 
@@ -155,6 +152,9 @@
 		}
 
 		function resetContext() {
+			clearInterval(CCA1DrenderInterval);
+			clearInterval(CCA2DrenderInterval);
+			clearInterval(entropyRenderInterval);
 			var settings = pane.exportPreset();
 			settings.canvasEl = document.getElementById('canvas');
 			settings.width = window.innerWidth;
