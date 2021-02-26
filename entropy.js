@@ -71,7 +71,7 @@ function entropyChangeMatrix(context) {
 			]
 			// currentMatrix[x][y] = getMostFrequentElement(neighbours);
 			let randomNeighbourNb = Math.floor(Math.random() * 8);
-			nextMatrix[x][y] = neighbours[randomNeighbourNb]
+			nextMatrix[x][y] = neighbours[randomNeighbourNb];
 		}
 	}
 	return nextMatrix;
