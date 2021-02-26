@@ -33,3 +33,8 @@ function pickColors(numberOfColors) {
 	}
 	return rgbColorsWithId;
 }
+
+function fillSquare(ctx, colorRgb, x, y, resolution) {
+	ctx.fillStyle = "rgb(" + colorRgb[0] + "," + colorRgb[1] + "," + colorRgb[2] + ")";
+	ctx.fillRect(x, y, resolution, resolution);
+}
