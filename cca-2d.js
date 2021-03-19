@@ -52,43 +52,43 @@ function CCA2Dstart(context, maxIterations = 1000) {
 		let i = 0;
 		CCA2DrenderInterval = setInterval(function () {
 			if (++i === maxIterations) clearInterval(CCA2DrenderInterval);
-			let newState = CCASetNewState(context);
+			let newState = CCA2DSetNewState(context);
 			context.state = newState;
 			CCA2Drender(context);
 		}, 1);
 	}
 }
 
-function CCASetNewState(context) {
+function CCA2DSetNewState(context) {
 	let rowsCount = context.rowsCount;
 	let colsCount = context.colsCount;
 	let newState = [];
 	for (let y = 0; y < rowsCount; ++y) {
 		if (!newState[y]) newState[y] = [];
 		for (let x = 0; x < colsCount; ++x) {
-			newState[y][x] = CCACellTransformation(context, x, y)
+			newState[y][x] = CCA2DCellTransformation(context, x, y)
 		}
 	}
 	return newState;
 }
 
-function CCACellTransformation(context, x, y) {
+function CCA2DCellTransformation(context, x, y) {
 
 	let state = context.state;
 
 	let threshold = context.threshold;
 
 	let neighbours = [
-		getCellColorId(context, x - 1, y - 1),
-		getCellColorId(context, x, y - 1),
-		getCellColorId(context, x + 1, y - 1),
+		CCA2DgetCellColorId(context, x - 1, y - 1),
+		CCA2DgetCellColorId(context, x, y - 1),
+		CCA2DgetCellColorId(context, x + 1, y - 1),
 
-		getCellColorId(context, x - 1, y),
-		getCellColorId(context, x + 1, y),
+		CCA2DgetCellColorId(context, x - 1, y),
+		CCA2DgetCellColorId(context, x + 1, y),
 
-		getCellColorId(context, x - 1, y + 1),
-		getCellColorId(context, x, y + 1),
-		getCellColorId(context, x + 1, y + 1),
+		CCA2DgetCellColorId(context, x - 1, y + 1),
+		CCA2DgetCellColorId(context, x, y + 1),
+		CCA2DgetCellColorId(context, x + 1, y + 1),
 	]
 
 	let thisCell = state[y][x];
@@ -100,7 +100,7 @@ function CCACellTransformation(context, x, y) {
 	return newCell;
 }
 
-function getCellColorId(context, x, y) {
+function CCA2DgetCellColorId(context, x, y) {
 	let state = context.state;
 	let colsCount = context.colsCount;
 	let rowsCount = context.rowsCount;
