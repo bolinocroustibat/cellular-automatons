@@ -1,6 +1,7 @@
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
+import { CCA3D } from "./3d/cca_3d"
 import { ConwayAutomaton } from "./2d/conway/conway"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
 import {
@@ -35,6 +36,7 @@ window.onload = () => {
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "cca-1D",
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
+			"3 dimensions Cylic Cellular Automaton": "cca-3D",
 			"Conway's game of Life": "conway",
 			"Immigration game": "immigration",
 			"Quad-Life": "quadlife",
@@ -56,6 +58,16 @@ window.onload = () => {
 		{ cca2dThreshold: 2 },
 		"cca2dThreshold",
 		{ label: "Threshold", min: 1, max: 3, step: 1 },
+	)
+	const cca3dColorsCountBlade = pane.addBinding(
+		{ cca3dColorsCount: 4 },
+		"cca3dColorsCount",
+		{ label: "Number of colors", min: 4, max: 10, step: 1 },
+	)
+	const cca3dThresholdBlade = pane.addBinding(
+		{ cca3dThreshold: 25 },
+		"cca3dThreshold",
+		{ label: "Threshold", min: 1, max: 26, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
@@ -130,6 +142,8 @@ window.onload = () => {
 		cca1dColorsCountBlade,
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
+		cca3dColorsCountBlade,
+		cca3dThresholdBlade,
 		conwayPatterns,
 		entropyColorsCountBlade,
 		resolutionBlade,
@@ -149,6 +163,15 @@ window.onload = () => {
 		}
 		cca2dColorsCountBlade.hidden = false
 		cca2dThresholdBlade.hidden = false
+		resolutionBlade.hidden = false
+	}
+
+	const setCca3dBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		cca3dColorsCountBlade.hidden = false
+		cca3dThresholdBlade.hidden = false
 		resolutionBlade.hidden = false
 	}
 
@@ -200,6 +223,9 @@ window.onload = () => {
 				break
 			case "cca-2D":
 				setCca2dBlades()
+				break
+			case "3":
+				setCca3dBlades()
 				break
 			case "conway":
 				setConwayBlades()
@@ -314,6 +340,16 @@ const reset = () => {
 				height,
 				resolution,
 				settings.cca2dColorsCount,
+			)
+			break
+		case "cca-3D":
+			automaton = new CCA3D(
+				settings.cca3dThreshold,
+				canvasEl,
+				width,
+				height,
+				resolution,
+				settings.cca3dColorsCount,
 			)
 			break
 		case "conway":
