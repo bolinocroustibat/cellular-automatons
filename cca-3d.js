@@ -1,0 +1,167 @@
+import { nextCellColorId, pickColors } from "./common.js";
+import * as THREE from './node_modules/three/build/three.module.js';
+import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+
+export var CCA3DframeId;
+
+export function CCA3DcreateContext(settings) {
+	let colors = pickColors(settings.cca3dColorsCount);
+	let state = [];
+
+	// Create scene and camera
+	const scene = new THREE.Scene();
+	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+	const renderer = new THREE.WebGLRenderer();
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	document.body.appendChild(renderer.domElement);
+
+	// DEBUG: add axes
+	const axesHelper = new THREE.AxesHelper(5);
+	scene.add(axesHelper);
+
+	let context = {
+		state: state,
+		scene: scene,
+		colors: colors,
+		threshold: settings.threshold,
+		cubeGeometry: new THREE.BoxGeometry(), // create a cube
+		resolution: settings.cca3dResolution,
+		spaceBetween: settings.spaceBetween,
+		xCount: settings.cca3dResolution,
+		yCount: settings.cca3dResolution,
+		zCount: settings.cca3dResolution
+	}
+	// render the start frame
+	CCA2DsetRandomState(context)
+	CCA3Drender(context);
+
+	// Turn around with the camera
+	const controls = new OrbitControls(camera, renderer.domElement);
+	//controls.update() must be called after any manual changes to the camera's transform
+	camera.position.set(15, 15, 20);
+	controls.update();
+	function animate() {
+		CCA3DframeId = requestAnimationFrame(animate);
+		// required if controls.enableDamping or controls.autoRotate are set to true
+		controls.update();
+
+		// // Update the state and re-render
+		// let newState = CCA3DSetNewState(context);
+		// context.state = newState;
+		// CCA3Drender(context);
+
+		renderer.render(scene, camera);
+	}
+	animate();
+	// cancelAnimationFrame(CCA3DframeId);
+
+	return context;
+}
+
+function CCA3Drender(context) {
+	// let state = context.state;
+	for (let z = 0; z < context.zCount; ++z) {
+		for (let y = 0; y < context.yCount; ++y) {
+			for (let x = 0; x < context.xCount; ++x) {
+				const colorRgb = context.state[z][y][x];
+				fillCube(context, colorRgb, x, y, z)
+			}
+		}
+	}
+}
+
+function CCA2DsetRandomState(context) {
+	for (let z = 0; z < context.zCount; ++z) {
+		for (let y = 0; y < context.yCount; ++y) {
+			for (let x = 0; x < context.xCount; ++x) {
+				if (!context.state[z]) context.state[z] = [];
+				if (!context.state[z][y]) context.state[z][y] = [];
+				let randomColor = context.colors[Math.floor(Math.random() * context.colors.length)];
+				context.state[z][y][x] = randomColor;
+			}
+		}
+	}
+}
+
+function CCA3DSetNewState(context) {
+	let newState = [];
+	for (let z = 0; z < context.zCount; ++z) {
+		if (!newState[z]) newState[z] = [];
+		for (let y = 0; y < context.yCount; ++y) {
+			if (!newState[y]) newState[y] = [];
+			for (let x = 0; x < context.xCount; ++x) {
+				let neighbours = [
+					// z-1: 9 cells
+					CCA3DgetCellColor(context, x - 1, y - 1, z - 1),
+					CCA3DgetCellColor(context, x, y - 1, z - 1),
+					CCA3DgetCellColor(context, x + 1, y - 1, z - 1),
+
+					CCA3DgetCellColor(context, x - 1, y, z - 1),
+					CCA3DgetCellColor(context, x, y, z - 1),
+					CCA3DgetCellColor(context, x + 1, y, z - 1),
+
+					CCA3DgetCellColor(context, x - 1, y + 1, z - 1),
+					CCA3DgetCellColor(context, x, y + 1, z - 1),
+					CCA3DgetCellColor(context, x + 1, y + 1, z - 1),
+
+					// z: 8 cells
+					CCA3DgetCellColor(context, x - 1, y - 1, z),
+					CCA3DgetCellColor(context, x, y - 1, z),
+					CCA3DgetCellColor(context, x + 1, y - 1, z),
+
+					CCA3DgetCellColor(context, x - 1, y, z),
+					CCA3DgetCellColor(context, x + 1, y, z),
+
+					CCA3DgetCellColor(context, x - 1, y + 1, z),
+					CCA3DgetCellColor(context, x, y + 1, z),
+					CCA3DgetCellColor(context, x + 1, y + 1, z),
+
+					// z+1: 9 cells
+					CCA3DgetCellColor(context, x - 1, y - 1, z + 1),
+					CCA3DgetCellColor(context, x, y - 1, z + 1),
+					CCA3DgetCellColor(context, x + 1, y - 1, z + 1),
+
+					CCA3DgetCellColor(context, x - 1, y, z + 1),
+					CCA3DgetCellColor(context, x, y, z + 1),
+					CCA3DgetCellColor(context, x + 1, y, z + 1),
+
+					CCA3DgetCellColor(context, x - 1, y + 1, z + 1),
+					CCA3DgetCellColor(context, x, y + 1, z + 1),
+					CCA3DgetCellColor(context, x + 1, y + 1, z + 1),
+				]
+
+				let thisCell = context.state[y][x];
+				let nextColorId = nextCellColorId(thisCell, context.colors);
+				let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
+
+				newState[z][y][x] = (successorNeighboursCount.length >= context.threshold) ? successorNeighboursCount[0] : thisCell;
+			}
+		}
+	}
+	return newState;
+}
+
+function CCA3DgetCellColor(context, x, y, z) {
+	let xCount = context.xCount;
+	let yCount = context.yCount;
+	let zCount = context.zCount;
+
+	x = (x === -1) ? xCount - 1 : x;
+	x = (x === xCount) ? 0 : x;
+
+	y = (y === -1) ? yCount - 1 : y;
+	y = (y === yCount) ? 0 : y;
+
+	z = (z === -1) ? zCount - 1 : z;
+	z = (z === zCount) ? 0 : z;
+
+	return context.state[z][y][x];
+}
+
+function fillCube(context, colorRgb, x, y, z) {
+	const threeColor = new THREE.Color("rgb(" + colorRgb[0] + ", " + colorRgb[1] + ", " + colorRgb[2] + ")");
+	const material = new THREE.MeshBasicMaterial({ color: threeColor, opacity: 0.5, transparent: true });
+	const cube = new THREE.Mesh(context.cubeGeometry, material);
+	context.scene.add(cube);
+	cube.position.set(x + (context.spaceBetween * x), y + (context.spaceBetween * y), z + (context.spaceBetween * z));
+}
