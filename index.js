@@ -9,6 +9,11 @@ import {
   CCA2DrenderInterval
 } from './cca-2d.js'
 import {
+  langtonCreateContext,
+  langtonStart,
+  langtonRenderInterval
+} from './langton.js'
+import {
   entropyCreateContext,
   entropyStart,
   entropyRenderInterval
@@ -19,6 +24,7 @@ var pane
 var settings
 var CCA1Dcontext
 var CCA2Dcontext
+var langtonContext
 var entropyContext
 
 window.onload = function () {
@@ -29,6 +35,7 @@ window.onload = function () {
     options: {
       '1 dimension Cyclic Cellular Automaton': '1',
       '2 dimensions Cyclic Cellular Automaton': '2',
+      "Langton's ant": 'L',
       '2 dimensions Entropy Automaton': 'E'
     }
   })
@@ -58,6 +65,11 @@ window.onload = function () {
     'entropyColorsCount',
     { label: 'Number of colors', min: 2, max: 20, step: 1 }
   )
+  const langtonResolutionPane = pane.addInput(
+    { langtonResolution: 10 },
+    'langtonResolution',
+    { label: 'Resolution', min: 6, max: 20, step: 1 }
+  )
   const entropyResolutionPane = pane.addInput(
     { entropyResolution: 10 },
     'entropyResolution',
@@ -77,6 +89,7 @@ window.onload = function () {
   cca2dColorsCountPane.hidden = false
   cca2dThresholdPane.hidden = false
   cca2dResolutionPane.hidden = false
+  langtonResolutionPane.hidden = true
   entropyColorsCountPane.hidden = true
   entropyResolutionPane.hidden = true
 
@@ -89,6 +102,7 @@ window.onload = function () {
         cca2dColorsCountPane.hidden = true
         cca2dThresholdPane.hidden = true
         cca2dResolutionPane.hidden = true
+        langtonResolutionPane.hidden = true
         entropyColorsCountPane.hidden = true
         entropyResolutionPane.hidden = true
         break
@@ -97,6 +111,16 @@ window.onload = function () {
         cca2dColorsCountPane.hidden = false
         cca2dThresholdPane.hidden = false
         cca2dResolutionPane.hidden = false
+        langtonResolutionPane.hidden = true
+        entropyColorsCountPane.hidden = true
+        entropyResolutionPane.hidden = true
+        break
+      case 'L':
+        cca1dColorsCountPane.hidden = true
+        cca2dColorsCountPane.hidden = true
+        cca2dThresholdPane.hidden = true
+        cca2dResolutionPane.hidden = true
+        langtonResolutionPane.hidden = false
         entropyColorsCountPane.hidden = true
         entropyResolutionPane.hidden = true
         break
@@ -105,6 +129,7 @@ window.onload = function () {
         cca2dColorsCountPane.hidden = true
         cca2dThresholdPane.hidden = true
         cca2dResolutionPane.hidden = true
+        langtonResolutionPane.hidden = true
         entropyColorsCountPane.hidden = false
         entropyResolutionPane.hidden = false
         break
@@ -119,6 +144,7 @@ window.onload = function () {
   startBtn.on('click', () => {
     clearInterval(CCA1DrenderInterval)
     clearInterval(CCA2DrenderInterval)
+    clearInterval(langtonRenderInterval)
     clearInterval(entropyRenderInterval)
     switch (settings.art) {
       case '1':
@@ -126,6 +152,9 @@ window.onload = function () {
         break
       case '2':
         CCA2Dstart(CCA2Dcontext, 2500)
+        break
+      case 'L':
+        langtonStart(langtonContext, 12000)
         break
       case 'E':
         entropyStart(entropyContext, 2500)
@@ -137,6 +166,7 @@ window.onload = function () {
 function resetContext () {
   clearInterval(CCA1DrenderInterval)
   clearInterval(CCA2DrenderInterval)
+  clearInterval(langtonRenderInterval)
   clearInterval(entropyRenderInterval)
   settings = pane.exportPreset()
   settings.canvasEl = document.getElementById('canvas')
@@ -148,6 +178,9 @@ function resetContext () {
       break
     case '2':
       CCA2Dcontext = CCA2DcreateContext(settings)
+      break
+    case 'L':
+      langtonContext = langtonCreateContext(settings)
       break
     case 'E':
       entropyContext = entropyCreateContext(settings)
