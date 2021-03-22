@@ -3,6 +3,7 @@
 - Cyclic Cellular Automaton (see https://en.wikipedia.org/wiki/Cyclic_cellular_automaton)
   - In 1 dimension
   - In 2 dimensions
+  - In 3 dimensions (WIP)
 - Conway's game of Life
 - Langton's ant
 - Various algorithms
@@ -10,6 +11,7 @@
 ## Dependencies
 
 - [Chroma.js](https://github.com/gka/chroma.js/)
+- [Three.js](https://threejs.org/)
 - [Tweakpane](https://github.com/cocopon/tweakpane)
 
 ## Install the dependencies
