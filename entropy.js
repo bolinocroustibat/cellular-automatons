@@ -1,6 +1,9 @@
-var entropyRenderInterval;
+import { fillSquare, setupCanvas, pickColors } from "./common.js";
 
-function entropyCreateContext(options) {
+
+export var entropyRenderInterval;
+
+export function entropyCreateContext(options) {
 
 	clearInterval(entropyRenderInterval);
 
@@ -40,7 +43,7 @@ function entropyCreateContext(options) {
 	return context;
 }
 
-function entropyStart(context, maxIterations = 1000) {
+export function entropyStart(context, maxIterations = 1000) {
 	if (context) {
 		let i = 0;
 		entropyRenderInterval = setInterval(function () {
