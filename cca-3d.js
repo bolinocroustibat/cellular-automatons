@@ -23,7 +23,7 @@ export function CCA3DcreateContext(settings) {
 		state: state,
 		scene: scene,
 		colors: colors,
-		threshold: settings.threshold,
+		threshold: settings.cca3dThreshold,
 		cubeGeometry: new THREE.BoxGeometry(), // create a cube
 		resolution: settings.cca3dResolution,
 		spaceBetween: settings.spaceBetween,
@@ -41,16 +41,20 @@ export function CCA3DcreateContext(settings) {
 	camera.position.set(15, 15, 20);
 	controls.update();
 	function animate() {
-		CCA3DframeId = requestAnimationFrame(animate);
-		// required if controls.enableDamping or controls.autoRotate are set to true
-		controls.update();
+		setTimeout(function () {
+			CCA3DframeId = requestAnimationFrame(animate);
+			console.log("New frame " + CCA3DframeId);
 
-		// // Update the state and re-render
-		// let newState = CCA3DSetNewState(context);
-		// context.state = newState;
-		// CCA3Drender(context);
+			// required if controls.enableDamping or controls.autoRotate are set to true
+			controls.update();
 
-		renderer.render(scene, camera);
+			// // Update the state and re-render
+			let newState = CCA3DsetNewState(context);
+			context.state = newState;
+			CCA3Drender(context);
+
+			renderer.render(scene, camera);
+		}, 1000 / 8);
 	}
 	animate();
 	// cancelAnimationFrame(CCA3DframeId);
@@ -59,6 +63,10 @@ export function CCA3DcreateContext(settings) {
 }
 
 function CCA3Drender(context) {
+	// remove previous scene objects
+	while (context.scene.children.length > 0) {
+		context.scene.remove(context.scene.children[0]);
+	}
 	// let state = context.state;
 	for (let z = 0; z < context.zCount; ++z) {
 		for (let y = 0; y < context.yCount; ++y) {
@@ -83,12 +91,12 @@ function CCA2DsetRandomState(context) {
 	}
 }
 
-function CCA3DSetNewState(context) {
+function CCA3DsetNewState(context) {
 	let newState = [];
 	for (let z = 0; z < context.zCount; ++z) {
 		if (!newState[z]) newState[z] = [];
 		for (let y = 0; y < context.yCount; ++y) {
-			if (!newState[y]) newState[y] = [];
+			if (!newState[z][y]) newState[z][y] = [];
 			for (let x = 0; x < context.xCount; ++x) {
 				let neighbours = [
 					// z-1: 9 cells
@@ -130,7 +138,7 @@ function CCA3DSetNewState(context) {
 					CCA3DgetCellColor(context, x + 1, y + 1, z + 1),
 				]
 
-				let thisCell = context.state[y][x];
+				let thisCell = context.state[z][y][x];
 				let nextColorId = nextCellColorId(thisCell, context.colors);
 				let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
 

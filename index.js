@@ -57,19 +57,19 @@ window.onload = function () {
 		{ label: "Number of colors", min: 2, max: 20, step: 1 }
 	);
 	const cca3dColorsCountPane = pane.addInput(
-		{ cca3dColorsCount: 8 },
+		{ cca3dColorsCount: 4 },
 		'cca3dColorsCount',
 		{ label: "Number of colors", min: 4, max: 10, step: 1 }
 	);
 	const cca3dResolutionPane = pane.addInput(
-		{ cca3dResolution: 6 },
+		{ cca3dResolution: 10 },
 		'cca3dResolution',
-		{ label: "Resolution", min: 4, max: 20, step: 1 }
+		{ label: "Resolution", min: 8, max: 15, step: 1 }
 	);
 	const cca3dThresholdPane = pane.addInput(
-		{ cca3dThreshold: 6 },
+		{ cca3dThreshold: 25 },
 		'cca3dThreshold',
-		{ label: "Threshold", min: 1, max: 10, step: 1 }
+		{ label: "Threshold", min: 1, max: 26, step: 1 }
 	);
 	const entropyResolutionPane = pane.addInput(
 		{ entropyResolution: 10 },
@@ -192,6 +192,7 @@ function resetContext() {
 	}
 	else if (settings.art == '3') {
 		settings.spaceBetween = 0.2;
+		settings.cca3dThreshold = 2;
 
 		// Remove canvas
 		const canvas = document.getElementById('canvas');
