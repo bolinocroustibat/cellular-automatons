@@ -58,7 +58,7 @@ export function CCA2Dstart(context, maxIterations = 1000) {
 			let newState = CCA2DSetNewState(context);
 			context.state = newState;
 			CCA2Drender(context);
-		}, 1);
+		}, 25);
 	}
 }
 

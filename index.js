@@ -31,7 +31,7 @@ window.onload = function () {
 	const cca1dColorsCountPane = pane.addInput(
 		{ cca1dColorsCount: 4 },
 		'cca1dColorsCount',
-		{ label: "Number of colors", min: 2, max: 5, step: 1 }
+		{ label: "Number of colors", min: 3, max: 5, step: 1 }
 	);
 	const cca2dColorsCountPane = pane.addInput(
 		{ cca2dColorsCount: 8 },
@@ -46,7 +46,7 @@ window.onload = function () {
 	const cca2dResolutionPane = pane.addInput(
 		{ cca2dResolution: 10 },
 		'cca2dResolution',
-		{ label: "Resolution", min: 4, max: 10, step: 1 }
+		{ label: "Resolution", min: 4, max: 20, step: 1 }
 	);
 	const entropyColorsCountPane = pane.addInput(
 		{ entropyColorsCount: 4 },
@@ -54,9 +54,9 @@ window.onload = function () {
 		{ label: "Number of colors", min: 2, max: 20, step: 1 }
 	);
 	const entropyResolutionPane = pane.addInput(
-		{ entropyResolution: 8 },
+		{ entropyResolution: 10 },
 		'entropyResolution',
-		{ label: "Resolution", min: 6, max: 10, step: 1 }
+		{ label: "Resolution", min: 6, max: 20, step: 1 }
 	);
 	const resetBtn = pane.addButton({
 		title: 'Reset with those values',
@@ -77,8 +77,8 @@ window.onload = function () {
 
 	resetContext();
 
-	artSelector.on('change', function (value) {
-
+	artSelector.on('change', function (event) {
+		const value = event.value;
 		if (value == "1") {
 			cca1dColorsCountPane.hidden = false;
 			cca2dColorsCountPane.hidden = true;
@@ -122,7 +122,7 @@ window.onload = function () {
 			CCA1Dstart(CCA1Dcontext);
 		}
 		else if (settings.art == '2') {
-			CCA2Dstart(CCA2Dcontext, 400);
+			CCA2Dstart(CCA2Dcontext, 2500);
 		}
 		else if (settings.art == 'E') {
 			entropyStart(entropyContext, 2500);

@@ -3,15 +3,14 @@ import { fillSquare, setupCanvas, pickColors } from "./common.js";
 
 export var entropyRenderInterval;
 
-export function entropyCreateContext(options) {
-
+export function entropyCreateContext(settings) {
 	clearInterval(entropyRenderInterval);
 
-	let colorsCount = options.entropyColorsCount;
-	let canvasEl = options.canvasEl;
-	let resolution = options.entropyResolution;
-	let width = options.width - (options.width % resolution);
-	let height = options.height - (options.height % resolution);
+	let colorsCount = settings.entropyColorsCount;
+	let canvasEl = settings.canvasEl;
+	let resolution = settings.entropyResolution;
+	let width = settings.width - (settings.width % resolution);
+	let height = settings.height - (settings.height % resolution);
 
 	let rowsCount = height / resolution;
 	let colsCount = width / resolution;
@@ -51,7 +50,7 @@ export function entropyStart(context, maxIterations = 1000) {
 			let nextMatrix = entropyChangeMatrix(context);
 			context.currentMatrix = nextMatrix;
 			entropyRender(context);
-		}, 1);
+		}, 25);
 	}
 }
 
