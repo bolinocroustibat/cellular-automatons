@@ -44,7 +44,7 @@ window.onload = function () {
 		{ label: "Threshold", min: 1, max: 8, step: 1 }
 	);
 	const cca2dResolutionPane = pane.addInput(
-		{ cca2dResolution: 6 },
+		{ cca2dResolution: 10 },
 		'cca2dResolution',
 		{ label: "Resolution", min: 4, max: 10, step: 1 }
 	);
