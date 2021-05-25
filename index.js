@@ -1,7 +1,7 @@
 import { CCA1DcreateContext, CCA1Dstart, CCA1DrenderInterval } from "./cca-1d.js";
 import { CCA2DcreateContext, CCA2Dstart, CCA2DrenderInterval } from "./cca-2d.js";
 import { entropyCreateContext, entropyStart, entropyRenderInterval } from "./entropy.js";
-import Tweakpane from 'https://cdn.skypack.dev/tweakpane';
+import { Pane } from 'https://cdn.skypack.dev/tweakpane';
 
 
 var pane;
@@ -12,7 +12,7 @@ var entropyContext;
 
 window.onload = function () {
 
-	pane = new Tweakpane();
+	pane = new Pane();
 	const artSelector = pane.addInput(
 		{ art: '2' },
 		'art',
