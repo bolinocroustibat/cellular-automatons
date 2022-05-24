@@ -1,23 +1,23 @@
-import { fillSquare, setupCanvas, pickColors } from "./common.js";
+import { fillSquare, setupCanvas, pickColors } from "./common.js"
 
 
-export var entropyRenderInterval;
+export var entropyRenderInterval
 
 export function entropyCreateContext(settings) {
-	clearInterval(entropyRenderInterval);
+	clearInterval(entropyRenderInterval)
 
-	let colorsCount = settings.entropyColorsCount;
-	let canvasEl = settings.canvasEl;
-	let resolution = settings.entropyResolution;
-	let width = settings.width - (settings.width % resolution);
-	let height = settings.height - (settings.height % resolution);
+	let colorsCount = settings.entropyColorsCount
+	let canvasEl = settings.canvasEl
+	let resolution = settings.entropyResolution
+	let width = settings.width - (settings.width % resolution)
+	let height = settings.height - (settings.height % resolution)
 
-	let rowsCount = height / resolution;
-	let colsCount = width / resolution;
+	let rowsCount = height / resolution
+	let colsCount = width / resolution
 
-	let currentMatrix = [];
-	let colors = pickColors(colorsCount);
-	let ctx = setupCanvas(canvasEl, width, height);
+	let currentMatrix = []
+	let colors = pickColors(colorsCount)
+	let ctx = setupCanvas(canvasEl, width, height)
 
 	let context = {
 		currentMatrix: currentMatrix,
@@ -31,33 +31,33 @@ export function entropyCreateContext(settings) {
 	}
 
 	for (let x = 0; x < colsCount; ++x) {
-		currentMatrix[x] = [];
+		currentMatrix[x] = []
 		for (let y = 0; y < rowsCount; ++y) {
-			let randomColor = colors[Math.floor(Math.random() * colors.length)];
-			currentMatrix[x][y] = randomColor;
-			fillSquare(ctx, currentMatrix[x][y], x * resolution, y * resolution, resolution);
+			let randomColor = colors[Math.floor(Math.random() * colors.length)]
+			currentMatrix[x][y] = randomColor
+			fillSquare(ctx, currentMatrix[x][y], x * resolution, y * resolution, resolution)
 		}
 	}
 
-	return context;
+	return context
 }
 
 export function entropyStart(context, maxIterations = 1000) {
 	if (context) {
-		let i = 0;
+		let i = 0
 		entropyRenderInterval = setInterval(function () {
-			if (++i === maxIterations) clearInterval(entropyRenderInterval);
-			let nextMatrix = entropyChangeMatrix(context);
-			context.currentMatrix = nextMatrix;
-			entropyRender(context);
-		}, 25);
+			if (++i === maxIterations) clearInterval(entropyRenderInterval)
+			let nextMatrix = entropyChangeMatrix(context)
+			context.currentMatrix = nextMatrix
+			entropyRender(context)
+		}, 25)
 	}
 }
 
 function entropyChangeMatrix(context) {
-	let nextMatrix = [];
+	let nextMatrix = []
 	for (let x = 0; x < context.colsCount; ++x) {
-		nextMatrix[x] = [];
+		nextMatrix[x] = []
 		for (let y = 0; y < context.rowsCount; ++y) {
 			let neighbours = [
 				entropyGetCellColorId(context, x - 1, y - 1),
@@ -71,35 +71,35 @@ function entropyChangeMatrix(context) {
 				entropyGetCellColorId(context, x, y + 1),
 				entropyGetCellColorId(context, x + 1, y + 1),
 			]
-			// currentMatrix[x][y] = getMostFrequentElement(neighbours);
-			let randomNeighbourNb = Math.floor(Math.random() * 8);
-			nextMatrix[x][y] = neighbours[randomNeighbourNb];
+			// currentMatrix[x][y] = getMostFrequentElement(neighbours)
+			let randomNeighbourNb = Math.floor(Math.random() * 8)
+			nextMatrix[x][y] = neighbours[randomNeighbourNb]
 		}
 	}
-	return nextMatrix;
+	return nextMatrix
 }
 
 function entropyGetCellColorId(context, x, y) {
-	let currentMatrix = context.currentMatrix;
-	let colsCount = context.colsCount;
-	let rowsCount = context.rowsCount;
+	let currentMatrix = context.currentMatrix
+	let colsCount = context.colsCount
+	let rowsCount = context.rowsCount
 
-	x = (x === -1) ? colsCount - 1 : x;
-	x = (x === colsCount) ? 0 : x;
+	x = (x === -1) ? colsCount - 1 : x
+	x = (x === colsCount) ? 0 : x
 
-	y = (y === -1) ? rowsCount - 1 : y;
-	y = (y === rowsCount) ? 0 : y;
+	y = (y === -1) ? rowsCount - 1 : y
+	y = (y === rowsCount) ? 0 : y
 
-	return currentMatrix[x][y];
+	return currentMatrix[x][y]
 }
 
 function entropyRender(context) {
-	let ctx = context.ctx;
-	let currentMatrix = context.currentMatrix;
-	let resolution = context.resolution;
+	let ctx = context.ctx
+	let currentMatrix = context.currentMatrix
+	let resolution = context.resolution
 	for (let x = 0; x < context.colsCount; ++x) {
 		for (let y = 0; y < context.rowsCount; ++y) {
-			fillSquare(ctx, currentMatrix[x][y], x * resolution, y * resolution, resolution);
+			fillSquare(ctx, currentMatrix[x][y], x * resolution, y * resolution, resolution)
 		}
 	}
 }

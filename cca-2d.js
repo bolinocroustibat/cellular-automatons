@@ -1,24 +1,24 @@
 import { fillSquare, setupCanvas, nextCellColorId, pickColors } from "./common.js";
 
 
-export var CCA2DrenderInterval;
+export var CCA2DrenderInterval
 
 export function CCA2DcreateContext(settings) {
 
-	clearInterval(CCA2DrenderInterval);
+	clearInterval(CCA2DrenderInterval)
 
-	let canvasEl = settings.canvasEl;
-	let colorsCount = settings.cca2dColorsCount;
-	let threshold = settings.cca2dThreshold;
-	let resolution = settings.cca2dResolution;
-	let width = settings.width - (settings.width % resolution);
-	let height = settings.height - (settings.height % resolution);
-	let rowsCount = height / resolution;
-	let colsCount = width / resolution;
+	let canvasEl = settings.canvasEl
+	let colorsCount = settings.cca2dColorsCount
+	let threshold = settings.cca2dThreshold
+	let resolution = settings.cca2dResolution
+	let width = settings.width - (settings.width % resolution)
+	let height = settings.height - (settings.height % resolution)
+	let rowsCount = height / resolution
+	let colsCount = width / resolution
 
-	let state = [];
-	let colors = pickColors(colorsCount);
-	let ctx = setupCanvas(canvasEl, width, height);
+	let state = []
+	let colors = pickColors(colorsCount)
+	let ctx = setupCanvas(canvasEl, width, height)
 
 	let context = {
 		state: state,
@@ -33,53 +33,53 @@ export function CCA2DcreateContext(settings) {
 	}
 
 	CCA2DsetRandomState(context)
-	CCA2Drender(context);
-	return context;
+	CCA2Drender(context)
+	return context
 }
 
 function CCA2Drender(context) {
-	let rowsCount = context.rowsCount;
-	let colsCount = context.colsCount;
-	let resolution = context.resolution;
-	let ctx = context.ctx;
-	let state = context.state;
+	let rowsCount = context.rowsCount
+	let colsCount = context.colsCount
+	let resolution = context.resolution
+	let ctx = context.ctx
+	let state = context.state
 	for (let y = 0; y < rowsCount; ++y) {
 		for (let x = 0; x < colsCount; ++x) {
-			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution);
+			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
 		}
 	}
 }
 
 export function CCA2Dstart(context, maxIterations = 1000) {
 	if (context) {
-		let i = 0;
+		let i = 0
 		CCA2DrenderInterval = setInterval(function () {
 			if (++i === maxIterations) clearInterval(CCA2DrenderInterval);
-			let newState = CCA2DSetNewState(context);
-			context.state = newState;
-			CCA2Drender(context);
-		}, 25);
+			let newState = CCA2DSetNewState(context)
+			context.state = newState
+			CCA2Drender(context)
+		}, 25)
 	}
 }
 
 function CCA2DSetNewState(context) {
-	let rowsCount = context.rowsCount;
-	let colsCount = context.colsCount;
-	let newState = [];
+	let rowsCount = context.rowsCount
+	let colsCount = context.colsCount
+	let newState = []
 	for (let y = 0; y < rowsCount; ++y) {
-		if (!newState[y]) newState[y] = [];
+		if (!newState[y]) newState[y] = []
 		for (let x = 0; x < colsCount; ++x) {
 			newState[y][x] = CCA2DCellTransformation(context, x, y)
 		}
 	}
-	return newState;
+	return newState
 }
 
 function CCA2DCellTransformation(context, x, y) {
 
-	let state = context.state;
+	let state = context.state
 
-	let threshold = context.threshold;
+	let threshold = context.threshold
 
 	let neighbours = [
 		CCA2DgetCellColorId(context, x - 1, y - 1),
@@ -94,40 +94,40 @@ function CCA2DCellTransformation(context, x, y) {
 		CCA2DgetCellColorId(context, x + 1, y + 1),
 	]
 
-	let thisCell = state[y][x];
+	let thisCell = state[y][x]
 	let nextColorId = nextCellColorId(thisCell, context.colors);
 	let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
 
-	let newCell = (successorNeighboursCount.length >= threshold) ? successorNeighboursCount[0] : thisCell;
+	let newCell = (successorNeighboursCount.length >= threshold) ? successorNeighboursCount[0] : thisCell
 
-	return newCell;
+	return newCell
 }
 
 function CCA2DgetCellColorId(context, x, y) {
-	let state = context.state;
-	let colsCount = context.colsCount;
-	let rowsCount = context.rowsCount;
+	let state = context.state
+	let colsCount = context.colsCount
+	let rowsCount = context.rowsCount
 
-	x = (x === -1) ? colsCount - 1 : x;
-	x = (x === colsCount) ? 0 : x;
+	x = (x === -1) ? colsCount - 1 : x
+	x = (x === colsCount) ? 0 : x
 
-	y = (y === -1) ? rowsCount - 1 : y;
-	y = (y === rowsCount) ? 0 : y;
+	y = (y === -1) ? rowsCount - 1 : y
+	y = (y === rowsCount) ? 0 : y
 
-	return state[y][x];
+	return state[y][x]
 }
 
 function CCA2DsetRandomState(context) {
-	let state = context.state;
-	let colsCount = context.colsCount;
-	let rowsCount = context.rowsCount;
-	let colors = context.colors;
+	let state = context.state
+	let colsCount = context.colsCount
+	let rowsCount = context.rowsCount
+	let colors = context.colors
 
 	for (let y = 0; y < rowsCount; ++y) {
 		for (let x = 0; x < colsCount; ++x) {
-			if (!state[y]) state[y] = [];
-			let randomColor = colors[Math.floor(Math.random() * colors.length)];
-			state[y][x] = randomColor;
+			if (!state[y]) state[y] = []
+			let randomColor = colors[Math.floor(Math.random() * colors.length)]
+			state[y][x] = randomColor
 		}
 	}
 }
