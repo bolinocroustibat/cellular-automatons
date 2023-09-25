@@ -3,7 +3,7 @@ import { fillSquare, setupCanvas, pickColors } from "./common.js"
 
 export var entropyRenderInterval
 
-export function entropyCreateContext(settings) {
+export const entropyCreateContext = (settings) => {
 	clearInterval(entropyRenderInterval)
 
 	let colorsCount = settings.entropyColorsCount
@@ -42,7 +42,7 @@ export function entropyCreateContext(settings) {
 	return context
 }
 
-export function entropyStart(context, maxIterations = 1000) {
+export const entropyStart = (context, maxIterations = 1000) =>  {
 	if (context) {
 		let i = 0
 		entropyRenderInterval = setInterval(function () {
@@ -54,7 +54,7 @@ export function entropyStart(context, maxIterations = 1000) {
 	}
 }
 
-function entropyChangeMatrix(context) {
+const entropyChangeMatrix = (context) =>  {
 	let nextMatrix = []
 	for (let x = 0; x < context.colsCount; ++x) {
 		nextMatrix[x] = []
@@ -79,7 +79,7 @@ function entropyChangeMatrix(context) {
 	return nextMatrix
 }
 
-function entropyGetCellColorId(context, x, y) {
+const entropyGetCellColorId = (context, x, y) =>  {
 	let currentMatrix = context.currentMatrix
 	let colsCount = context.colsCount
 	let rowsCount = context.rowsCount
@@ -93,7 +93,7 @@ function entropyGetCellColorId(context, x, y) {
 	return currentMatrix[x][y]
 }
 
-function entropyRender(context) {
+const entropyRender = (context) =>  {
 	let ctx = context.ctx
 	let currentMatrix = context.currentMatrix
 	let resolution = context.resolution

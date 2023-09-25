@@ -3,7 +3,7 @@ import { fillSquare, setupCanvas, nextCellColorId, pickColors } from "./common.j
 
 export var CCA2DrenderInterval
 
-export function CCA2DcreateContext(settings) {
+export const CCA2DcreateContext = (settings) => {
 
 	clearInterval(CCA2DrenderInterval)
 
@@ -37,7 +37,7 @@ export function CCA2DcreateContext(settings) {
 	return context
 }
 
-function CCA2Drender(context) {
+const CCA2Drender = (context) => {
 	let rowsCount = context.rowsCount
 	let colsCount = context.colsCount
 	let resolution = context.resolution
@@ -50,7 +50,7 @@ function CCA2Drender(context) {
 	}
 }
 
-export function CCA2Dstart(context, maxIterations = 1000) {
+export const CCA2Dstart = (context, maxIterations = 1000) => {
 	if (context) {
 		let i = 0
 		CCA2DrenderInterval = setInterval(function () {
@@ -62,7 +62,7 @@ export function CCA2Dstart(context, maxIterations = 1000) {
 	}
 }
 
-function CCA2DSetNewState(context) {
+const CCA2DSetNewState = (context) => {
 	let rowsCount = context.rowsCount
 	let colsCount = context.colsCount
 	let newState = []
@@ -75,7 +75,7 @@ function CCA2DSetNewState(context) {
 	return newState
 }
 
-function CCA2DCellTransformation(context, x, y) {
+const CCA2DCellTransformation = (context, x, y) => {
 
 	let state = context.state
 
@@ -103,7 +103,7 @@ function CCA2DCellTransformation(context, x, y) {
 	return newCell
 }
 
-function CCA2DgetCellColorId(context, x, y) {
+const CCA2DgetCellColorId = (context, x, y) => {
 	let state = context.state
 	let colsCount = context.colsCount
 	let rowsCount = context.rowsCount
@@ -117,7 +117,7 @@ function CCA2DgetCellColorId(context, x, y) {
 	return state[y][x]
 }
 
-function CCA2DsetRandomState(context) {
+const CCA2DsetRandomState = (context) => {
 	let state = context.state
 	let colsCount = context.colsCount
 	let rowsCount = context.rowsCount

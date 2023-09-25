@@ -2,7 +2,7 @@ import { fillSquare, setupCanvas, pickColors } from './common.js'
 
 export var langtonRenderInterval
 
-export function langtonCreateContext (settings) {
+export const langtonCreateContext = (settings) => {
 	clearInterval(langtonRenderInterval)
 
 	let colorsCount = 2
@@ -44,7 +44,7 @@ export function langtonCreateContext (settings) {
 	return context
 }
 
-export function langtonStart (context, maxIterations = 12000) {
+export const langtonStart = (context, maxIterations = 12000) => {
 	if (context) {
 		let i = 0
 		langtonRenderInterval = setInterval(function () {
@@ -55,7 +55,7 @@ export function langtonStart (context, maxIterations = 12000) {
 	}
 }
 
-function langtonGetCurrentPositionColorId (context) {
+const langtonGetCurrentPositionColorId = (context) => {
 	// // TODO: check if position is out of bounds
 	// let x = (context.positionX === -1) ? context.colsCount - 1 : context.positionX
 	// x = (context.positionX === context.colsCount) ? 0 : context.positionX
@@ -65,7 +65,7 @@ function langtonGetCurrentPositionColorId (context) {
 	return context.grid[context.positionX][context.positionY]
 }
 
-function langtonIteration (context) {
+const langtonIteration = (context) => {
 	let turnX = context.orientationX
 	let turnY = context.orientationY
 	if (
