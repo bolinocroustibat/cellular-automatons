@@ -7,7 +7,6 @@ See https://en.wikipedia.org/wiki/Cyclic_cellular_automaton
 
 
 ## Dependencies
-- Yarn or NPM
 - Chroma.js (https://github.com/gka/chroma.js/)
 - Tweakpane (https://github.com/cocopon/tweakpane)
 
@@ -16,4 +15,4 @@ See https://en.wikipedia.org/wiki/Cyclic_cellular_automaton
 
 This repository does not use any JS bundler on purpose.
 
-Just install the dependencies with yarn (`yarn install`), then use any web server and navigate to `index.html` to run the project.
+Just use any web server and navigate to `index.html` to run the project.
