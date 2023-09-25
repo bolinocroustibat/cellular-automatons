@@ -21,15 +21,15 @@ import {
 import { Pane } from 'https://cdn.skypack.dev/tweakpane'
 
 var pane
-var settings
+var options
 var CCA1Dcontext
 var CCA2Dcontext
 var langtonContext
 var entropyContext
 
-window.onload = function () {
+window.onload = () => {
   pane = new Pane()
-  const artSelector = pane.addInput({ art: '2' }, 'art', {
+  const artSelector = pane.addBinding({ art: '2' }, 'art', {
     index: 1,
     label: 'Algorithm',
     options: {
@@ -39,38 +39,38 @@ window.onload = function () {
       '2 dimensions Entropy Automaton': 'E'
     }
   })
-  pane.addSeparator()
-  const cca1dColorsCountPane = pane.addInput(
+  // pane.addBlade()
+  const cca1dColorsCountPane = pane.addBinding(
     { cca1dColorsCount: 4 },
     'cca1dColorsCount',
     { label: 'Number of colors', min: 3, max: 5, step: 1 }
   )
-  const cca2dColorsCountPane = pane.addInput(
+  const cca2dColorsCountPane = pane.addBinding(
     { cca2dColorsCount: 8 },
     'cca2dColorsCount',
     { label: 'Number of colors', min: 2, max: 20, step: 1 }
   )
-  const cca2dThresholdPane = pane.addInput(
+  const cca2dThresholdPane = pane.addBinding(
     { cca2dThreshold: 2 },
     'cca2dThreshold',
     { label: 'Threshold', min: 1, max: 3, step: 1 }
   )
-  const cca2dResolutionPane = pane.addInput(
+  const cca2dResolutionPane = pane.addBinding(
     { cca2dResolution: 10 },
     'cca2dResolution',
     { label: 'Resolution', min: 4, max: 20, step: 1 }
   )
-  const entropyColorsCountPane = pane.addInput(
+  const entropyColorsCountPane = pane.addBinding(
     { entropyColorsCount: 4 },
     'entropyColorsCount',
     { label: 'Number of colors', min: 2, max: 20, step: 1 }
   )
-  const langtonResolutionPane = pane.addInput(
+  const langtonResolutionPane = pane.addBinding(
     { langtonResolution: 10 },
     'langtonResolution',
     { label: 'Resolution', min: 6, max: 20, step: 1 }
   )
-  const entropyResolutionPane = pane.addInput(
+  const entropyResolutionPane = pane.addBinding(
     { entropyResolution: 10 },
     'entropyResolution',
     { label: 'Resolution', min: 6, max: 20, step: 1 }
@@ -78,7 +78,7 @@ window.onload = function () {
   const resetBtn = pane.addButton({
     title: 'Reset with those values'
   })
-  pane.addSeparator()
+  // pane.addBlade()
   const startBtn = pane.addButton({
     index: 10,
     title: 'Start'
@@ -146,7 +146,7 @@ window.onload = function () {
     clearInterval(CCA2DrenderInterval)
     clearInterval(langtonRenderInterval)
     clearInterval(entropyRenderInterval)
-    switch (settings.art) {
+    switch (options.art) {
       case '1':
         CCA1Dstart(CCA1Dcontext)
         break
@@ -163,31 +163,40 @@ window.onload = function () {
   })
 }
 
-function resetContext () {
+const resetContext = () => {
   clearInterval(CCA1DrenderInterval)
   clearInterval(CCA2DrenderInterval)
   clearInterval(langtonRenderInterval)
   clearInterval(entropyRenderInterval)
-  settings = pane.exportPreset()
-  settings.canvasEl = document.getElementById('canvas')
-  settings.width = window.innerWidth
-  settings.height = window.innerHeight
-  switch (settings.art) {
+  const state = pane.exportState()
+  // Convert Tweakpane state to a clean "options" object
+  options = {}
+  for (const s of state.children) {
+    if (s.binding) {
+      options[s.binding.key] = s.binding.value
+    }
+  }
+  // Add more keys/values to the "options" object
+  options.canvasEl = document.getElementById('canvas')
+  options.width = window.innerWidth
+  options.height = window.innerHeight
+  // Create the context
+  switch (options.art) {
     case '1':
-      CCA1Dcontext = CCA1DcreateContext(settings)
+      CCA1Dcontext = CCA1DcreateContext(options)
       break
     case '2':
-      CCA2Dcontext = CCA2DcreateContext(settings)
+      CCA2Dcontext = CCA2DcreateContext(options)
       break
     case 'L':
-      langtonContext = langtonCreateContext(settings)
+      langtonContext = langtonCreateContext(options)
       break
     case 'E':
-      entropyContext = entropyCreateContext(settings)
+      entropyContext = entropyCreateContext(options)
       break
   }
 }
 
-window.onresize = function () {
+window.onresize = () => {
   resetContext()
 }
