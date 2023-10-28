@@ -18,7 +18,7 @@ import {
   entropyStart,
   entropyRenderInterval
 } from './entropy.js'
-import { Pane } from 'https://cdn.skypack.dev/tweakpane'
+import { Pane } from 'https://cdn.skypack.dev/pin/tweakpane@v4.0.1-GxPFd91hBXjDU4rkpV6U/mode=imports,min/optimized/tweakpane.js'
 
 var pane
 var options

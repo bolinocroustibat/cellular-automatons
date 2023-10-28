@@ -1,4 +1,4 @@
-import chromaJs from 'https://cdn.skypack.dev/chroma-js'
+import chromaJs from 'https://cdn.skypack.dev/pin/chroma-js@v2.4.2-0odQ8HNNFjq8SUJJSzbh/mode=imports,min/optimized/chroma-js.js'
 
 
 export const setupCanvas = (canvasEl, width, height) => {
