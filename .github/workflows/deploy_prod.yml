@@ -1,35 +1,45 @@
 name: Deploy to prod when tag
 
 on:
-	push:
-		tags:
-			- '*'
+  push:
+    tags:
+      - '*'
 
 jobs:
-	deploy-prod:
-		name: Deploy to prod from ${{ github.ref_name }}/${{ github.sha }}
-		runs-on: ubuntu-latest
-		steps:
-			- uses: actions/checkout@v4
+  deploy-prod:
+    name: Deploy to prod from ${{ github.ref_name }}/${{ github.sha }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-			- name: Install SSH key
-				uses: shimataro/ssh-key-action@v2
-				with:
-					key: ${{ secrets.SSH_PRIVATE_KEY }}
-					name: id_rsa
-					known_hosts: ${{ secrets.SSH_HOST }}
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '21.x'
 
-			- name: Adding server to known hosts
-				run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Install dependencies
+        run: npm install
 
-			- name: Copy to server with rsync
-				run: rsync -avz --exclude '.git' --chown=github:www-data --chmod=Dg=rwx,Fg=rwx ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/www/cyclic-cellular-automaton/ # We set directory (D) and files (F) permission for group www-data to rwx so that the same users can overwrite later
+      - name: Build
+        run: npm run build --omit-dev
 
-			- name: Execute server commands for deploy
-				uses: appleboy/ssh-action@master
-				with:
-					host: ${{ secrets.SSH_HOST }}
-					username: ${{ secrets.SSH_USER }}
-					key: ${{ secrets.SSH_PRIVATE_KEY }}
-					script: |
-						sudo systemctl restart nginx.service
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            name: id_rsa
+            known_hosts: ${{ secrets.SSH_HOST }}
+
+      - name: Adding server to known hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy to server with rsync
+        run: rsync -avz --exclude '.git' --chown=github:www-data --chmod=Dg=rwx,Fg=rwx ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/home/www/cyclic-cellular-automaton/ # We set directory (D) and files (F) permission for group www-data to rwx so that the same users can overwrite later
+
+      - name: Relaunch nginx on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: sudo systemctl restart nginx.service

@@ -33,10 +33,11 @@ window.onload = () => {
     index: 1,
     label: 'Algorithm',
     options: {
-      '1 dimension Cyclic Cellular Automaton': '1',
-      '2 dimensions Cyclic Cellular Automaton': '2',
+      "1 dimension Cyclic Cellular Automaton": "1",
+      "2 dimensions Cyclic Cellular Automaton": "2",
+      "Conway's game of Life": "C",
       "Langton's ant": 'L',
-      '2 dimensions Entropy Automaton': 'E'
+      "2 dimensions Entropy Automaton": "E"
     }
   })
   // pane.addBlade()

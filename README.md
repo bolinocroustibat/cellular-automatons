@@ -7,12 +7,29 @@ See https://en.wikipedia.org/wiki/Cyclic_cellular_automaton
 
 
 ## Dependencies
-- Chroma.js (https://github.com/gka/chroma.js/)
-- Tweakpane (https://github.com/cocopon/tweakpane)
+- [Chroma.js](https://github.com/gka/chroma.js/)
+- [Tweakpane](https://github.com/cocopon/tweakpane)
 
 
-## Install
+## Install the dependencies
 
-This repository does not use any JS bundler on purpose.
+```bash
+npm install
+```
 
-Just use any web server and navigate to `index.html` to run the project.
+## Run locally
+
+```bash
+npm run dev
+```
+
+## Build from production
+
+```bash
+npm run build
+```
+
+You can then preview the production build with:
+```bash
+npm run build
+```
