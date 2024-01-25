@@ -70,7 +70,9 @@ window.onload = () => {
 
   // Set default
   blades.forEach(blade => blade.hidden = true)
-  cca1dColorsCountBlade.hidden = false
+  cca2dColorsCountBlade.hidden = false
+  cca2dThresholdBlade.hidden = false
+  cca2dResolutionBlade.hidden = false
 
   resetContext()
 

@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "chroma-js": "^2.4.2",
-    "tweakpane": "^4.0.3",
-    "velocity-animate": "^1.5.2"
+    "tweakpane": "^4.0.3"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
