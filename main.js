@@ -1,31 +1,15 @@
-import {
-  CCA1DcreateContext,
-  CCA1Dstart,
-  CCA1DrenderInterval
-} from './cca-1d.js'
-import {
-  CCA2DcreateContext,
-  CCA2Dstart,
-  CCA2DrenderInterval
-} from './cca-2d.js'
-import {
-  langtonCreateContext,
-  langtonStart,
-  langtonRenderInterval
-} from './langton.js'
-import {
-  entropyCreateContext,
-  entropyStart,
-  entropyRenderInterval
-} from './entropy.js'
-import { Pane } from 'https://cdn.skypack.dev/pin/tweakpane@v4.0.1-GxPFd91hBXjDU4rkpV6U/mode=imports,min/optimized/tweakpane.js'
+import { CCA1DcreateContext, CCA1Dstart, CCA1DrenderInterval } from './cca-1d'
+import { CCA2DcreateContext, CCA2Dstart, CCA2DrenderInterval } from './cca-2d'
+import { langtonCreateContext, langtonStart, langtonRenderInterval } from './langton'
+import { entropyCreateContext, entropyStart, entropyRenderInterval } from './entropy'
+import { Pane } from 'tweakpane'
 
-var pane
-var options
-var CCA1Dcontext
-var CCA2Dcontext
-var langtonContext
-var entropyContext
+let pane
+let options
+let CCA1Dcontext
+let CCA2Dcontext
+let langtonContext
+let entropyContext
 
 window.onload = () => {
   pane = new Pane()
@@ -33,56 +17,56 @@ window.onload = () => {
     index: 1,
     label: 'Algorithm',
     options: {
-      "1 dimension Cyclic Cellular Automaton": "1",
-      "2 dimensions Cyclic Cellular Automaton": "2",
-      "Conway's game of Life": "C",
+      '1 dimension Cyclic Cellular Automaton': '1',
+      '2 dimensions Cyclic Cellular Automaton': '2',
+      "Conway's game of Life": 'C',
       "Langton's ant": 'L',
-      "2 dimensions Entropy Automaton": "E"
-    }
+      '2 dimensions Entropy Automaton': 'E',
+    },
   })
   // pane.addBlade()
   const cca1dColorsCountPane = pane.addBinding(
     { cca1dColorsCount: 4 },
     'cca1dColorsCount',
-    { label: 'Number of colors', min: 3, max: 5, step: 1 }
+    { label: 'Number of colors', min: 3, max: 5, step: 1 },
   )
   const cca2dColorsCountPane = pane.addBinding(
     { cca2dColorsCount: 8 },
     'cca2dColorsCount',
-    { label: 'Number of colors', min: 2, max: 20, step: 1 }
+    { label: 'Number of colors', min: 2, max: 20, step: 1 },
   )
   const cca2dThresholdPane = pane.addBinding(
     { cca2dThreshold: 2 },
     'cca2dThreshold',
-    { label: 'Threshold', min: 1, max: 3, step: 1 }
+    { label: 'Threshold', min: 1, max: 3, step: 1 },
   )
   const cca2dResolutionPane = pane.addBinding(
     { cca2dResolution: 10 },
     'cca2dResolution',
-    { label: 'Resolution', min: 4, max: 20, step: 1 }
+    { label: 'Resolution', min: 4, max: 20, step: 1 },
   )
   const entropyColorsCountPane = pane.addBinding(
     { entropyColorsCount: 4 },
     'entropyColorsCount',
-    { label: 'Number of colors', min: 2, max: 20, step: 1 }
+    { label: 'Number of colors', min: 2, max: 20, step: 1 },
   )
   const langtonResolutionPane = pane.addBinding(
     { langtonResolution: 10 },
     'langtonResolution',
-    { label: 'Resolution', min: 6, max: 20, step: 1 }
+    { label: 'Resolution', min: 6, max: 20, step: 1 },
   )
   const entropyResolutionPane = pane.addBinding(
     { entropyResolution: 10 },
     'entropyResolution',
-    { label: 'Resolution', min: 6, max: 20, step: 1 }
+    { label: 'Resolution', min: 6, max: 20, step: 1 },
   )
   const resetBtn = pane.addButton({
-    title: 'Reset with those values'
+    title: 'Reset with those values',
   })
   // pane.addBlade()
   const startBtn = pane.addButton({
     index: 10,
-    title: 'Start'
+    title: 'Start',
   })
 
   // Set default

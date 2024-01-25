@@ -1,10 +1,13 @@
-import { fillSquare, setupCanvas, nextCellColorId, pickColors } from "./common.js";
-
+import {
+	fillSquare,
+	setupCanvas,
+	nextCellColorId,
+	pickColors,
+} from "./common"
 
 export var CCA2DrenderInterval
 
 export const CCA2DcreateContext = (settings) => {
-
 	clearInterval(CCA2DrenderInterval)
 
 	let canvasEl = settings.canvasEl
@@ -29,7 +32,7 @@ export const CCA2DcreateContext = (settings) => {
 		resolution: resolution,
 		rowsCount: rowsCount,
 		colsCount: colsCount,
-		ctx: ctx
+		ctx: ctx,
 	}
 
 	CCA2DsetRandomState(context)
@@ -54,7 +57,7 @@ export const CCA2Dstart = (context, maxIterations = 1000) => {
 	if (context) {
 		let i = 0
 		CCA2DrenderInterval = setInterval(function () {
-			if (++i === maxIterations) clearInterval(CCA2DrenderInterval);
+			if (++i === maxIterations) clearInterval(CCA2DrenderInterval)
 			let newState = CCA2DSetNewState(context)
 			context.state = newState
 			CCA2Drender(context)
@@ -67,7 +70,7 @@ const CCA2DSetNewState = (context) => {
 	let colsCount = context.colsCount
 	let newState = []
 	for (let y = 0; y < rowsCount; ++y) {
-		if (!newState[y]) newState[y] = []
+		if (!newState[y]) newState[y] = [];
 		for (let x = 0; x < colsCount; ++x) {
 			newState[y][x] = CCA2DCellTransformation(context, x, y)
 		}
@@ -76,7 +79,6 @@ const CCA2DSetNewState = (context) => {
 }
 
 const CCA2DCellTransformation = (context, x, y) => {
-
 	let state = context.state
 
 	let threshold = context.threshold
@@ -95,10 +97,15 @@ const CCA2DCellTransformation = (context, x, y) => {
 	]
 
 	let thisCell = state[y][x]
-	let nextColorId = nextCellColorId(thisCell, context.colors);
-	let successorNeighboursCount = neighbours.filter(function (neighbour) { return neighbour.id == nextColorId })
+	let nextColorId = nextCellColorId(thisCell, context.colors)
+	let successorNeighboursCount = neighbours.filter(function (neighbour) {
+		return neighbour.id == nextColorId
+	})
 
-	let newCell = (successorNeighboursCount.length >= threshold) ? successorNeighboursCount[0] : thisCell
+	let newCell =
+		successorNeighboursCount.length >= threshold
+			? successorNeighboursCount[0]
+			: thisCell
 
 	return newCell
 }
@@ -108,11 +115,11 @@ const CCA2DgetCellColorId = (context, x, y) => {
 	let colsCount = context.colsCount
 	let rowsCount = context.rowsCount
 
-	x = (x === -1) ? colsCount - 1 : x
-	x = (x === colsCount) ? 0 : x
+	x = x === -1 ? colsCount - 1 : x
+	x = x === colsCount ? 0 : x
 
-	y = (y === -1) ? rowsCount - 1 : y
-	y = (y === rowsCount) ? 0 : y
+	y = y === -1 ? rowsCount - 1 : y
+	y = y === rowsCount ? 0 : y
 
 	return state[y][x]
 }
