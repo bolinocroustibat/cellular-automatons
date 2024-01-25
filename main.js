@@ -2,6 +2,11 @@ import { Pane } from "tweakpane"
 import { CCA1DcreateContext, CCA1DrenderInterval, CCA1Dstart } from "./cca-1d"
 import { CCA2DcreateContext, CCA2DrenderInterval, CCA2Dstart } from "./cca-2d"
 import {
+	conwayCreateContext,
+	conwayRenderInterval,
+	conwayStart,
+} from "./conway"
+import {
 	entropyCreateContext,
 	entropyRenderInterval,
 	entropyStart,
@@ -16,17 +21,19 @@ let pane
 let settings
 let CCA1Dcontext
 let CCA2Dcontext
+let conwayContext
 let langtonContext
 let entropyContext
 
 window.onload = () => {
 	pane = new Pane()
-	const artSelector = pane.addBinding({ art: "2" }, "art", {
+	const artSelector = pane.addBinding({ art: "C" }, "art", {
 		index: 1,
 		label: "Algorithm",
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "1",
 			"2 dimensions Cyclic Cellular Automaton": "2",
+			"Conway's game of Life": "C",
 			"Langton's ant": "L",
 			"2 dimensions Entropy Automaton": "E",
 		},
@@ -56,6 +63,11 @@ window.onload = () => {
 		"entropyColorsCount",
 		{ label: "Number of colors", min: 2, max: 20, step: 1 },
 	)
+	const conwayResolution = pane.addBinding(
+		{ conwayResolution: 10 },
+		"conwayResolution",
+		{ label: "Resolution", min: 6, max: 20, step: 1 },
+	)
 	const langtonResolutionBlade = pane.addBinding(
 		{ langtonResolution: 10 },
 		"langtonResolution",
@@ -79,6 +91,7 @@ window.onload = () => {
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
 		cca2dResolutionBlade,
+		conwayResolution,
 		entropyColorsCountBlade,
 		langtonResolutionBlade,
 		entropyResolutionBlade,
@@ -88,9 +101,10 @@ window.onload = () => {
 	for (const blade of blades) {
 		blade.hidden = true
 	}
-	cca2dColorsCountBlade.hidden = false
-	cca2dThresholdBlade.hidden = false
-	cca2dResolutionBlade.hidden = false
+	conwayResolution.hidden = false
+	// cca2dColorsCountBlade.hidden = false
+	// cca2dThresholdBlade.hidden = false
+	// cca2dResolutionBlade.hidden = false
 
 	resetContext()
 
@@ -109,6 +123,12 @@ window.onload = () => {
 				cca2dColorsCountBlade.hidden = false
 				cca2dThresholdBlade.hidden = false
 				cca2dResolutionBlade.hidden = false
+				break
+			case "C":
+				for (const blade of blades) {
+					blade.hidden = true
+				}
+				conwayResolution.hidden = false
 				break
 			case "L":
 				for (const blade of blades) {
@@ -143,6 +163,9 @@ window.onload = () => {
 			case "2":
 				CCA2Dstart(CCA2Dcontext, 2500)
 				break
+			case "C":
+				conwayStart(conwayContext, 12000)
+				break
 			case "L":
 				langtonStart(langtonContext, 12000)
 				break
@@ -156,6 +179,7 @@ window.onload = () => {
 const resetContext = () => {
 	clearInterval(CCA1DrenderInterval)
 	clearInterval(CCA2DrenderInterval)
+	clearInterval(conwayRenderInterval)
 	clearInterval(langtonRenderInterval)
 	clearInterval(entropyRenderInterval)
 	const state = pane.exportState()
@@ -175,6 +199,9 @@ const resetContext = () => {
 			break
 		case "2":
 			CCA2Dcontext = CCA2DcreateContext(settings)
+			break
+		case "C":
+			conwayContext = conwayCreateContext(settings)
 			break
 		case "L":
 			langtonContext = langtonCreateContext(settings)
