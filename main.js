@@ -19,43 +19,41 @@ window.onload = () => {
     options: {
       '1 dimension Cyclic Cellular Automaton': '1',
       '2 dimensions Cyclic Cellular Automaton': '2',
-      "Conway's game of Life": 'C',
       "Langton's ant": 'L',
       '2 dimensions Entropy Automaton': 'E',
     },
   })
-  // pane.addBlade()
-  const cca1dColorsCountPane = pane.addBinding(
+  const cca1dColorsCountBlade = pane.addBinding(
     { cca1dColorsCount: 4 },
     'cca1dColorsCount',
     { label: 'Number of colors', min: 3, max: 5, step: 1 },
   )
-  const cca2dColorsCountPane = pane.addBinding(
+  const cca2dColorsCountBlade = pane.addBinding(
     { cca2dColorsCount: 8 },
     'cca2dColorsCount',
     { label: 'Number of colors', min: 2, max: 20, step: 1 },
   )
-  const cca2dThresholdPane = pane.addBinding(
+  const cca2dThresholdBlade = pane.addBinding(
     { cca2dThreshold: 2 },
     'cca2dThreshold',
     { label: 'Threshold', min: 1, max: 3, step: 1 },
   )
-  const cca2dResolutionPane = pane.addBinding(
+  const cca2dResolutionBlade = pane.addBinding(
     { cca2dResolution: 10 },
     'cca2dResolution',
     { label: 'Resolution', min: 4, max: 20, step: 1 },
   )
-  const entropyColorsCountPane = pane.addBinding(
+  const entropyColorsCountBlade = pane.addBinding(
     { entropyColorsCount: 4 },
     'entropyColorsCount',
     { label: 'Number of colors', min: 2, max: 20, step: 1 },
   )
-  const langtonResolutionPane = pane.addBinding(
+  const langtonResolutionBlade = pane.addBinding(
     { langtonResolution: 10 },
     'langtonResolution',
     { label: 'Resolution', min: 6, max: 20, step: 1 },
   )
-  const entropyResolutionPane = pane.addBinding(
+  const entropyResolutionBlade = pane.addBinding(
     { entropyResolution: 10 },
     'entropyResolution',
     { label: 'Resolution', min: 6, max: 20, step: 1 },
@@ -63,60 +61,39 @@ window.onload = () => {
   const resetBtn = pane.addButton({
     title: 'Reset with those values',
   })
-  // pane.addBlade()
   const startBtn = pane.addButton({
     index: 10,
     title: 'Start',
   })
 
+  const blades = [cca1dColorsCountBlade, cca2dColorsCountBlade, cca2dThresholdBlade, cca2dResolutionBlade, entropyColorsCountBlade, langtonResolutionBlade, entropyResolutionBlade]
+
   // Set default
-  cca1dColorsCountPane.hidden = true
-  cca2dColorsCountPane.hidden = false
-  cca2dThresholdPane.hidden = false
-  cca2dResolutionPane.hidden = false
-  langtonResolutionPane.hidden = true
-  entropyColorsCountPane.hidden = true
-  entropyResolutionPane.hidden = true
+  blades.forEach(blade => blade.hidden = true)
+  cca1dColorsCountBlade.hidden = false
 
   resetContext()
 
   artSelector.on('change', function (event) {
     switch (event.value) {
       case '1':
-        cca1dColorsCountPane.hidden = false
-        cca2dColorsCountPane.hidden = true
-        cca2dThresholdPane.hidden = true
-        cca2dResolutionPane.hidden = true
-        langtonResolutionPane.hidden = true
-        entropyColorsCountPane.hidden = true
-        entropyResolutionPane.hidden = true
+        blades.forEach(blade => blade.hidden = true)
+        cca1dColorsCountBlade.hidden = false
         break
       case '2':
-        cca1dColorsCountPane.hidden = true
-        cca2dColorsCountPane.hidden = false
-        cca2dThresholdPane.hidden = false
-        cca2dResolutionPane.hidden = false
-        langtonResolutionPane.hidden = true
-        entropyColorsCountPane.hidden = true
-        entropyResolutionPane.hidden = true
+        blades.forEach(blade => blade.hidden = true)
+        cca2dColorsCountBlade.hidden = false
+        cca2dThresholdBlade.hidden = false
+        cca2dResolutionBlade.hidden = false
         break
       case 'L':
-        cca1dColorsCountPane.hidden = true
-        cca2dColorsCountPane.hidden = true
-        cca2dThresholdPane.hidden = true
-        cca2dResolutionPane.hidden = true
-        langtonResolutionPane.hidden = false
-        entropyColorsCountPane.hidden = true
-        entropyResolutionPane.hidden = true
+        blades.forEach(blade => blade.hidden = true)
+        cca2dColorsCountBlade.hidden = false
         break
       case 'E':
-        cca1dColorsCountPane.hidden = true
-        cca2dColorsCountPane.hidden = true
-        cca2dThresholdPane.hidden = true
-        cca2dResolutionPane.hidden = true
-        langtonResolutionPane.hidden = true
-        entropyColorsCountPane.hidden = false
-        entropyResolutionPane.hidden = false
+        blades.forEach(blade => blade.hidden = true)
+        entropyColorsCountBlade.hidden = false
+        entropyResolutionBlade.hidden = false
         break
     }
     resetContext()
