@@ -1,6 +1,6 @@
 import { fillSquare, getCellColorId, pickColors, setupCanvas } from "./common"
 
-export var conwayRenderInterval
+export let conwayRenderInterval
 
 export const conwayCreateContext = (settings) => {
 	clearInterval(conwayRenderInterval)
@@ -30,7 +30,7 @@ export const conwayCreateContext = (settings) => {
 	// Manual populating
 	canvasEl.addEventListener("mousedown", (e) => {
 		const [x, y] = getCursorPosition(canvasEl, resolution, e)
-		state[(x, y)] = colors[1]
+		state[x][y] = colors[1]
 		fillSquare(ctx, colors[1], x * resolution, y * resolution, resolution)
 	})
 
@@ -88,19 +88,17 @@ const conwayChangeMatrix = (context) => {
 			]
 			// Analyse neighbors info
 			let nbAlive = 0
-			neighbours.forEach((cell) => {
-				if (cell == context.colors[1]) {
-					nbAlive++
-				}
-			})
+			for (cell of neighbours) {
+				if (cell === context.colors[1]) nbAlive++
+			}
 			// Change the nextTable according to the neighbors
 			if (
-				context.currentMatrix[x][y] == context.colors[1] &&
+				context.state[x][y] === context.colors[1] &&
 				(nbAlive < 2 || nbAlive > 3)
 			) {
 				// Death of an an alive cell
-				nextMatrix[x][y] = context.colors[0]
-			} else if (context.currentMatrix[x][y] == false && nbAlive == 3) {
+				newState[x][y] = context.colors[0]
+			} else if (context.state[x][y] === false && nbAlive === 3) {
 				// Birth of a cell
 				newState[x][y] = context.colors[1]
 			} else {
@@ -118,13 +116,7 @@ const conwayRender = (context) => {
 	const resolution = context.resolution
 	for (let x = 0; x < context.colsCount; ++x) {
 		for (let y = 0; y < context.rowsCount; ++y) {
-			fillSquare(
-				ctx,
-				currentMatrix[x][y],
-				x * resolution,
-				y * resolution,
-				resolution,
-			)
+			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution)
 		}
 	}
 }
