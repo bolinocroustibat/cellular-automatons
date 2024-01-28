@@ -136,9 +136,7 @@ const resetContext = () => {
   // Convert Tweakpane state to a clean "options" object
   options = {}
   for (const s of state.children) {
-    if (s.binding) {
-      options[s.binding.key] = s.binding.value
-    }
+    if (s.binding) options[s.binding.key] = s.binding.value
   }
   // Add more keys/values to the "options" object
   options.canvasEl = document.getElementById('canvas')
