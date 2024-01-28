@@ -90,7 +90,7 @@ window.onload = () => {
         break
       case 'L':
         blades.forEach(blade => blade.hidden = true)
-        cca2dColorsCountBlade.hidden = false
+        langtonResolutionBlade.hidden = false
         break
       case 'E':
         blades.forEach(blade => blade.hidden = true)
