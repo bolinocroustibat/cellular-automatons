@@ -85,7 +85,9 @@ window.onload = () => {
 	]
 
 	// Set default
-	blades.forEach((blade) => (blade.hidden = true))
+	for (const blade of blades) {
+		blade.hidden = true
+	}
 	cca2dColorsCountBlade.hidden = false
 	cca2dThresholdBlade.hidden = false
 	cca2dResolutionBlade.hidden = false
@@ -95,21 +97,29 @@ window.onload = () => {
 	artSelector.on("change", (event) => {
 		switch (event.value) {
 			case "1":
-				blades.forEach((blade) => (blade.hidden = true))
+				for (const blade of blades) {
+					blade.hidden = true
+				}
 				cca1dColorsCountBlade.hidden = false
 				break
 			case "2":
-				blades.forEach((blade) => (blade.hidden = true))
+				for (const blade of blades) {
+					blade.hidden = true
+				}
 				cca2dColorsCountBlade.hidden = false
 				cca2dThresholdBlade.hidden = false
 				cca2dResolutionBlade.hidden = false
 				break
 			case "L":
-				blades.forEach((blade) => (blade.hidden = true))
+				for (const blade of blades) {
+					blade.hidden = true
+				}
 				langtonResolutionBlade.hidden = false
 				break
 			case "E":
-				blades.forEach((blade) => (blade.hidden = true))
+				for (const blade of blades) {
+					blade.hidden = true
+				}
 				entropyColorsCountBlade.hidden = false
 				entropyResolutionBlade.hidden = false
 				break

@@ -110,13 +110,10 @@ const CCA2DgetCellColorId = (context, x, y) => {
 	const colsCount = context.colsCount
 	const rowsCount = context.rowsCount
 
-	x = x === -1 ? colsCount - 1 : x
-	x = x === colsCount ? 0 : x
+	const modifiedX = x === -1 ? colsCount - 1 : x === colsCount ? 0 : x
+	const modifiedY = y === -1 ? rowsCount - 1 : y === rowsCount ? 0 : y
 
-	y = y === -1 ? rowsCount - 1 : y
-	y = y === rowsCount ? 0 : y
-
-	return state[y][x]
+	return state[modifiedY][modifiedX]
 }
 
 const CCA2DsetRandomState = (context) => {

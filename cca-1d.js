@@ -86,7 +86,8 @@ const CCA1DloopCells = (context) => {
 const CCA1DgetCellColorId = (context, x) => {
 	const state = context.state
 	const width = context.width
-	x = x === -1 ? width - 1 : x
-	x = x === width ? 0 : x
-	return state[x]
+
+	const modifiedX = x === -1 ? width - 1 : x === width ? 0 : x
+
+	return state[modifiedX]
 }
