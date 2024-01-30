@@ -14,12 +14,12 @@ export const entropyCreateContext = (settings) => {
 	const rowsCount = height / resolution
 	const colsCount = width / resolution
 
-	const currentMatrix = []
+	const state = []
 	const colors = pickColors(colorsCount)
 	const ctx = setupCanvas(canvasEl, width, height)
 
 	const context = {
-		currentMatrix: currentMatrix,
+		state: state,
 		colors: colors,
 		width: width,
 		height: height,
@@ -30,13 +30,13 @@ export const entropyCreateContext = (settings) => {
 	}
 
 	for (let x = 0; x < colsCount; ++x) {
-		currentMatrix[x] = []
+		state[x] = []
 		for (let y = 0; y < rowsCount; ++y) {
 			const randomColor = colors[Math.floor(Math.random() * colors.length)]
-			currentMatrix[x][y] = randomColor
+			state[x][y] = randomColor
 			fillSquare(
 				ctx,
-				currentMatrix[x][y],
+				state[x][y],
 				x * resolution,
 				y * resolution,
 				resolution,
@@ -52,17 +52,17 @@ export const entropyStart = (context, maxIterations = 1000) => {
 		let i = 0
 		entropyRenderInterval = setInterval(() => {
 			if (++i === maxIterations) clearInterval(entropyRenderInterval)
-			const nextMatrix = entropyChangeMatrix(context)
-			context.currentMatrix = nextMatrix
+			const newState = entropySetNewState(context)
+			context.state = newState
 			entropyRender(context)
 		}, 25)
 	}
 }
 
-const entropyChangeMatrix = (context) => {
-	const nextMatrix = []
+const entropySetNewState = (context) => {
+	const newState = []
 	for (let x = 0; x < context.colsCount; ++x) {
-		nextMatrix[x] = []
+		newState[x] = []
 		for (let y = 0; y < context.rowsCount; ++y) {
 			const neighbours = [
 				entropyGetCellColorId(context, x - 1, y - 1),
@@ -76,34 +76,34 @@ const entropyChangeMatrix = (context) => {
 				entropyGetCellColorId(context, x, y + 1),
 				entropyGetCellColorId(context, x + 1, y + 1),
 			]
-			// currentMatrix[x][y] = getMostFrequentElement(neighbours)
+			// state[x][y] = getMostFrequentElement(neighbours)
 			const randomNeighbourNb = Math.floor(Math.random() * 8)
-			nextMatrix[x][y] = neighbours[randomNeighbourNb]
+			newState[x][y] = neighbours[randomNeighbourNb]
 		}
 	}
-	return nextMatrix
+	return newState
 }
 
 const entropyGetCellColorId = (context, x, y) => {
-	const currentMatrix = context.currentMatrix
+	const state = context.state
 	const colsCount = context.colsCount
 	const rowsCount = context.rowsCount
 
 	const modifiedX = x === -1 ? colsCount - 1 : x === colsCount ? 0 : x
 	const modifiedY = y === -1 ? rowsCount - 1 : y === rowsCount ? 0 : y
 
-	return currentMatrix[modifiedX][modifiedY]
+	return state[modifiedX][modifiedY]
 }
 
 const entropyRender = (context) => {
 	const ctx = context.ctx
-	const currentMatrix = context.currentMatrix
+	const state = context.state
 	const resolution = context.resolution
 	for (let x = 0; x < context.colsCount; ++x) {
 		for (let y = 0; y < context.rowsCount; ++y) {
 			fillSquare(
 				ctx,
-				currentMatrix[x][y],
+				state[x][y],
 				x * resolution,
 				y * resolution,
 				resolution,
