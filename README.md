@@ -34,3 +34,10 @@ You can then preview the production build with:
 ```bash
 npm run build
 ```
+
+## Format and lint code with Biome
+
+Lint AND format with:
+```bash
+npx @biomejs/biome check --apply .
+```
