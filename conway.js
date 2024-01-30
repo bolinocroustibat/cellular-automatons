@@ -14,15 +14,15 @@ export const conwayCreateContext = (settings) => {
 	const rowsCount = height / resolution
 	const colsCount = width / resolution
 
-	const currentMatrix = []
+	const state = []
 	const colors = pickColors(colorsCount)
 	const ctx = setupCanvas(canvasEl, width, height)
 
 	// Full color background
 	for (let x = 0; x < colsCount; ++x) {
-		currentMatrix[x] = []
+		state[x] = []
 		for (let y = 0; y < rowsCount; ++y) {
-			currentMatrix[x][y] = colors[0]
+			state[x][y] = colors[0]
 			fillSquare(ctx, colors[0], x * resolution, y * resolution, resolution)
 		}
 	}
@@ -30,12 +30,12 @@ export const conwayCreateContext = (settings) => {
 	// Manual populating
 	canvasEl.addEventListener("mousedown", (e) => {
 		const [x, y] = getCursorPosition(canvasEl, resolution, e)
-		currentMatrix[(x, y)] = colors[1]
+		state[(x, y)] = colors[1]
 		fillSquare(ctx, colors[1], x * resolution, y * resolution, resolution)
 	})
 
 	const context = {
-		currentMatrix: currentMatrix,
+		state: state,
 		colors: colors,
 		width: width,
 		height: height,
@@ -62,17 +62,17 @@ export const conwayStart = (context, maxIterations = 1000) => {
 		let i = 0
 		conwayRenderInterval = setInterval(() => {
 			if (++i === maxIterations) clearInterval(conwayRenderInterval)
-			const nextMatrix = conwayChangeMatrix(context)
-			context.currentMatrix = nextMatrix
+			const newState = conwayChangeMatrix(context)
+			context.state = newState
 			conwayRender(context)
 		}, 25)
 	}
 }
 
 const conwayChangeMatrix = (context) => {
-	const nextMatrix = []
+	const newState = []
 	for (let x = 0; x < context.colsCount; ++x) {
-		nextMatrix[x] = []
+		newState[x] = []
 		for (let y = 0; y < context.rowsCount; ++y) {
 			const neighbours = [
 				getCellColorId(context, x - 1, y - 1),
@@ -102,19 +102,19 @@ const conwayChangeMatrix = (context) => {
 				nextMatrix[x][y] = context.colors[0]
 			} else if (context.currentMatrix[x][y] == false && nbAlive == 3) {
 				// Birth of a cell
-				nextMatrix[x][y] = context.colors[1]
+				newState[x][y] = context.colors[1]
 			} else {
 				// Keep the same cell
-				nextMatrix[x][y] = context.currentMatrix[x][y]
+				newState[x][y] = context.state[x][y]
 			}
 		}
 	}
-	return nextMatrix
+	return newState
 }
 
 const conwayRender = (context) => {
 	const ctx = context.ctx
-	const currentMatrix = context.currentMatrix
+	const state = context.state
 	const resolution = context.resolution
 	for (let x = 0; x < context.colsCount; ++x) {
 		for (let y = 0; y < context.rowsCount; ++y) {
