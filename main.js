@@ -13,7 +13,7 @@ import {
 } from "./langton"
 
 let pane
-let options
+let settings
 let CCA1Dcontext
 let CCA2Dcontext
 let langtonContext
@@ -136,7 +136,7 @@ window.onload = () => {
 		clearInterval(CCA2DrenderInterval)
 		clearInterval(langtonRenderInterval)
 		clearInterval(entropyRenderInterval)
-		switch (options.art) {
+		switch (settings.art) {
 			case "1":
 				CCA1Dstart(CCA1Dcontext)
 				break
@@ -159,32 +159,30 @@ const resetContext = () => {
 	clearInterval(langtonRenderInterval)
 	clearInterval(entropyRenderInterval)
 	const state = pane.exportState()
-	// Convert Tweakpane state to a clean "options" object
-	options = {}
+	// Convert Tweakpane state to a clean "settings" object
+	settings = {}
 	for (const s of state.children) {
-		if (s.binding) options[s.binding.key] = s.binding.value
+		if (s.binding) settings[s.binding.key] = s.binding.value
 	}
-	// Add more keys/values to the "options" object
-	options.canvasEl = document.getElementById("canvas")
-	options.width = window.innerWidth
-	options.height = window.innerHeight
+	// Add more keys/values to the "settings" object
+	settings.canvasEl = document.getElementById("canvas")
+	settings.width = window.innerWidth
+	settings.height = window.innerHeight
 	// Create the context
-	switch (options.art) {
+	switch (settings.art) {
 		case "1":
-			CCA1Dcontext = CCA1DcreateContext(options)
+			CCA1Dcontext = CCA1DcreateContext(settings)
 			break
 		case "2":
-			CCA2Dcontext = CCA2DcreateContext(options)
+			CCA2Dcontext = CCA2DcreateContext(settings)
 			break
 		case "L":
-			langtonContext = langtonCreateContext(options)
+			langtonContext = langtonCreateContext(settings)
 			break
 		case "E":
-			entropyContext = entropyCreateContext(options)
+			entropyContext = entropyCreateContext(settings)
 			break
 	}
 }
 
-window.onresize = () => {
-	resetContext()
-}
+window.onresize = () => resetContext()
