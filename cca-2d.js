@@ -1,4 +1,10 @@
-import { fillSquare, nextCellColorId, pickColors, setupCanvas } from "./common"
+import {
+	fillSquare,
+	getCellColorId,
+	nextCellColorId,
+	pickColors,
+	setupCanvas,
+} from "./common"
 
 export let CCA2DrenderInterval
 
@@ -79,16 +85,16 @@ const CCA2DCellTransformation = (context, x, y) => {
 	const threshold = context.threshold
 
 	const neighbours = [
-		CCA2DgetCellColorId(context, x - 1, y - 1),
-		CCA2DgetCellColorId(context, x, y - 1),
-		CCA2DgetCellColorId(context, x + 1, y - 1),
+		getCellColorId(context, x - 1, y - 1),
+		getCellColorId(context, x, y - 1),
+		getCellColorId(context, x + 1, y - 1),
 
-		CCA2DgetCellColorId(context, x - 1, y),
-		CCA2DgetCellColorId(context, x + 1, y),
+		getCellColorId(context, x - 1, y),
+		getCellColorId(context, x + 1, y),
 
-		CCA2DgetCellColorId(context, x - 1, y + 1),
-		CCA2DgetCellColorId(context, x, y + 1),
-		CCA2DgetCellColorId(context, x + 1, y + 1),
+		getCellColorId(context, x - 1, y + 1),
+		getCellColorId(context, x, y + 1),
+		getCellColorId(context, x + 1, y + 1),
 	]
 
 	const thisCell = state[y][x]
@@ -103,17 +109,6 @@ const CCA2DCellTransformation = (context, x, y) => {
 			: thisCell
 
 	return newCell
-}
-
-const CCA2DgetCellColorId = (context, x, y) => {
-	const state = context.state
-	const colsCount = context.colsCount
-	const rowsCount = context.rowsCount
-
-	const modifiedX = x === -1 ? colsCount - 1 : x === colsCount ? 0 : x
-	const modifiedY = y === -1 ? rowsCount - 1 : y === rowsCount ? 0 : y
-
-	return state[modifiedY][modifiedX]
 }
 
 const CCA2DsetRandomState = (context) => {

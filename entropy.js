@@ -1,4 +1,4 @@
-import { fillSquare, pickColors, setupCanvas } from "./common"
+import { fillSquare, getCellColorId, pickColors, setupCanvas } from "./common"
 
 export let entropyRenderInterval
 
@@ -34,13 +34,7 @@ export const entropyCreateContext = (settings) => {
 		for (let y = 0; y < rowsCount; ++y) {
 			const randomColor = colors[Math.floor(Math.random() * colors.length)]
 			state[x][y] = randomColor
-			fillSquare(
-				ctx,
-				state[x][y],
-				x * resolution,
-				y * resolution,
-				resolution,
-			)
+			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution)
 		}
 	}
 
@@ -65,16 +59,16 @@ const entropySetNewState = (context) => {
 		newState[x] = []
 		for (let y = 0; y < context.rowsCount; ++y) {
 			const neighbours = [
-				entropyGetCellColorId(context, x - 1, y - 1),
-				entropyGetCellColorId(context, x, y - 1),
-				entropyGetCellColorId(context, x + 1, y - 1),
+				getCellColorId(context, x - 1, y - 1),
+				getCellColorId(context, x, y - 1),
+				getCellColorId(context, x + 1, y - 1),
 
-				entropyGetCellColorId(context, x - 1, y),
-				entropyGetCellColorId(context, x + 1, y),
+				getCellColorId(context, x - 1, y),
+				getCellColorId(context, x + 1, y),
 
-				entropyGetCellColorId(context, x - 1, y + 1),
-				entropyGetCellColorId(context, x, y + 1),
-				entropyGetCellColorId(context, x + 1, y + 1),
+				getCellColorId(context, x - 1, y + 1),
+				getCellColorId(context, x, y + 1),
+				getCellColorId(context, x + 1, y + 1),
 			]
 			// state[x][y] = getMostFrequentElement(neighbours)
 			const randomNeighbourNb = Math.floor(Math.random() * 8)
@@ -84,30 +78,13 @@ const entropySetNewState = (context) => {
 	return newState
 }
 
-const entropyGetCellColorId = (context, x, y) => {
-	const state = context.state
-	const colsCount = context.colsCount
-	const rowsCount = context.rowsCount
-
-	const modifiedX = x === -1 ? colsCount - 1 : x === colsCount ? 0 : x
-	const modifiedY = y === -1 ? rowsCount - 1 : y === rowsCount ? 0 : y
-
-	return state[modifiedX][modifiedY]
-}
-
 const entropyRender = (context) => {
 	const ctx = context.ctx
 	const state = context.state
 	const resolution = context.resolution
 	for (let x = 0; x < context.colsCount; ++x) {
 		for (let y = 0; y < context.rowsCount; ++y) {
-			fillSquare(
-				ctx,
-				state[x][y],
-				x * resolution,
-				y * resolution,
-				resolution,
-			)
+			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution)
 		}
 	}
 }

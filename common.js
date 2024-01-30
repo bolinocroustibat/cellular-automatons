@@ -12,6 +12,17 @@ export const setupCanvas = (canvasEl, width, height) => {
 	return ctx
 }
 
+export const getCellColorId = (context, x, y) => {
+	const state = context.state
+	const colsCount = context.colsCount
+	const rowsCount = context.rowsCount
+
+	const modifiedX = x === -1 ? colsCount - 1 : x === colsCount ? 0 : x
+	const modifiedY = y === -1 ? rowsCount - 1 : y === rowsCount ? 0 : y
+
+	return state[modifiedX][modifiedY]
+}
+
 export const nextCellColorId = (cell, colors) => {
 	const cellId = cell.id
 	if (cellId >= colors.length - 1) return 0
