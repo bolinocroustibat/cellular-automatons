@@ -29,12 +29,12 @@ export const entropyCreateContext = (settings) => {
 		ctx: ctx,
 	}
 
-	for (let x = 0; x < colsCount; ++x) {
-		state[x] = []
-		for (let y = 0; y < rowsCount; ++y) {
+	for (let y = 0; y < rowsCount; ++y) {
+		state[y] = []
+		for (let x = 0; x < colsCount; ++x) {
 			const randomColor = colors[Math.floor(Math.random() * colors.length)]
-			state[x][y] = randomColor
-			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution)
+			state[y][x] = randomColor
+			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
 		}
 	}
 
@@ -55,9 +55,9 @@ export const entropyStart = (context, maxIterations = 1000) => {
 
 const entropySetNewState = (context) => {
 	const newState = []
-	for (let x = 0; x < context.colsCount; ++x) {
-		newState[x] = []
-		for (let y = 0; y < context.rowsCount; ++y) {
+	for (let y = 0; y < context.rowsCount; ++y) {
+		newState[y] = []
+		for (let x = 0; x < context.colsCount; ++x) {
 			const neighbours = [
 				getCellColorId(context, x - 1, y - 1),
 				getCellColorId(context, x, y - 1),
@@ -72,7 +72,7 @@ const entropySetNewState = (context) => {
 			]
 			// state[x][y] = getMostFrequentElement(neighbours)
 			const randomNeighbourNb = Math.floor(Math.random() * 8)
-			newState[x][y] = neighbours[randomNeighbourNb]
+			newState[y][x] = neighbours[randomNeighbourNb]
 		}
 	}
 	return newState
@@ -82,9 +82,9 @@ const entropyRender = (context) => {
 	const ctx = context.ctx
 	const state = context.state
 	const resolution = context.resolution
-	for (let x = 0; x < context.colsCount; ++x) {
-		for (let y = 0; y < context.rowsCount; ++y) {
-			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution)
+	for (let y = 0; y < context.rowsCount; ++y) {
+		for (let x = 0; x < context.colsCount; ++x) {
+			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
 		}
 	}
 }

@@ -20,7 +20,7 @@ export const getCellColorId = (context, x, y) => {
 	const modifiedX = x === -1 ? colsCount - 1 : x === colsCount ? 0 : x
 	const modifiedY = y === -1 ? rowsCount - 1 : y === rowsCount ? 0 : y
 
-	return state[modifiedX][modifiedY]
+	return state[modifiedY][modifiedX]
 }
 
 export const nextCellColorId = (cell, colors) => {
