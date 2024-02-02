@@ -1,10 +1,11 @@
-# Generative Visual Art algorithms
+# Generative Animated Art algorithms
 
-Cyclic Cellular Automaton
-See https://en.wikipedia.org/wiki/Cyclic_cellular_automaton
-
-- In 1 dimension
-- In 2 dimensions
+- Cyclic Cellular Automaton (see https://en.wikipedia.org/wiki/Cyclic_cellular_automaton)
+  - In 1 dimension
+  - In 2 dimensions
+- Conway's game of Life
+- Langton's ant
+- Various algorithms
 
 ## Dependencies
 
