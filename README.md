@@ -24,16 +24,17 @@ npm install
 npm run dev
 ```
 
-## Build from production
+## Build for production
 
+Build for production without including the dev dependencies with:
 ```bash
-npm run build
+npm run build --omit-dev
 ```
+...it will create a production build in `./dist` folder.
 
 You can then preview the production build with:
-
 ```bash
-npm run build
+npm run preview
 ```
 
 ## Format and lint code with Biome
