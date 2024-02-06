@@ -28,8 +28,8 @@ export const conwayCreateContext = (settings) => {
 	}
 
 	// Manual populating
-	canvasEl.addEventListener("mousedown", (e) => {
-		const [x, y] = getCursorPosition(canvasEl, resolution, e)
+	canvasEl.addEventListener("mousedown", (event) => {
+		const [x, y] = getCursorPosition(canvasEl, resolution, event)
 		state[x][y] = colors[1]
 		fillSquare(ctx, colors[1], x * resolution, y * resolution, resolution)
 	})
@@ -48,8 +48,8 @@ export const conwayCreateContext = (settings) => {
 	return context
 }
 
-const getCursorPosition = (canvas, resolution, event) => {
-	const rect = canvas.getBoundingClientRect()
+const getCursorPosition = (canvasEl, resolution, event) => {
+	const rect = canvasEl.getBoundingClientRect()
 	const pixelX = event.clientX - rect.left
 	const pixelY = event.clientY - rect.top
 	const x = ~~(pixelX / resolution)
@@ -88,7 +88,7 @@ const conwayChangeMatrix = (context) => {
 			]
 			// Analyse neighbors info
 			let nbAlive = 0
-			for (cell of neighbours) {
+			for (const cell of neighbours) {
 				if (cell === context.colors[1]) nbAlive++
 			}
 			// Change the nextTable according to the neighbors
