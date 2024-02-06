@@ -1,4 +1,4 @@
-import { fillSquare, getCellColorId, pickColors, setupCanvas } from "./common"
+import { fillSquare2D, getCellColorId, pickColors, render2D, setupCanvas } from "./common"
 
 export let conwayRenderInterval
 
@@ -23,7 +23,7 @@ export const conwayCreateContext = (settings) => {
 		state[y] = []
 		for (let x = 0; x < colsCount; ++x) {
 			state[y][x] = colors[0]
-			fillSquare(ctx, colors[0], x * resolution, y * resolution, resolution)
+			fillSquare2D(ctx, colors[0], x * resolution, y * resolution, resolution)
 		}
 	}
 
@@ -31,7 +31,7 @@ export const conwayCreateContext = (settings) => {
 	canvasEl.addEventListener("mousedown", (event) => {
 		const [x, y] = getCursorPosition(canvasEl, resolution, event)
 		state[y][x] = colors[1]
-		fillSquare(ctx, colors[1], x * resolution, y * resolution, resolution)
+		fillSquare2D(ctx, colors[1], x * resolution, y * resolution, resolution)
 	})
 
 	const context = {
@@ -62,14 +62,14 @@ export const conwayStart = (context, maxIterations = 1000) => {
 		let i = 0
 		conwayRenderInterval = setInterval(() => {
 			if (++i === maxIterations) clearInterval(conwayRenderInterval)
-			const newState = conwayChangeMatrix(context)
+			const newState = conwayChangeState(context)
 			context.state = newState
-			conwayRender(context)
+			render2D(context)
 		}, 25)
 	}
 }
 
-const conwayChangeMatrix = (context) => {
+const conwayChangeState = (context) => {
 	const newState = []
 	for (let y = 0; y < context.rowsCount; ++y) {
 		newState[y] = []
@@ -108,15 +108,4 @@ const conwayChangeMatrix = (context) => {
 		}
 	}
 	return newState
-}
-
-const conwayRender = (context) => {
-	const ctx = context.ctx
-	const state = context.state
-	const resolution = context.resolution
-	for (let y = 0; y < context.rowsCount; ++y) {
-		for (let x = 0; x < context.colsCount; ++x) {
-			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
-		}
-	}
 }
