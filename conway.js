@@ -7,7 +7,7 @@ export const conwayCreateContext = (settings) => {
 
 	const colorsCount = 2
 	const canvasEl = settings.canvasEl
-	const resolution = settings.langtonResolution
+	const resolution = settings.conwayResolution
 	const width = settings.width - (settings.width % resolution)
 	const height = settings.height - (settings.height % resolution)
 
@@ -19,10 +19,10 @@ export const conwayCreateContext = (settings) => {
 	const ctx = setupCanvas(canvasEl, width, height)
 
 	// Full color background
-	for (let x = 0; x < colsCount; ++x) {
-		state[x] = []
-		for (let y = 0; y < rowsCount; ++y) {
-			state[x][y] = colors[0]
+	for (let y = 0; y < rowsCount; ++y) {
+		state[y] = []
+		for (let x = 0; x < colsCount; ++x) {
+			state[y][x] = colors[0]
 			fillSquare(ctx, colors[0], x * resolution, y * resolution, resolution)
 		}
 	}
@@ -30,7 +30,7 @@ export const conwayCreateContext = (settings) => {
 	// Manual populating
 	canvasEl.addEventListener("mousedown", (event) => {
 		const [x, y] = getCursorPosition(canvasEl, resolution, event)
-		state[x][y] = colors[1]
+		state[y][x] = colors[1]
 		fillSquare(ctx, colors[1], x * resolution, y * resolution, resolution)
 	})
 
@@ -71,9 +71,9 @@ export const conwayStart = (context, maxIterations = 1000) => {
 
 const conwayChangeMatrix = (context) => {
 	const newState = []
-	for (let x = 0; x < context.colsCount; ++x) {
-		newState[x] = []
-		for (let y = 0; y < context.rowsCount; ++y) {
+	for (let y = 0; y < context.rowsCount; ++y) {
+		newState[y] = []
+		for (let x = 0; x < context.colsCount; ++x) {
 			const neighbours = [
 				getCellColorId(context, x - 1, y - 1),
 				getCellColorId(context, x, y - 1),
@@ -91,19 +91,19 @@ const conwayChangeMatrix = (context) => {
 			for (const cell of neighbours) {
 				if (cell === context.colors[1]) nbAlive++
 			}
-			// Change the nextTable according to the neighbors
+			// Change the nextState according to the neighbors
 			if (
-				context.state[x][y] === context.colors[1] &&
+				context.state[y][x] === context.colors[1] &&
 				(nbAlive < 2 || nbAlive > 3)
 			) {
 				// Death of an an alive cell
-				newState[x][y] = context.colors[0]
-			} else if (context.state[x][y] === false && nbAlive === 3) {
+				newState[y][x] = context.colors[0]
+			} else if (context.state[y][x] === false && nbAlive === 3) {
 				// Birth of a cell
-				newState[x][y] = context.colors[1]
+				newState[y][x] = context.colors[1]
 			} else {
 				// Keep the same cell
-				newState[x][y] = context.state[x][y]
+				newState[y][x] = context.state[y][x]
 			}
 		}
 	}
@@ -114,9 +114,9 @@ const conwayRender = (context) => {
 	const ctx = context.ctx
 	const state = context.state
 	const resolution = context.resolution
-	for (let x = 0; x < context.colsCount; ++x) {
-		for (let y = 0; y < context.rowsCount; ++y) {
-			fillSquare(ctx, state[x][y], x * resolution, y * resolution, resolution)
+	for (let y = 0; y < context.rowsCount; ++y) {
+		for (let x = 0; x < context.colsCount; ++x) {
+			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
 		}
 	}
 }
