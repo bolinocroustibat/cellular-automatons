@@ -50,7 +50,40 @@ export const pickColors = (colorsCount) => {
 	return rgbColorsWithId
 }
 
-export const fillSquare = (ctx, colorRgb, x, y, resolution) => {
+export const fillSquare2D = (ctx, colorRgb, x, y, resolution) => {
 	ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
 	ctx.fillRect(x, y, resolution, resolution)
+}
+
+export const render2D = (context) => {
+	const ctx = context.ctx
+	const state = context.state
+	const resolution = context.resolution
+	for (let y = 0; y < context.rowsCount; ++y) {
+		for (let x = 0; x < context.colsCount; ++x) {
+			fillSquare2D(ctx, state[y][x], x * resolution, y * resolution, resolution)
+		}
+	}
+}
+
+export const setRandomStateAndRender2D = (context) => {
+	// Initial random populating, create state AND render the canvas
+	const colors = context.colors
+	const resolution = context.resolution
+	const state = []
+	for (let y = 0; y < context.rowsCount; ++y) {
+		for (let x = 0; x < context.colsCount; ++x) {
+			if (!state[y]) state[y] = []
+			state[y][x] = colors[Math.floor(Math.random() * colors.length)]
+			fillSquare2D(
+				context.ctx,
+				state[y][x],
+				x * resolution,
+				y * resolution,
+				resolution,
+			)
+		}
+	}
+	context.state = state
+	return context
 }

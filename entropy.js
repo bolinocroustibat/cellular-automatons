@@ -1,4 +1,10 @@
-import { fillSquare, getCellColorId, pickColors, setupCanvas } from "./common"
+import {
+	getCellColorId,
+	pickColors,
+	render2D,
+	setRandomStateAndRender2D,
+	setupCanvas,
+} from "./common"
 
 export let entropyRenderInterval
 
@@ -18,7 +24,7 @@ export const entropyCreateContext = (settings) => {
 	const colors = pickColors(colorsCount)
 	const ctx = setupCanvas(canvasEl, width, height)
 
-	const context = {
+	let context = {
 		state: state,
 		colors: colors,
 		width: width,
@@ -29,14 +35,8 @@ export const entropyCreateContext = (settings) => {
 		ctx: ctx,
 	}
 
-	for (let y = 0; y < rowsCount; ++y) {
-		state[y] = []
-		for (let x = 0; x < colsCount; ++x) {
-			const randomColor = colors[Math.floor(Math.random() * colors.length)]
-			state[y][x] = randomColor
-			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
-		}
-	}
+	// Initial random populating
+	context = setRandomStateAndRender2D(context)
 
 	return context
 }
@@ -46,14 +46,14 @@ export const entropyStart = (context, maxIterations = 1000) => {
 		let i = 0
 		entropyRenderInterval = setInterval(() => {
 			if (++i === maxIterations) clearInterval(entropyRenderInterval)
-			const newState = entropySetNewState(context)
+			const newState = entropyChangeState(context)
 			context.state = newState
-			entropyRender(context)
+			render2D(context)
 		}, 25)
 	}
 }
 
-const entropySetNewState = (context) => {
+const entropyChangeState = (context) => {
 	const newState = []
 	for (let y = 0; y < context.rowsCount; ++y) {
 		newState[y] = []
@@ -76,15 +76,4 @@ const entropySetNewState = (context) => {
 		}
 	}
 	return newState
-}
-
-const entropyRender = (context) => {
-	const ctx = context.ctx
-	const state = context.state
-	const resolution = context.resolution
-	for (let y = 0; y < context.rowsCount; ++y) {
-		for (let x = 0; x < context.colsCount; ++x) {
-			fillSquare(ctx, state[y][x], x * resolution, y * resolution, resolution)
-		}
-	}
 }

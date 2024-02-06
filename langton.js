@@ -1,4 +1,4 @@
-import { fillSquare, pickColors, setupCanvas } from "./common"
+import { fillSquare2D, pickColors, setupCanvas } from "./common"
 
 export let langtonRenderInterval
 
@@ -22,7 +22,7 @@ export const langtonCreateContext = (settings) => {
 		grid[x] = []
 		for (let y = 0; y < rowsCount; ++y) {
 			grid[x][y] = colors[0]
-			fillSquare(ctx, grid[x][y], x * resolution, y * resolution, resolution)
+			fillSquare2D(ctx, grid[x][y], x * resolution, y * resolution, resolution)
 		}
 	}
 
@@ -71,7 +71,7 @@ const langtonIteration = (context) => {
 	if (langtonGetCurrentPositionColorId(context) === context.colors[0]) {
 		// Flip the color of the current cell
 		context.grid[context.positionX][context.positionY] = context.colors[1]
-		fillSquare(
+		fillSquare2D(
 			context.ctx,
 			context.colors[1],
 			context.positionX * context.resolution,
@@ -84,7 +84,7 @@ const langtonIteration = (context) => {
 	} else if (langtonGetCurrentPositionColorId(context) === context.colors[1]) {
 		// Flip the color of the current cell
 		context.grid[context.positionX][context.positionY] = context.colors[0]
-		fillSquare(
+		fillSquare2D(
 			context.ctx,
 			context.colors[0],
 			context.positionX * context.resolution,

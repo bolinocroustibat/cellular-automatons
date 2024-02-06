@@ -54,13 +54,13 @@ export const CCA1Dstart = (context) => {
 	let line = 0
 	CCA1DrenderInterval = setInterval(() => {
 		if (++line === context.height) clearInterval(CCA1DrenderInterval)
-		const newState = CCA1DloopCells(context)
+		const newState = CCA1DchangeState(context)
 		context.state = newState
 		CCA1Drender(line, context)
 	}, 20)
 }
 
-const CCA1DloopCells = (context) => {
+const CCA1DchangeState = (context) => {
 	const newState = []
 	const width = context.width
 	const state = context.state
