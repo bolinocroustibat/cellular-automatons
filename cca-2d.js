@@ -1,5 +1,5 @@
 import {
-	getCellColorId,
+	getNeighborsColorsIds,
 	nextCellColorId,
 	pickColors,
 	render2D,
@@ -56,46 +56,26 @@ export const CCA2Dstart = (context, maxIterations = 1000) => {
 }
 
 const CCA2DchangeState = (context) => {
-	const rowsCount = context.rowsCount
-	const colsCount = context.colsCount
+	const state = context.state
 	const newState = []
-	for (let y = 0; y < rowsCount; ++y) {
-		if (!newState[y]) newState[y] = []
-		for (let x = 0; x < colsCount; ++x) {
-			newState[y][x] = CCA2DcellTransformation(context, x, y)
+	for (let y = 0; y < context.rowsCount; ++y) {
+		newState[y] = []
+		for (let x = 0; x < context.colsCount; ++x) {
+			const threshold = context.threshold
+
+			const neighbours = getNeighborsColorsIds(context, x, y)
+
+			const nextColorId = nextCellColorId(state[y][x], context.colors)
+			const successorNeighboursCount = neighbours.filter(
+				(neighbour) => neighbour.id === nextColorId,
+			)
+
+			newState[y][x] =
+				successorNeighboursCount.length >= threshold
+					? successorNeighboursCount[0]
+				: state[y][x]
+
 		}
 	}
 	return newState
-}
-
-const CCA2DcellTransformation = (context, x, y) => {
-	const state = context.state
-
-	const threshold = context.threshold
-
-	const neighbours = [
-		getCellColorId(context, x - 1, y - 1),
-		getCellColorId(context, x, y - 1),
-		getCellColorId(context, x + 1, y - 1),
-
-		getCellColorId(context, x - 1, y),
-		getCellColorId(context, x + 1, y),
-
-		getCellColorId(context, x - 1, y + 1),
-		getCellColorId(context, x, y + 1),
-		getCellColorId(context, x + 1, y + 1),
-	]
-
-	const thisCell = state[y][x]
-	const nextColorId = nextCellColorId(thisCell, context.colors)
-	const successorNeighboursCount = neighbours.filter(
-		(neighbour) => neighbour.id === nextColorId,
-	)
-
-	const newCell =
-		successorNeighboursCount.length >= threshold
-			? successorNeighboursCount[0]
-			: thisCell
-
-	return newCell
 }

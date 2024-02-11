@@ -27,7 +27,7 @@ let entropyContext
 
 window.onload = () => {
 	pane = new Pane()
-	const artSelector = pane.addBinding({ art: "C" }, "art", {
+	const artSelector = pane.addBinding({ art: "2" }, "art", {
 		index: 1,
 		label: "Algorithm",
 		options: {
@@ -101,10 +101,9 @@ window.onload = () => {
 	for (const blade of blades) {
 		blade.hidden = true
 	}
-	conwayResolution.hidden = false
-	// cca2dColorsCountBlade.hidden = false
-	// cca2dThresholdBlade.hidden = false
-	// cca2dResolutionBlade.hidden = false
+	cca2dColorsCountBlade.hidden = false
+	cca2dThresholdBlade.hidden = false
+	cca2dResolutionBlade.hidden = false
 
 	resetContext()
 

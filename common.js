@@ -12,7 +12,22 @@ export const setupCanvas = (canvasEl, width, height) => {
 	return ctx
 }
 
-export const getCellColorId = (context, x, y) => {
+export const getNeighborsColorsIds = (context, x, y) => {
+	return [
+		getCellColorId(context, x - 1, y - 1),
+		getCellColorId(context, x, y - 1),
+		getCellColorId(context, x + 1, y - 1),
+
+		getCellColorId(context, x - 1, y),
+		getCellColorId(context, x + 1, y),
+
+		getCellColorId(context, x - 1, y + 1),
+		getCellColorId(context, x, y + 1),
+		getCellColorId(context, x + 1, y + 1),
+	]
+}
+
+const getCellColorId = (context, x, y) => {
 	const state = context.state
 	const colsCount = context.colsCount
 	const rowsCount = context.rowsCount

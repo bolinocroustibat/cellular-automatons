@@ -1,5 +1,5 @@
 import {
-	getCellColorId,
+	getNeighborsColorsIds,
 	pickColors,
 	render2D,
 	setRandomStateAndRender2D,
@@ -58,18 +58,7 @@ const entropyChangeState = (context) => {
 	for (let y = 0; y < context.rowsCount; ++y) {
 		newState[y] = []
 		for (let x = 0; x < context.colsCount; ++x) {
-			const neighbours = [
-				getCellColorId(context, x - 1, y - 1),
-				getCellColorId(context, x, y - 1),
-				getCellColorId(context, x + 1, y - 1),
-
-				getCellColorId(context, x - 1, y),
-				getCellColorId(context, x + 1, y),
-
-				getCellColorId(context, x - 1, y + 1),
-				getCellColorId(context, x, y + 1),
-				getCellColorId(context, x + 1, y + 1),
-			]
+			const neighbours = getNeighborsColorsIds(context, x, y)
 			// state[x][y] = getMostFrequentElement(neighbours)
 			const randomNeighbourNb = Math.floor(Math.random() * 8)
 			newState[y][x] = neighbours[randomNeighbourNb]

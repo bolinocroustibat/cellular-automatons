@@ -1,4 +1,4 @@
-import { fillSquare2D, getCellColorId, pickColors, render2D, setupCanvas } from "./common"
+import { fillSquare2D, getNeighborsColorsIds, pickColors, render2D, setupCanvas } from "./common"
 
 export let conwayRenderInterval
 
@@ -70,40 +70,34 @@ export const conwayStart = (context, maxIterations = 1000) => {
 }
 
 const conwayChangeState = (context) => {
+	const state = context.state
 	const newState = []
+	const colorOff = context.colors[0]
+	const colorOn = context.colors[1]
 	for (let y = 0; y < context.rowsCount; ++y) {
 		newState[y] = []
 		for (let x = 0; x < context.colsCount; ++x) {
-			const neighbours = [
-				getCellColorId(context, x - 1, y - 1),
-				getCellColorId(context, x, y - 1),
-				getCellColorId(context, x + 1, y - 1),
 
-				getCellColorId(context, x - 1, y),
-				getCellColorId(context, x + 1, y),
+			const neighbours = getNeighborsColorsIds(context, x, y)
 
-				getCellColorId(context, x - 1, y + 1),
-				getCellColorId(context, x, y + 1),
-				getCellColorId(context, x + 1, y + 1),
-			]
 			// Analyse neighbors info
 			let nbAlive = 0
 			for (const cell of neighbours) {
-				if (cell === context.colors[1]) nbAlive++
+				if (cell === colorOn) nbAlive++
 			}
 			// Change the nextState according to the neighbors
 			if (
-				context.state[y][x] === context.colors[1] &&
+				state[y][x] === colorOn &&
 				(nbAlive < 2 || nbAlive > 3)
 			) {
 				// Death of an an alive cell
-				newState[y][x] = context.colors[0]
-			} else if (context.state[y][x] === false && nbAlive === 3) {
+				newState[y][x] = colorOff
+			} else if (state[y][x] === colorOff && nbAlive === 3) {
 				// Birth of a cell
-				newState[y][x] = context.colors[1]
+				newState[y][x] = colorOn
 			} else {
 				// Keep the same cell
-				newState[y][x] = context.state[y][x]
+				newState[y][x] = state[y][x]
 			}
 		}
 	}
