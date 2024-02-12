@@ -5,6 +5,7 @@ import {
 	conwayCreateContext,
 	conwayRenderInterval,
 	conwayStart,
+	conwayAddBeacon,
 } from "./conway"
 import {
 	entropyCreateContext,
@@ -64,10 +65,13 @@ window.onload = () => {
 		{ label: "Number of colors", min: 2, max: 20, step: 1 },
 	)
 	const conwayResolution = pane.addBinding(
-		{ conwayResolution: 10 },
+		{ conwayResolution: 4 },
 		"conwayResolution",
-		{ label: "Resolution", min: 6, max: 20, step: 1 },
+		{ label: "Resolution", min: 2, max: 10, step: 1 },
 	)
+	const conwayAddBeaconBtn = pane.addButton({
+		title: "Add a beacon",
+	})
 	const langtonResolutionBlade = pane.addBinding(
 		{ langtonResolution: 10 },
 		"langtonResolution",
@@ -86,18 +90,18 @@ window.onload = () => {
 		title: "Start",
 	})
 
+	// Set default
 	const blades = [
 		cca1dColorsCountBlade,
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
 		cca2dResolutionBlade,
 		conwayResolution,
+		conwayAddBeaconBtn,
 		entropyColorsCountBlade,
 		langtonResolutionBlade,
 		entropyResolutionBlade,
 	]
-
-	// Set default
 	for (const blade of blades) {
 		blade.hidden = true
 	}
@@ -128,6 +132,7 @@ window.onload = () => {
 					blade.hidden = true
 				}
 				conwayResolution.hidden = false
+				conwayAddBeaconBtn.hidden = false
 				break
 			case "L":
 				for (const blade of blades) {
@@ -144,6 +149,10 @@ window.onload = () => {
 				break
 		}
 		resetContext()
+	})
+
+	conwayAddBeaconBtn.on("click", (conwayContext) => {
+		conwayContext = conwayAddBeacon(conwayContext)
 	})
 
 	resetBtn.on("click", () => {

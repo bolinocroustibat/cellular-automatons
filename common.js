@@ -102,3 +102,7 @@ export const setRandomStateAndRender2D = (context) => {
 	context.state = state
 	return context
 }
+
+export const randomInt = (min, max) => { // min and max included 
+	return Math.floor(Math.random() * (max - min + 1) + min)
+}

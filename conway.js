@@ -1,4 +1,4 @@
-import { fillSquare2D, getNeighborsColorsIds, pickColors, render2D, setupCanvas } from "./common"
+import { fillSquare2D, getNeighborsColorsIds, pickColors, randomInt, render2D, setupCanvas } from "./common"
 
 export let conwayRenderInterval
 
@@ -14,7 +14,7 @@ export const conwayCreateContext = (settings) => {
 	const rowsCount = height / resolution
 	const colsCount = width / resolution
 
-	const state = []
+	let state = []
 	const colors = pickColors(colorsCount)
 	const ctx = setupCanvas(canvasEl, width, height)
 
@@ -34,7 +34,7 @@ export const conwayCreateContext = (settings) => {
 		fillSquare2D(ctx, colors[1], x * resolution, y * resolution, resolution)
 	})
 
-	const context = {
+	let context = {
 		state: state,
 		colors: colors,
 		width: width,
@@ -44,6 +44,200 @@ export const conwayCreateContext = (settings) => {
 		colsCount: colsCount,
 		ctx: ctx,
 	}
+
+	// Add patterns at random positions
+	context = conwayAddBlock(context)
+	context = conwayAddLoaf(context)
+	context = conwayAddBlinker(context)
+	context = conwayAddBeacon(context)
+	// context = conwayAddPulsar(context)
+	context = conwayAddPentadecathlon(context)
+	context = conwayAddGlider(context)
+	context = conwayAddLWSS(context)
+	context = conwayAddMWSS(context)
+	context = conwayAddHWSS(context)
+	context = conwayAddGosperGliderGun(context)
+
+	return context
+}
+
+// Static Patterns
+
+export const conwayAddBlock = (context) => {
+	const loafPattern = [
+		[1, 1],
+		[0, 0]
+	]
+	return placePatternRandomly(context, loafPattern)
+}
+
+export const conwayAddLoaf = (context) => {
+	const loafPattern = [
+		[0, 1, 1, 0],
+		[1, 0, 0, 1],
+		[0, 1, 0, 1],
+		[0, 0, 1, 0]
+	]
+	return placePatternRandomly(context, loafPattern)
+}
+
+export const conwayAddBoat = (context) => {
+	const boatPattern = [
+		[1, 1, 0],
+		[1, 0, 1],
+		[0, 1, 0]
+	];
+	return placePatternRandomly(context, boatPattern)
+}
+
+export const conwayAddBeehive = (context) => {
+	const beehivePattern = [
+		[0, 1, 1, 0],
+		[1, 0, 0, 1],
+		[0, 1, 1, 0]
+	]
+	return placePatternRandomly(context, beehivePattern)
+}
+
+// Oscillator patterns
+
+export const conwayAddBlinker = (context) => {
+	const c = Math.random();
+	if (c < 0.5) {
+		const horizontalBlinkerPattern = [
+			[1, 1, 1]
+		]
+		return placePatternRandomly(context, horizontalBlinkerPattern)
+	}
+	else {
+		const verticalBlinkerPattern = [
+			[1],
+			[1],
+			[1]
+		]
+		return placePatternRandomly(context, verticalBlinkerPattern)
+	}
+}
+
+export const conwayAddBeacon = (context) => {
+	const beaconPattern = [
+		[1, 1, 0, 0],
+		[1, 1, 0, 0],
+		[0, 0, 1, 1],
+		[0, 0, 1, 1]
+	]
+	return placePatternRandomly(context, beaconPattern)
+}
+
+export const conwayAddPulsar = (context) => {
+	const pulsarPattern = [
+		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0]
+	]
+	return placePatternRandomly(context, pulsarPattern)
+}
+
+export const conwayAddPentadecathlon = (context) => {
+	const pentadecathlonPattern = [
+		[0, 1, 0],
+		[1, 1, 1],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[1, 1, 1],
+		[0, 1, 0]
+	] //TODO: false pattern, to fix
+	return placePatternRandomly(context, pentadecathlonPattern)
+}
+
+// Spaceships patterns
+
+export const conwayAddGlider = (context) => {
+	const gliderPattern = [
+		[0, 1, 0],
+		[0, 0, 1],
+		[1, 1, 1]
+	]
+	return placePatternRandomly(context, gliderPattern)
+}
+
+export const conwayAddLWSS = (context) => {
+	const lwssPattern = [
+		[0, 1, 0, 0, 1],
+		[1, 0, 0, 0, 0],
+		[1, 0, 0, 0, 1],
+		[1, 1, 1, 1, 0]
+	]
+	return placePatternRandomly(context, lwssPattern)
+}
+
+export const conwayAddMWSS = (context) => {
+	const mwssPattern = [
+		[0, 1, 0, 0, 0, 1, 1],
+		[1, 0, 0, 0, 0, 0, 0],
+		[1, 0, 0, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 0, 0]
+	]
+	return placePatternRandomly(context, mwssPattern)
+}
+
+export const conwayAddHWSS = (context) => {
+	const hwssPattern = [
+		[0, 1, 0, 0, 0, 0, 0, 1, 1, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+	]
+	return placePatternRandomly(context, hwssPattern)
+}
+
+export const conwayAddGosperGliderGun = (context) => {
+	// TODO: not working
+	const gosperGliderGunPattern = [
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+	]
+	return placePatternRandomly(context, gosperGliderGunPattern)
+}
+
+const placePatternRandomly = (context, pattern) => {
+	const rndX = randomInt(0, context.colsCount - pattern[0].length) // Adjusted to ensure pattern fits within the grid
+	const rndY = randomInt(0, context.rowsCount - pattern.length) // Adjusted to ensure pattern fits within the grid
+
+	// Place the pattern at the specified position
+	for (let i = 0; i < pattern.length; i++) {
+		for (let j = 0; j < pattern[i].length; j++) {
+			context.state[rndY + i][rndX + j] = context.colors[pattern[i][j]]; // Changed to use pattern values as color indices
+		}
+	}
+
+	render2D(context)
 
 	return context
 }
