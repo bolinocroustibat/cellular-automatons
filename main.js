@@ -5,7 +5,19 @@ import {
 	conwayCreateContext,
 	conwayRenderInterval,
 	conwayStart,
+	conwayAddBlock,
+	conwayAddLoaf,
+	conwayAddBoat,
+	conwayAddBeehive,
+	conwayAddBlinker,
 	conwayAddBeacon,
+	conwayAddPulsar,
+	conwayAddPentadecathlon,
+	conwayAddGlider,
+	conwayAddLWSS,
+	conwayAddMWSS,
+	conwayAddHWSS,
+	conwayAddGosperGliderGun
 } from "./conway"
 import {
 	entropyCreateContext,
@@ -27,7 +39,10 @@ let langtonContext
 let entropyContext
 
 window.onload = () => {
-	pane = new Pane()
+	pane = new Pane({
+		title: 'Parameters',
+		expanded: true,
+	})
 	const artSelector = pane.addBinding({ art: "2" }, "art", {
 		index: 1,
 		label: "Algorithm",
@@ -65,12 +80,31 @@ window.onload = () => {
 		{ label: "Number of colors", min: 2, max: 20, step: 1 },
 	)
 	const conwayResolution = pane.addBinding(
-		{ conwayResolution: 4 },
+		{ conwayResolution: 5 },
 		"conwayResolution",
-		{ label: "Resolution", min: 2, max: 10, step: 1 },
+		{ label: "Resolution", min: 4, max: 12, step: 1 },
 	)
-	const conwayAddBeaconBtn = pane.addButton({
+	const conwayPatterns = pane.addFolder({
+		title: 'Add patterns',
+		expanded: true,
+	});
+	const conwayAddBlinkerBtn = conwayPatterns.addButton({
+		title: "Add a blinker",
+	})
+	const conwayAddBeaconBtn = conwayPatterns.addButton({
 		title: "Add a beacon",
+	})
+	const conwayAddPulsarBtn = conwayPatterns.addButton({
+		title: "Add a pulsar",
+	})
+	const conwayAddPentadecathlonBtn = conwayPatterns.addButton({
+		title: "Add a pentadecathlon",
+	})
+	const conwayAddGliderBtn = conwayPatterns.addButton({
+		title: "Add a glider",
+	})
+	const conwayAddGosperGliderGunBtn = conwayPatterns.addButton({
+		title: "Add a Gosper Glider Gun",
 	})
 	const langtonResolutionBlade = pane.addBinding(
 		{ langtonResolution: 10 },
@@ -97,7 +131,7 @@ window.onload = () => {
 		cca2dThresholdBlade,
 		cca2dResolutionBlade,
 		conwayResolution,
-		conwayAddBeaconBtn,
+		conwayPatterns,
 		entropyColorsCountBlade,
 		langtonResolutionBlade,
 		entropyResolutionBlade,
@@ -132,7 +166,7 @@ window.onload = () => {
 					blade.hidden = true
 				}
 				conwayResolution.hidden = false
-				conwayAddBeaconBtn.hidden = false
+				conwayPatterns.hidden = false
 				break
 			case "L":
 				for (const blade of blades) {
@@ -151,8 +185,23 @@ window.onload = () => {
 		resetContext()
 	})
 
-	conwayAddBeaconBtn.on("click", (conwayContext) => {
+	conwayAddBlinkerBtn.on("click", () => {
+		conwayContext = conwayAddBlinker(conwayContext)
+	})
+	conwayAddBeaconBtn.on("click", () => {
 		conwayContext = conwayAddBeacon(conwayContext)
+	})
+	conwayAddPulsarBtn.on("click", () => {
+		conwayContext = conwayAddPulsar(conwayContext)
+	})
+	conwayAddPentadecathlonBtn.on("click", () => {
+		conwayContext = conwayAddPentadecathlon(conwayContext)
+	})
+	conwayAddGliderBtn.on("click", () => {
+		conwayContext = conwayAddGlider(conwayContext)
+	})
+	conwayAddGosperGliderGunBtn.on("click", () => {
+		conwayContext = conwayAddGosperGliderGun(conwayContext)
 	})
 
 	resetBtn.on("click", () => {
