@@ -66,6 +66,8 @@ export const conwayCreateContext = (settings) => {
 	return context
 }
 
+// Conway patterns: https://blog.amandaghassaei.com/2020/05/01/the-recursive-universe/
+
 // Still Lifes patterns
 
 export const conwayAddBlock = (context) => {
@@ -154,19 +156,30 @@ export const conwayAddPulsar = (context) => {
 }
 
 export const conwayAddPentadecathlon = (context) => {
-	const pentadecathlonPattern = [
-		[0, 1, 0],
-		[0, 1, 0],
-		[1, 0, 1],
-		[0, 1, 0],
-		[0, 1, 0],
-		[0, 1, 0],
-		[0, 1, 0],
-		[1, 0, 1],
-		[0, 1, 0],
-		[0, 1, 0]
-	] //TODO: false pattern, to fix
-	return placePatternRandomly(context, pentadecathlonPattern)
+	const c = Math.random();
+	if (c < 0.5) {
+		const horizontalPentadecathlonPattern = [
+			[0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
+			[1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
+			[0, 0, 1, 0, 0, 0, 0, 1, 0, 0]
+		]
+		return placePatternRandomly(context, horizontalPentadecathlonPattern)
+	}
+	else {
+		const verticalPentadecathlonPattern = [
+			[0, 1, 0],
+			[0, 1, 0],
+			[1, 0, 1],
+			[0, 1, 0],
+			[0, 1, 0],
+			[0, 1, 0],
+			[0, 1, 0],
+			[1, 0, 1],
+			[0, 1, 0],
+			[0, 1, 0]
+		]
+		return placePatternRandomly(context, verticalPentadecathlonPattern)
+	}
 }
 
 // Spaceships patterns
