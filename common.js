@@ -56,7 +56,23 @@ export const nextCellColorId = (cell, colors) => {
 // }
 
 export const pickColors = (colorsCount) => {
-	const rgbColorsWithId = []
+	let rgbColorsWithId = []
+	if (colorsCount == 2) {
+		// Chose two colors with a contrast > 4.5 (see https://gka.github.io/chroma.js/#chroma-contrast)
+		let rgbColor1 = chroma.random().rgb()
+		let rgbColor2 = chroma.random().rgb()
+		let retries = 0
+		while (chroma.contrast(rgbColor1, rgbColor2) <= 4.5) {
+			rgbColor2 = chroma.random().rgb()
+			retries += 1
+			if (retries > 4) {
+				rgbColor1 = chroma.random().rgb()
+			}
+		}
+		rgbColor1.id = 1
+		rgbColor2.id = 2
+		rgbColorsWithId = [rgbColor1, rgbColor2]
+	}
 	for (let i = 0; i < colorsCount; i++) {
 		const rgbColor = chroma.random().rgb()
 		rgbColor.id = i
