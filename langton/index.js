@@ -1,4 +1,4 @@
-import { fillSquare2D, pickColors, setupCanvas } from "./common"
+import { fillSquare2D, pickColors, setupCanvas } from "../common"
 
 export let langtonRenderInterval
 

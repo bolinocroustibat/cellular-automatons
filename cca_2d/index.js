@@ -5,7 +5,7 @@ import {
 	render2D,
 	setRandomStateAndRender2D,
 	setupCanvas,
-} from "./common"
+} from "../common"
 
 export let CCA2DrenderInterval
 
@@ -73,8 +73,7 @@ const CCA2DchangeState = (context) => {
 			newState[y][x] =
 				successorNeighboursCount.length >= threshold
 					? successorNeighboursCount[0]
-				: state[y][x]
-
+					: state[y][x]
 		}
 	}
 	return newState

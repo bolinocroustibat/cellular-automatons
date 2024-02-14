@@ -1,24 +1,24 @@
 import { Pane } from "tweakpane"
-import { CCA1DcreateContext, CCA1DrenderInterval, CCA1Dstart } from "./cca-1d"
-import { CCA2DcreateContext, CCA2DrenderInterval, CCA2Dstart } from "./cca-2d"
+import { CCA1DcreateContext, CCA1DrenderInterval, CCA1Dstart } from "./cca_1d"
+import { CCA2DcreateContext, CCA2DrenderInterval, CCA2Dstart } from "./cca_2d"
 import {
 	conwayCreateContext,
 	conwayRenderInterval,
 	conwayStart,
-	conwayAddBlock,
-	conwayAddLoaf,
-	conwayAddBoat,
-	conwayAddBeehive,
-	conwayAddBlinker,
-	conwayAddBeacon,
-	conwayAddPulsar,
-	conwayAddPentadecathlon,
-	conwayAddGlider,
-	conwayAddLWSS,
-	conwayAddMWSS,
-	conwayAddHWSS,
-	conwayAddGosperGliderGun
 } from "./conway"
+import { addGosperGliderGun } from "./conway/patterns/guns"
+import {
+	addBeacon,
+	addBlinker,
+	addPentadecathlon,
+	addPulsar,
+} from "./conway/patterns/oscillators"
+import {
+	addGlider,
+	addHWSS,
+	addLWSS,
+	addMWSS,
+} from "./conway/patterns/spaceships"
 import {
 	entropyCreateContext,
 	entropyRenderInterval,
@@ -40,7 +40,7 @@ let entropyContext
 
 window.onload = () => {
 	pane = new Pane({
-		title: 'Parameters',
+		title: "Parameters",
 		expanded: true,
 	})
 	const artSelector = pane.addBinding({ art: "2" }, "art", {
@@ -85,25 +85,34 @@ window.onload = () => {
 		{ label: "Resolution", min: 4, max: 12, step: 1 },
 	)
 	const conwayPatterns = pane.addFolder({
-		title: 'Add patterns',
+		title: "Add patterns",
 		expanded: true,
-	});
-	const conwayAddBlinkerBtn = conwayPatterns.addButton({
+	})
+	const addBlinkerBtn = conwayPatterns.addButton({
 		title: "Add a blinker",
 	})
-	const conwayAddBeaconBtn = conwayPatterns.addButton({
+	const addBeaconBtn = conwayPatterns.addButton({
 		title: "Add a beacon",
 	})
-	const conwayAddPulsarBtn = conwayPatterns.addButton({
+	const addPulsarBtn = conwayPatterns.addButton({
 		title: "Add a pulsar",
 	})
-	const conwayAddPentadecathlonBtn = conwayPatterns.addButton({
+	const addPentadecathlonBtn = conwayPatterns.addButton({
 		title: "Add a pentadecathlon",
 	})
-	const conwayAddGliderBtn = conwayPatterns.addButton({
+	const addGliderBtn = conwayPatterns.addButton({
 		title: "Add a glider",
 	})
-	const conwayAddGosperGliderGunBtn = conwayPatterns.addButton({
+	const addLWSSBtn = conwayPatterns.addButton({
+		title: "Add a light-weight spaceship",
+	})
+	const addMWSSBtn = conwayPatterns.addButton({
+		title: "Add a middle-weight spaceship",
+	})
+	const addHWSSBtn = conwayPatterns.addButton({
+		title: "Add a heavy-weight spaceship",
+	})
+	const addGosperGliderGunBtn = conwayPatterns.addButton({
 		title: "Add a Gosper Glider Gun",
 	})
 	const langtonResolutionBlade = pane.addBinding(
@@ -185,23 +194,32 @@ window.onload = () => {
 		resetContext()
 	})
 
-	conwayAddBlinkerBtn.on("click", () => {
-		conwayContext = conwayAddBlinker(conwayContext)
+	addBlinkerBtn.on("click", () => {
+		conwayContext = addBlinker(conwayContext)
 	})
-	conwayAddBeaconBtn.on("click", () => {
-		conwayContext = conwayAddBeacon(conwayContext)
+	addBeaconBtn.on("click", () => {
+		conwayContext = addBeacon(conwayContext)
 	})
-	conwayAddPulsarBtn.on("click", () => {
-		conwayContext = conwayAddPulsar(conwayContext)
+	addPulsarBtn.on("click", () => {
+		conwayContext = addPulsar(conwayContext)
 	})
-	conwayAddPentadecathlonBtn.on("click", () => {
-		conwayContext = conwayAddPentadecathlon(conwayContext)
+	addPentadecathlonBtn.on("click", () => {
+		conwayContext = addPentadecathlon(conwayContext)
 	})
-	conwayAddGliderBtn.on("click", () => {
-		conwayContext = conwayAddGlider(conwayContext)
+	addGliderBtn.on("click", () => {
+		conwayContext = addGlider(conwayContext)
 	})
-	conwayAddGosperGliderGunBtn.on("click", () => {
-		conwayContext = conwayAddGosperGliderGun(conwayContext)
+	addLWSSBtn.on("click", () => {
+		conwayContext = addLWSS(conwayContext)
+	})
+	addMWSSBtn.on("click", () => {
+		conwayContext = addMWSS(conwayContext)
+	})
+	addHWSSBtn.on("click", () => {
+		conwayContext = addHWSS(conwayContext)
+	})
+	addGosperGliderGunBtn.on("click", () => {
+		conwayContext = addGosperGliderGun(conwayContext)
 	})
 
 	resetBtn.on("click", () => {

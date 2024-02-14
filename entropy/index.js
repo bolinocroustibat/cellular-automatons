@@ -4,7 +4,7 @@ import {
 	render2D,
 	setRandomStateAndRender2D,
 	setupCanvas,
-} from "./common"
+} from "../common"
 
 export let entropyRenderInterval
 
