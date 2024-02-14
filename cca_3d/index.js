@@ -1,6 +1,6 @@
-import { nextCellColorId, pickColors } from "./common.js";
-import * as THREE from './node_modules/three/build/three.module.js';
-import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+import { nextCellColorId, pickColors } from "../common.js";
+import * as THREE from 'three/build/three.module.js';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export var CCA3DframeId;
 

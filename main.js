@@ -1,6 +1,7 @@
 import { Pane } from "tweakpane"
 import { CCA1DcreateContext, CCA1DrenderInterval, CCA1Dstart } from "./cca_1d"
 import { CCA2DcreateContext, CCA2DrenderInterval, CCA2Dstart } from "./cca_2d"
+import { CCA3DcreateContext } from "./cca_3d"
 import {
 	conwayCreateContext,
 	conwayRenderInterval,
@@ -34,6 +35,7 @@ let pane
 let settings
 let CCA1Dcontext
 let CCA2Dcontext
+let CCA3Dcontext
 let conwayContext
 let langtonContext
 let entropyContext
@@ -49,6 +51,7 @@ window.onload = () => {
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "1",
 			"2 dimensions Cyclic Cellular Automaton": "2",
+			"3 dimensions Cylic Cellular Automaton": "3",
 			"Conway's game of Life": "C",
 			"Langton's ant": "L",
 			"2 dimensions Entropy Automaton": "E",
@@ -73,6 +76,21 @@ window.onload = () => {
 		{ cca2dResolution: 10 },
 		"cca2dResolution",
 		{ label: "Resolution", min: 4, max: 20, step: 1 },
+	)
+	const cca3dColorsCountBlade = pane.addBinding(
+		{ cca3dColorsCount: 4 },
+		"cca3dColorsCount",
+		{ label: "Number of colors", min: 4, max: 10, step: 1 },
+	)
+	const cca3dThresholdBlade = pane.addBinding(
+		{ cca3dThreshold: 25 },
+		"cca3dThreshold",
+		{ label: "Threshold", min: 1, max: 26, step: 1 },
+	)
+	const cca3dResolutionBlade = pane.addBinding(
+		{ cca3dResolution: 10 },
+		"cca3dResolution",
+		{ label: "Resolution", min: 8, max: 15, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
@@ -148,6 +166,9 @@ window.onload = () => {
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
 		cca2dResolutionBlade,
+		cca3dColorsCountBlade,
+		cca3dThresholdBlade,
+		cca3dResolutionBlade,
 		conwayResolution,
 		conwayPatterns,
 		entropyColorsCountBlade,
@@ -178,6 +199,14 @@ window.onload = () => {
 				cca2dColorsCountBlade.hidden = false
 				cca2dThresholdBlade.hidden = false
 				cca2dResolutionBlade.hidden = false
+				break
+			case "3":
+				for (const blade of blades) {
+					blade.hidden = true
+				}
+				cca3dColorsCountBlade.hidden = false
+				cca3dThresholdBlade.hidden = false
+				cca3dResolutionBlade.hidden = false
 				break
 			case "C":
 				for (const blade of blades) {
