@@ -1,5 +1,5 @@
-import { placePatternRandomly } from "../index"
 import { randomInt } from "../../common"
+import { placePatternRandomly } from "../index"
 
 // Spaceships patterns
 
