@@ -88,31 +88,40 @@ window.onload = () => {
 		title: "Add patterns",
 		expanded: true,
 	})
-	const addBlinkerBtn = conwayPatterns.addButton({
+	const oscillators = conwayPatterns.addFolder({
+		title: 'Oscillators',
+	});
+	const addBlinkerBtn = oscillators.addButton({
 		title: "Add a blinker",
 	})
-	const addBeaconBtn = conwayPatterns.addButton({
+	const addBeaconBtn = oscillators.addButton({
 		title: "Add a beacon",
 	})
-	const addPulsarBtn = conwayPatterns.addButton({
+	const addPulsarBtn = oscillators.addButton({
 		title: "Add a pulsar",
 	})
-	const addPentadecathlonBtn = conwayPatterns.addButton({
+	const addPentadecathlonBtn = oscillators.addButton({
 		title: "Add a pentadecathlon",
 	})
-	const addGliderBtn = conwayPatterns.addButton({
+	const spaceships = conwayPatterns.addFolder({
+		title: 'Spaceships',
+	});
+	const addGliderBtn = spaceships.addButton({
 		title: "Add a glider",
 	})
-	const addLWSSBtn = conwayPatterns.addButton({
+	const addLWSSBtn = spaceships.addButton({
 		title: "Add a light-weight spaceship",
 	})
-	const addMWSSBtn = conwayPatterns.addButton({
+	const addMWSSBtn = spaceships.addButton({
 		title: "Add a middle-weight spaceship",
 	})
-	const addHWSSBtn = conwayPatterns.addButton({
+	const addHWSSBtn = spaceships.addButton({
 		title: "Add a heavy-weight spaceship",
 	})
-	const addGosperGliderGunBtn = conwayPatterns.addButton({
+	const guns = conwayPatterns.addFolder({
+		title: 'Guns',
+	});
+	const addGosperGliderGunBtn = guns.addButton({
 		title: "Add a Gosper Glider Gun",
 	})
 	const langtonResolutionBlade = pane.addBinding(
