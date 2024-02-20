@@ -13,11 +13,21 @@ export const addBlinker = (context) => {
 }
 
 export const addBeacon = (context) => {
+	const r = Math.random()
+	if (r < 0.5) {
+		const beaconPattern = [
+			[1, 1, 0, 0],
+			[1, 1, 0, 0],
+			[0, 0, 1, 1],
+			[0, 0, 1, 1],
+		]
+		return placePatternRandomly(context, beaconPattern)
+	}
 	const beaconPattern = [
-		[1, 1, 0, 0],
-		[1, 1, 0, 0],
 		[0, 0, 1, 1],
 		[0, 0, 1, 1],
+		[1, 1, 0, 0],
+		[1, 1, 0, 0],
 	]
 	return placePatternRandomly(context, beaconPattern)
 }
