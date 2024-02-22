@@ -1,13 +1,13 @@
-name: Deploy to prod when tag
+name: Deploy to staging when push on main
 
 on:
   push:
-    tags:
-      - "*"
+    branches:
+      - main
 
 jobs:
-  deploy-prod:
-    name: Deploy to prod from ${{ github.ref_name }}/${{ github.sha }}
+  deploy-staging:
+    name: Deploy to staging from ${{ github.ref_name }}/${{ github.sha }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Copy build to server with rsync
-        run: rsync -avz --exclude '.git' --chown=github:www-data --chmod=Dg=rwx,Fg=rwx ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH_PROD }} # We set directory (D) and files (F) permission for group www-data to rwx so that the same users can overwrite later
+        run: rsync -avz --exclude '.git' --chown=github:www-data --chmod=Dg=rwx,Fg=rwx ./dist/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH_STAGING }} # We set directory (D) and files (F) permission for group www-data to rwx so that the same users can overwrite later
 
       - name: Relaunch nginx on server
         uses: appleboy/ssh-action@master
