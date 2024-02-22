@@ -30,17 +30,38 @@ import {
 	langtonStart,
 } from "./langton"
 
+const algos = ["cca-1D", "cca-2D", "conway", "langton", "entropy"]
 let pane
 let settings
 let context
 
 window.onload = () => {
 
+	const origin = window.location.origin
+	console.log(`origin: ${origin}`)
+	
+	const href = window.location.href;
+	console.log(`href: ${href}`)
+
+	const host = window.location.host
+	console.log(`host: ${host}`)
+
+	const pathname = window.location.pathname
+	console.log(`pathname: ${pathname}`)
+
+	const baseUrl = window.location.origin + "/cellular-automatons"
+
+	const pathArray = window.location.pathname.split('/')
+	let path = pathArray[pathArray.length - 1]
+	if ((path.length === 0) || algos.includes(path) === false) {
+		path = "cca-2D"
+	}
+
 	pane = new Pane({
 		title: "Parameters",
 		expanded: true,
 	})
-	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
+	const algoSelector = pane.addBinding({ algo: path }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
@@ -190,23 +211,45 @@ window.onload = () => {
 		entropyResolutionBlade.hidden = false
 	}
 
+	switch (path) {
+		case "cca-1D":
+			setCca1dBlades()
+			break
+		case "cca-2D":
+			setCca2dBlades()
+			break
+		case "conway":
+			setConwayBlades()
+			break
+		case "langton":
+			setLangtonBlades()
+			break
+		case "entropy":
+			setEntropyBlades()
+			break
+	}
 	resetContext()
 
 	algoSelector.on("change", (event) => {
 		switch (event.value) {
 			case "cca-1D":
+				history.pushState({}, '', `${baseUrl}/cca-1D`)
 				setCca1dBlades()
 				break
 			case "cca-2D":
+				history.pushState({}, '', `${baseUrl}/cca-2D`)
 				setCca2dBlades()
 				break
 			case "conway":
+				history.pushState({}, '', `${baseUrl}/conway`)
 				setConwayBlades()
 				break
 			case "langton":
+				history.pushState({}, '', `${window.location.origin}/langton`)
 				setLangtonBlades()
 				break
 			case "entropy":
+				history.pushState({}, '', `${baseUrl}/entropy`)
 				setEntropyBlades()
 				break
 		}
