@@ -32,26 +32,23 @@ import {
 
 let pane
 let settings
-let CCA1Dcontext
-let CCA2Dcontext
-let conwayContext
-let langtonContext
-let entropyContext
+let context
 
 window.onload = () => {
+
 	pane = new Pane({
 		title: "Parameters",
 		expanded: true,
 	})
-	const artSelector = pane.addBinding({ art: "2" }, "art", {
+	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
-			"1 dimension Cyclic Cellular Automaton": "1",
-			"2 dimensions Cyclic Cellular Automaton": "2",
-			"Conway's game of Life": "C",
-			"Langton's ant": "L",
-			"2 dimensions Entropy Automaton": "E",
+			"1 dimension Cyclic Cellular Automaton": "cca-1D",
+			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
+			"Conway's game of Life": "conway",
+			"Langton's ant": "langton",
+			"2 dimensions Entropy Automaton": "entropy",
 		},
 	})
 	const cca1dColorsCountBlade = pane.addBinding(
@@ -142,7 +139,6 @@ window.onload = () => {
 		title: "Start",
 	})
 
-	// Set default
 	const blades = [
 		cca1dColorsCountBlade,
 		cca2dColorsCountBlade,
@@ -154,81 +150,96 @@ window.onload = () => {
 		langtonResolutionBlade,
 		entropyResolutionBlade,
 	]
-	for (const blade of blades) {
-		blade.hidden = true
-	}
-	cca2dColorsCountBlade.hidden = false
-	cca2dThresholdBlade.hidden = false
-	cca2dResolutionBlade.hidden = false
 
+	const setCca1dBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		cca1dColorsCountBlade.hidden = false
+	}
+
+	const setCca2dBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		cca2dColorsCountBlade.hidden = false
+		cca2dThresholdBlade.hidden = false
+		cca2dResolutionBlade.hidden = false
+	}
+
+	const setConwayBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		conwayResolution.hidden = false
+		conwayPatterns.hidden = false
+	}
+
+	const setLangtonBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		langtonResolutionBlade.hidden = false
+	}
+
+	const setEntropyBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		entropyColorsCountBlade.hidden = false
+		entropyResolutionBlade.hidden = false
+	}
+
+	setCca2dBlades()
 	resetContext()
 
-	artSelector.on("change", (event) => {
+	algoSelector.on("change", (event) => {
 		switch (event.value) {
-			case "1":
-				for (const blade of blades) {
-					blade.hidden = true
-				}
-				cca1dColorsCountBlade.hidden = false
+			case "cca-1D":
+				setCca1dBlades()
 				break
-			case "2":
-				for (const blade of blades) {
-					blade.hidden = true
-				}
-				cca2dColorsCountBlade.hidden = false
-				cca2dThresholdBlade.hidden = false
-				cca2dResolutionBlade.hidden = false
+			case "cca-2D":
+				setCca2dBlades()
 				break
-			case "C":
-				for (const blade of blades) {
-					blade.hidden = true
-				}
-				conwayResolution.hidden = false
-				conwayPatterns.hidden = false
+			case "conway":
+				setConwayBlades()
 				break
-			case "L":
-				for (const blade of blades) {
-					blade.hidden = true
-				}
-				langtonResolutionBlade.hidden = false
+			case "langton":
+				setLangtonBlades()
 				break
-			case "E":
-				for (const blade of blades) {
-					blade.hidden = true
-				}
-				entropyColorsCountBlade.hidden = false
-				entropyResolutionBlade.hidden = false
+			case "entropy":
+				setEntropyBlades()
 				break
 		}
 		resetContext()
 	})
 
 	addBlinkerBtn.on("click", () => {
-		conwayContext = addBlinker(conwayContext)
+		context = addBlinker(context)
 	})
 	addBeaconBtn.on("click", () => {
-		conwayContext = addBeacon(conwayContext)
+		context = addBeacon(context)
 	})
 	addPulsarBtn.on("click", () => {
-		conwayContext = addPulsar(conwayContext)
+		context = addPulsar(context)
 	})
 	addPentadecathlonBtn.on("click", () => {
-		conwayContext = addPentadecathlon(conwayContext)
+		context = addPentadecathlon(context)
 	})
 	addGliderBtn.on("click", () => {
-		conwayContext = addGlider(conwayContext)
+		context = addGlider(context)
 	})
 	addLWSSBtn.on("click", () => {
-		conwayContext = addLWSS(conwayContext)
+		context = addLWSS(context)
 	})
 	addMWSSBtn.on("click", () => {
-		conwayContext = addMWSS(conwayContext)
+		context = addMWSS(context)
 	})
 	addHWSSBtn.on("click", () => {
-		conwayContext = addHWSS(conwayContext)
+		context = addHWSS(context)
 	})
 	addGosperGliderGunBtn.on("click", () => {
-		conwayContext = addGosperGliderGun(conwayContext)
+		context = addGosperGliderGun(context)
 	})
 
 	resetBtn.on("click", () => {
@@ -240,21 +251,21 @@ window.onload = () => {
 		clearInterval(CCA2DrenderInterval)
 		clearInterval(langtonRenderInterval)
 		clearInterval(entropyRenderInterval)
-		switch (settings.art) {
-			case "1":
-				CCA1Dstart(CCA1Dcontext)
+		switch (settings.algo) {
+			case "cca-1D":
+				CCA1Dstart(context)
 				break
-			case "2":
-				CCA2Dstart(CCA2Dcontext, 2500)
+			case "cca-2D":
+				CCA2Dstart(context, 2500)
 				break
-			case "C":
-				conwayStart(conwayContext, 12000)
+			case "conway":
+				conwayStart(context, 12000)
 				break
-			case "L":
-				langtonStart(langtonContext, 12000)
+			case "langton":
+				langtonStart(context, 12000)
 				break
-			case "E":
-				entropyStart(entropyContext, 2500)
+			case "entropy":
+				entropyStart(context, 2500)
 				break
 		}
 	})
@@ -277,21 +288,21 @@ const resetContext = () => {
 	settings.width = window.innerWidth
 	settings.height = window.innerHeight
 	// Create the context
-	switch (settings.art) {
-		case "1":
-			CCA1Dcontext = CCA1DcreateContext(settings)
+	switch (settings.algo) {
+		case "cca-1D":
+			context = CCA1DcreateContext(settings)
 			break
-		case "2":
-			CCA2Dcontext = CCA2DcreateContext(settings)
+		case "cca-2D":
+			context = CCA2DcreateContext(settings)
 			break
-		case "C":
-			conwayContext = conwayCreateContext(settings)
+		case "conway":
+			context = conwayCreateContext(settings)
 			break
-		case "L":
-			langtonContext = langtonCreateContext(settings)
+		case "langton":
+			context = langtonCreateContext(settings)
 			break
-		case "E":
-			entropyContext = entropyCreateContext(settings)
+		case "entropy":
+			context = entropyCreateContext(settings)
 			break
 	}
 }
