@@ -131,20 +131,18 @@ const conwayChangeState = (context) => {
 		for (let x = 0; x < context.colsCount; ++x) {
 			const neighbours = getNeighborsColorsIds(context, x, y)
 
-			// Analyse neighbors info
-			let nbAlive = 0
-			for (const cell of neighbours) {
-				if (cell === colorOn) nbAlive++
-			}
 			// Change the nextState according to the neighbors
-			if (state[y][x] === colorOn && (nbAlive < 2 || nbAlive > 3)) {
-				// Death of an an alive cell
-				newState[y][x] = colorOff
-			} else if (state[y][x] === colorOff && nbAlive === 3) {
-				// Birth of a cell
-				newState[y][x] = colorOn
+			const isCellAlive = state[y][x] === colorOn
+			const isUnderpopulated = nbAlive < 2
+			const isOverpopulated = nbAlive > 3
+			const isReproduction = nbAlive === 3
+
+			if (
+				(isCellAlive && (isUnderpopulated || isOverpopulated)) ||
+				(!isCellAlive && isReproduction)
+			) {
+				newState[y][x] = isCellAlive ? colorOff : colorOn
 			} else {
-				// Keep the same cell
 				newState[y][x] = state[y][x]
 			}
 		}
