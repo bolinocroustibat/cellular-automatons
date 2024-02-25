@@ -1,9 +1,8 @@
 import { randomInt } from "../../utils/randomInt"
-import { placePatternRandomly } from "../index"
 
 // Spaceships patterns
 
-export const addGlider = (context) => {
+export const addGlider = (automaton) => {
 	let gliderPattern = null
 	const r = randomInt(1, 4)
 	switch (r) {
@@ -36,10 +35,10 @@ export const addGlider = (context) => {
 			]
 			break
 	}
-	return placePatternRandomly(context, gliderPattern)
+	automaton.placePatternRandomly(gliderPattern)
 }
 
-export const addLWSS = (context) => {
+export const addLWSS = (automaton) => {
 	let lwssPattern = null
 	const r = randomInt(1, 4)
 	switch (r) {
@@ -78,10 +77,10 @@ export const addLWSS = (context) => {
 			]
 			break
 	}
-	return placePatternRandomly(context, lwssPattern)
+	automaton.placePatternRandomly(lwssPattern)
 }
 
-export const addMWSS = (context) => {
+export const addMWSS = (automaton) => {
 	let mwssPattern = null
 	const r = randomInt(1, 2)
 	if (r === 1) {
@@ -99,10 +98,10 @@ export const addMWSS = (context) => {
 			[0, 1, 1, 1, 1, 1, 1],
 		]
 	}
-	return placePatternRandomly(context, mwssPattern)
+	automaton.placePatternRandomly(mwssPattern)
 }
 
-export const addHWSS = (context) => {
+export const addHWSS = (automaton) => {
 	let hwssPattern = null
 	const r = randomInt(1, 2)
 	if (r === 1) {
@@ -122,5 +121,5 @@ export const addHWSS = (context) => {
 			[0, 0, 0, 1, 1, 0, 0],
 		]
 	}
-	return placePatternRandomly(context, hwssPattern)
+	automaton.placePatternRandomly(hwssPattern)
 }

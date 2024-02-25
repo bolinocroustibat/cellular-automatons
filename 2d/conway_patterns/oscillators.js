@@ -1,18 +1,17 @@
-import { placePatternRandomly } from "../index"
-
 // Oscillator patterns
 
-export const addBlinker = (context) => {
+export const addBlinker = (automaton) => {
 	const r = Math.random()
 	if (r < 0.5) {
 		const horizontalBlinkerPattern = [[1, 1, 1]]
-		return placePatternRandomly(context, horizontalBlinkerPattern)
+		automaton.placePatternRandomly(horizontalBlinkerPattern)
+	} else {
+		const verticalBlinkerPattern = [[1], [1], [1]]
+		automaton.placePatternRandomly(verticalBlinkerPattern)
 	}
-	const verticalBlinkerPattern = [[1], [1], [1]]
-	return placePatternRandomly(context, verticalBlinkerPattern)
 }
 
-export const addBeacon = (context) => {
+export const addBeacon = (automaton) => {
 	const r = Math.random()
 	if (r < 0.5) {
 		const beaconPattern = [
@@ -21,18 +20,19 @@ export const addBeacon = (context) => {
 			[0, 0, 1, 1],
 			[0, 0, 1, 1],
 		]
-		return placePatternRandomly(context, beaconPattern)
+		automaton.placePatternRandomly(beaconPattern)
+	} else {
+		const beaconPattern = [
+			[0, 0, 1, 1],
+			[0, 0, 1, 1],
+			[1, 1, 0, 0],
+			[1, 1, 0, 0],
+		]
+		automaton.placePatternRandomly(beaconPattern)
 	}
-	const beaconPattern = [
-		[0, 0, 1, 1],
-		[0, 0, 1, 1],
-		[1, 1, 0, 0],
-		[1, 1, 0, 0],
-	]
-	return placePatternRandomly(context, beaconPattern)
 }
 
-export const addPulsar = (context) => {
+export const addPulsar = (automaton) => {
 	const pulsarPattern = [
 		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -48,10 +48,10 @@ export const addPulsar = (context) => {
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
 	]
-	return placePatternRandomly(context, pulsarPattern)
+	automaton.placePatternRandomly(pulsarPattern)
 }
 
-export const addPentadecathlon = (context) => {
+export const addPentadecathlon = (automaton) => {
 	const r = Math.random()
 	if (r < 0.5) {
 		const horizontalPentadecathlonPattern = [
@@ -59,19 +59,20 @@ export const addPentadecathlon = (context) => {
 			[1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
 			[0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
 		]
-		return placePatternRandomly(context, horizontalPentadecathlonPattern)
+		automaton.placePatternRandomly(horizontalPentadecathlonPattern)
+	} else {
+		const verticalPentadecathlonPattern = [
+			[0, 1, 0],
+			[0, 1, 0],
+			[1, 0, 1],
+			[0, 1, 0],
+			[0, 1, 0],
+			[0, 1, 0],
+			[0, 1, 0],
+			[1, 0, 1],
+			[0, 1, 0],
+			[0, 1, 0],
+		]
+		automaton.placePatternRandomly(verticalPentadecathlonPattern)
 	}
-	const verticalPentadecathlonPattern = [
-		[0, 1, 0],
-		[0, 1, 0],
-		[1, 0, 1],
-		[0, 1, 0],
-		[0, 1, 0],
-		[0, 1, 0],
-		[0, 1, 0],
-		[1, 0, 1],
-		[0, 1, 0],
-		[0, 1, 0],
-	]
-	return placePatternRandomly(context, verticalPentadecathlonPattern)
 }

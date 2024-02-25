@@ -2,7 +2,6 @@ import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
 import { setupCanvas } from "../utils/setupCanvas"
 
-
 export class CCA1D {
 	canvasEl
 	width
@@ -21,6 +20,7 @@ export class CCA1D {
 		this.colors = pickColors(colorsCount)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, width, height)
+		clearInterval(this.renderInterval)
 		this.setRandomState()
 		this.render(0)
 	}
@@ -28,20 +28,21 @@ export class CCA1D {
 	setRandomState = () => {
 		if (!this.state) this.state = []
 		for (let x = 0; x < this.width; x++) {
-			const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
+			const randomColor =
+				this.colors[Math.floor(Math.random() * this.colors.length)]
 			this.state[x] = randomColor
 		}
 	}
 
-	start = () => {
+	start = (intervalMs) => {
 		let line = 0
 		this.renderInterval = setInterval(() => {
 			if (++line === this.height) clearInterval(this.renderInterval)
 			this.changeState(line)
-		}, 20)
+		}, intervalMs)
 	}
 
-	getCellColorId = (x) => {
+	getCellColor = (x) => {
 		const modifiedX = x === -1 ? this.width - 1 : x === this.width ? 0 : x
 		return this.state[modifiedX]
 	}
@@ -50,9 +51,9 @@ export class CCA1D {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
 			const neighbours = [
-				this.getCellColorId(x - 1),
-				this.getCellColorId(x),
-				this.getCellColorId(x + 1),
+				this.getCellColor(x - 1),
+				this.getCellColor(x),
+				this.getCellColor(x + 1),
 			]
 			const nextColorId = nextCellColorId(this.state[x], this.colors)
 			const successorNeighboursCount = neighbours.filter((neighbour) => {
@@ -78,5 +79,4 @@ export class CCA1D {
 			this.fillPixel(this.state[x], x, line)
 		}
 	}
-
 }

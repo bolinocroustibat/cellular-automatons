@@ -1,6 +1,4 @@
-import { placePatternRandomly } from "../index"
-
-export const addGosperGliderGun = (context) => {
+export const addGosperGliderGun = (automaton) => {
 	const gosperGliderGunPattern = [
 		[
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -47,5 +45,5 @@ export const addGosperGliderGun = (context) => {
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		],
 	]
-	return placePatternRandomly(context, gosperGliderGunPattern)
+	automaton.placePatternRandomly(gosperGliderGunPattern)
 }

@@ -1,18 +1,15 @@
-import { nextCellColorId } from "../utils/nextCellColorId"
 import { Automaton2D } from "./automaton2d"
 
-export class CCA2D extends Automaton2D {
-	threshold
-	renderInterval
-
-	constructor(threshold, ...args) {
+export class EntropyAutomaton extends Automaton2D {
+	constructor(...args) {
 		super(...args)
-		this.threshold = threshold
-
 		clearInterval(this.renderInterval)
-
 		// Initial random populating
 		this.setRandomStateAndRender()
+	}
+
+	getMostFrequentColor(cells) {
+		// TODO:
 	}
 
 	updateState = () => {
@@ -22,15 +19,12 @@ export class CCA2D extends Automaton2D {
 			for (let x = 0; x < this.colsCount; ++x) {
 				const neighbours = this.getNeighborsColors(x, y)
 
-				const nextColorId = nextCellColorId(this.state[y][x], this.colors)
-				const successorNeighboursCount = neighbours.filter(
-					(neighbour) => neighbour.id === nextColorId,
-				)
+				// TODO: Tweakpane selector to choose this
+				// newState[y][x] = getMostFrequentColor(neighbours)
 
-				newState[y][x] =
-					successorNeighboursCount.length >= this.threshold
-						? successorNeighboursCount[0]
-						: this.state[y][x]
+				// TODO: Tweakpane selector to choose this
+				const randomNeighbourNb = Math.floor(Math.random() * 8)
+				newState[y][x] = neighbours[randomNeighbourNb]
 
 				// Optimization - fill square only if color value changes from previous state
 				if (newState[y][x] !== this.state[y][x]) {
