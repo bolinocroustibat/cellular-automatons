@@ -1,7 +1,6 @@
-import { pickColors } from "./utils/pickColors"}
+import { pickColors } from "./utils/pickColors"
 
-class Context2D {
-
+export class Context2D {
 	canvasEl
 	width
 	height
@@ -21,10 +20,10 @@ class Context2D {
 		this.colorsCount
 		this.colors = pickColors(colorsCount)
 		this.state = []
-		this.#setupCanvas()
+		this.setupCanvas()
 	}
 
-	#setupCanvas = () => {
+	setupCanvas = () => {
 		this.canvasEl.width = this.width
 		this.canvasEl.height = this.height
 		this.canvasEl.style.width = `${this.width}px`
@@ -36,12 +35,14 @@ class Context2D {
 	}
 
 	getCellColorId = (x, y) => {
-		const modifiedX = x === -1 ? this.colsCount - 1 : x === this.colsCount ? 0 : x
-		const modifiedY = y === -1 ? this.rowsCount - 1 : y === this.rowsCount ? 0 : y
+		const modifiedX =
+			x === -1 ? this.colsCount - 1 : x === this.colsCount ? 0 : x
+		const modifiedY =
+			y === -1 ? this.rowsCount - 1 : y === this.rowsCount ? 0 : y
 		return this.state[modifiedY][modifiedX]
 	}
 
-	getNeighborsColorsIds = (context, x, y) => {
+	getNeighborsColorsIds = (x, y) => {
 		return [
 			this.getCellColorId(x - 1, y - 1),
 			this.getCellColorId(x, y - 1),
@@ -70,11 +71,7 @@ class Context2D {
 	render2D = () => {
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
-				fillSquare2D(
-					this.state[y][x],
-					x * this.resolution,
-					y * this.resolution,
-				)
+				fillSquare2D(this.state[y][x], x * this.resolution, y * this.resolution)
 			}
 		}
 	}
@@ -84,14 +81,10 @@ class Context2D {
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
 				if (!this.state[y]) this.state[y] = []
-				this.state[y][x] = this.colors[Math.floor(Math.random() * this.colors.length)]
-				fillSquare2D(
-					this.state[y][x],
-					x * this.resolution,
-					y * this.resolution,
-				)
+				this.state[y][x] =
+					this.colors[Math.floor(Math.random() * this.colors.length)]
+				fillSquare2D(this.state[y][x], x * this.resolution, y * this.resolution)
 			}
 		}
 	}
-
 }

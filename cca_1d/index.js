@@ -1,4 +1,4 @@
-import { nextCellColorId, pickColors, setupCanvas } from "../common.js"
+import { nextCellColorId, pickColors, setupCanvas } from "../2d.js"
 
 export let CCA1DrenderInterval
 

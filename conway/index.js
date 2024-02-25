@@ -4,7 +4,7 @@ import {
 	pickColors,
 	render2D,
 	setupCanvas,
-} from "../common"
+} from "../2d"
 import { addGosperGliderGun } from "./patterns/guns"
 import {
 	addBeacon,
