@@ -37,8 +37,7 @@ export class CCA1D {
 		let line = 0
 		this.renderInterval = setInterval(() => {
 			if (++line === this.height) clearInterval(this.renderInterval)
-			this.changeState()
-			this.render(line)
+			this.changeState(line)
 		}, 20)
 	}
 
@@ -47,7 +46,7 @@ export class CCA1D {
 		return this.state[modifiedX]
 	}
 
-	changeState = () => {
+	changeState = (line) => {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
 			const neighbours = [
@@ -63,6 +62,8 @@ export class CCA1D {
 				successorNeighboursCount.length >= 1
 					? successorNeighboursCount[0]
 					: this.state[x]
+			// Render directly to the canvas to avoid another loop
+			this.fillPixel(this.state[x], x, line)
 		}
 		this.state = newState
 	}
