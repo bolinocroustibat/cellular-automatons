@@ -2,7 +2,6 @@ import {
 	fillSquare2D,
 	getNeighborsColorsIds,
 	pickColors,
-	randomInt,
 	render2D,
 	setupCanvas,
 } from "../common"
@@ -15,6 +14,7 @@ import {
 } from "./patterns/oscillators"
 import { addGlider, addHWSS, addLWSS, addMWSS } from "./patterns/spaceships"
 import { addBeehive, addBlock, addBoat, addLoaf } from "./patterns/still_lifes"
+import { randomInt } from "../utils/randomInt"
 
 export let conwayRenderInterval
 
