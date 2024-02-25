@@ -35,7 +35,6 @@ let settings
 let context
 
 window.onload = () => {
-
 	pane = new Pane({
 		title: "Parameters",
 		expanded: true,
@@ -86,8 +85,8 @@ window.onload = () => {
 		expanded: true,
 	})
 	const oscillators = conwayPatterns.addFolder({
-		title: 'Oscillators',
-	});
+		title: "Oscillators",
+	})
 	const addBlinkerBtn = oscillators.addButton({
 		title: "Add a blinker",
 	})
@@ -101,8 +100,8 @@ window.onload = () => {
 		title: "Add a pentadecathlon",
 	})
 	const spaceships = conwayPatterns.addFolder({
-		title: 'Spaceships',
-	});
+		title: "Spaceships",
+	})
 	const addGliderBtn = spaceships.addButton({
 		title: "Add a glider",
 	})
@@ -116,8 +115,8 @@ window.onload = () => {
 		title: "Add a heavy-weight spaceship",
 	})
 	const guns = conwayPatterns.addFolder({
-		title: 'Guns',
-	});
+		title: "Guns",
+	})
 	const addGosperGliderGunBtn = guns.addButton({
 		title: "Add a Gosper Glider Gun",
 	})
