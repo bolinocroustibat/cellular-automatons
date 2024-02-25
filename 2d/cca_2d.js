@@ -1,11 +1,13 @@
-import { Context2D } from "../2d"
+import { Context2D } from "./2d"
+import { nextCellColorId } from "../utils/nextCellColorId"
 
-export let CCA2DrenderInterval
 
 export class CCA2D extends Context2D {
 	threshold
+	renderInterval
 
 	constructor(threshold, ...args) {
+		clearInterval(renderInterval)
 		super(...args)
 		this.threshold = threshold
 		this.setRandomStateAndRender2D()
@@ -14,10 +16,10 @@ export class CCA2D extends Context2D {
 	start = (maxIterations = 1000) => {
 		if (this.state.length > 0) {
 			let i = 0
-			CCA2DrenderInterval = setInterval(() => {
-				if (++i === maxIterations) clearInterval(CCA2DrenderInterval)
+			this.renderInterval = setInterval(() => {
+				if (++i === maxIterations) clearInterval(this.renderInterval)
 				this.changeState()
-				this.render2D()
+				this.render()
 			}, 25)
 		}
 	}
@@ -27,7 +29,7 @@ export class CCA2D extends Context2D {
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
-				const neighbours = getNeighborsColorsIds(x, y)
+				const neighbours = this.getNeighborsColorsIds(x, y)
 
 				const nextColorId = nextCellColorId(this.state[y][x], this.colors)
 				const successorNeighboursCount = neighbours.filter(

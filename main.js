@@ -1,45 +1,45 @@
 import { Pane } from "tweakpane"
-import { CCA1DcreateContext, CCA1DrenderInterval, CCA1Dstart } from "./cca_1d"
-import { CCA2DcreateContext, CCA2DrenderInterval, CCA2Dstart } from "./cca_2d"
-import {
-	conwayCreateContext,
-	conwayRenderInterval,
-	conwayStart,
-} from "./conway"
-import { addGosperGliderGun } from "./conway/patterns/guns"
-import {
-	addBeacon,
-	addBlinker,
-	addPentadecathlon,
-	addPulsar,
-} from "./conway/patterns/oscillators"
-import {
-	addGlider,
-	addHWSS,
-	addLWSS,
-	addMWSS,
-} from "./conway/patterns/spaceships"
-import {
-	entropyCreateContext,
-	entropyRenderInterval,
-	entropyStart,
-} from "./entropy"
-import {
-	langtonCreateContext,
-	langtonRenderInterval,
-	langtonStart,
-} from "./langton"
+import { CCA1D } from "./1d/cca_1d"
+import { CCA2D } from "./2d/cca_2d"
+// import {
+// 	conwayCreateContext,
+// 	conwayRenderInterval,
+// 	conwayStart,
+// } from "./conway"
+// import { addGosperGliderGun } from "./conway/patterns/guns"
+// import {
+// 	addBeacon,
+// 	addBlinker,
+// 	addPentadecathlon,
+// 	addPulsar,
+// } from "./conway/patterns/oscillators"
+// import {
+// 	addGlider,
+// 	addHWSS,
+// 	addLWSS,
+// 	addMWSS,
+// } from "./conway/patterns/spaceships"
+// import {
+// 	entropyCreateContext,
+// 	entropyRenderInterval,
+// 	entropyStart,
+// } from "./entropy"
+// import {
+// 	langtonCreateContext,
+// 	langtonRenderInterval,
+// 	langtonStart,
+// } from "./langton"
 
 let pane
 let settings
-let context
+let cca
 
 window.onload = () => {
 	pane = new Pane({
 		title: "Parameters",
 		expanded: true,
 	})
-	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
+	const algoSelector = pane.addBinding({ algo: "cca-1D" }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
@@ -190,7 +190,7 @@ window.onload = () => {
 	}
 
 	setCca2dBlades()
-	resetContext()
+	reset()
 
 	algoSelector.on("change", (event) => {
 		switch (event.value) {
@@ -210,7 +210,7 @@ window.onload = () => {
 				setEntropyBlades()
 				break
 		}
-		resetContext()
+		reset()
 	})
 
 	addBlinkerBtn.on("click", () => {
@@ -242,20 +242,17 @@ window.onload = () => {
 	})
 
 	resetBtn.on("click", () => {
-		resetContext()
+		reset()
 	})
 
 	startBtn.on("click", () => {
-		clearInterval(CCA1DrenderInterval)
-		clearInterval(CCA2DrenderInterval)
-		clearInterval(langtonRenderInterval)
-		clearInterval(entropyRenderInterval)
+		clearInterval(cca.renderInterval)
 		switch (settings.algo) {
 			case "cca-1D":
-				CCA1Dstart(context)
+				cca.start()
 				break
 			case "cca-2D":
-				CCA2Dstart(context, 2500)
+				cca.start(2500)
 				break
 			case "conway":
 				conwayStart(context, 12000)
@@ -270,12 +267,10 @@ window.onload = () => {
 	})
 }
 
-const resetContext = () => {
-	clearInterval(CCA1DrenderInterval)
-	clearInterval(CCA2DrenderInterval)
-	clearInterval(conwayRenderInterval)
-	clearInterval(langtonRenderInterval)
-	clearInterval(entropyRenderInterval)
+const reset = () => {
+	if (cca) {
+		clearInterval(cca.renderInterval)
+	}
 	const state = pane.exportState()
 	// Convert Tweakpane state to a clean "settings" object
 	settings = {}
@@ -283,16 +278,16 @@ const resetContext = () => {
 		if (s.binding) settings[s.binding.key] = s.binding.value
 	}
 	// Add more keys/values to the "settings" object
-	settings.canvasEl = document.getElementById("canvas")
-	settings.width = window.innerWidth
-	settings.height = window.innerHeight
+	const canvasEl = document.getElementById("canvas")
+	const width = window.innerWidth
+	const height = window.innerHeight
 	// Create the context
 	switch (settings.algo) {
 		case "cca-1D":
-			context = CCA1DcreateContext(settings)
+			cca = new CCA1D(canvasEl, width, height, settings.cca1dColorsCount)
 			break
 		case "cca-2D":
-			context = CCA2DcreateContext(settings)
+			cca = new CCA2D(canvasEl, width, height, settings.cca2dColorsCount)
 			break
 		case "conway":
 			context = conwayCreateContext(settings)
@@ -306,4 +301,4 @@ const resetContext = () => {
 	}
 }
 
-window.onresize = () => resetContext()
+window.onresize = () => reset()
