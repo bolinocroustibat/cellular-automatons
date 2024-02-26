@@ -33,7 +33,7 @@ export class ConwayAutomaton extends Automaton2D {
 
 		// Manual populating
 		this.canvasEl.addEventListener("mousedown", (event) => {
-			const [x, y] = getCursorPosition(this.canvasEl, this.resolution, event)
+			const [x, y] = this.getCursorPosition(event)
 			this.state[y][x] = this.colors[1]
 			this.fillSquare(this.colors[1], x * this.resolution, y * this.resolution)
 		})
@@ -57,6 +57,15 @@ export class ConwayAutomaton extends Automaton2D {
 		this.placePatternRandomly(HWSSPattern())
 		// Guns
 		this.placePatternRandomly(gosperGliderGunPattern())
+	}
+
+	getCursorPosition = (event) => {
+		const rect = this.canvasEl.getBoundingClientRect()
+		const pixelX = event.clientX - rect.left
+		const pixelY = event.clientY - rect.top
+		const x = ~~(pixelX / this.resolution)
+		const y = ~~(pixelY / this.resolution)
+		return [x, y]
 	}
 
 	updateState = () => {
