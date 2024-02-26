@@ -89,8 +89,8 @@ export class ConwayAutomaton extends Automaton2D {
 					newState[y][x] = this.state[y][x]
 				}
 
-				// Render the square on canvas
-				// Optimization - fill square only if color value changes from previous state
+				// Update canvas pixels
+				// Optimization - fill pixels only if color value changes from previous state
 				if (newState[y][x] !== this.state[y][x]) {
 					this.fillSquare(
 						newState[y][x],

@@ -26,7 +26,8 @@ export class EntropyAutomaton extends Automaton2D {
 				const randomNeighbourNb = Math.floor(Math.random() * 8)
 				newState[y][x] = neighbours[randomNeighbourNb]
 
-				// Optimization - fill square only if color value changes from previous state
+				// Update canvas pixels
+				// Optimization - fill pixels only if color value changes from previous state
 				if (newState[y][x] !== this.state[y][x]) {
 					this.fillSquare(
 						newState[y][x],
