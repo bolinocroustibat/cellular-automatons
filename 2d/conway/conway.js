@@ -1,25 +1,15 @@
-import { pickColors } from "../utils/pickColors"
-import { Automaton2D } from "./automaton2d"
+import { pickColors } from "../../utils/pickColors"
+import { Automaton2D } from "../automaton2d"
 
-import { addGosperGliderGun } from "./conway_patterns/guns"
 import {
 	addBeacon,
 	addBlinker,
 	addPentadecathlon,
 	addPulsar,
-} from "./conway_patterns/oscillators"
-import {
-	addGlider,
-	addHWSS,
-	addLWSS,
-	addMWSS,
-} from "./conway_patterns/spaceships"
-import {
-	addBeehive,
-	addBlock,
-	addBoat,
-	addLoaf,
-} from "./conway_patterns/still_lifes"
+} from "./patterns/oscillators"
+import { addGosperGliderGun } from ".patterns/guns"
+import { addGlider, addHWSS, addLWSS, addMWSS } from ".patterns/spaceships"
+import { addBeehive, addBlock, addBoat, addLoaf } from ".patterns/still_lifes"
 
 export class ConwayAutomaton extends Automaton2D {
 	constructor(...args) {

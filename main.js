@@ -1,22 +1,20 @@
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
-import { CCA2D } from "./2d/cca_2d"
-import { ConwayAutomaton } from "./2d/conway"
-import { addGosperGliderGun } from "./2d/conway_patterns/guns"
+import { CCA2D } from "./2d/cca_2d/cca_2d"
 import {
+	ConwayAutomaton,
 	addBeacon,
 	addBlinker,
-	addPentadecathlon,
-	addPulsar,
-} from "./2d/conway_patterns/oscillators"
-import {
 	addGlider,
+	addGosperGliderGun,
 	addHWSS,
 	addLWSS,
 	addMWSS,
-} from "./2d/conway_patterns/spaceships"
-import { EntropyAutomaton } from "./2d/entropy"
-import { LangtonAutomaton } from "./2d/langton"
+	addPentadecathlon,
+	addPulsar,
+} from "./2d/conway/conway"
+import { EntropyAutomaton } from "./2d/entropy/entropy"
+import { LangtonAutomaton } from "./2d/langton/langton"
 
 let pane
 let settings

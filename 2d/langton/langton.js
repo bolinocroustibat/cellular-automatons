@@ -1,5 +1,5 @@
-import { pickColors } from "../utils/pickColors"
-import { Automaton2D } from "./automaton2d"
+import { pickColors } from "../../utils/pickColors"
+import { Automaton2D } from "../automaton2d"
 
 export class LangtonAutomaton extends Automaton2D {
 	positionX

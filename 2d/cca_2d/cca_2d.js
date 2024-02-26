@@ -1,5 +1,5 @@
-import { nextCellColorId } from "../utils/nextCellColorId"
-import { Automaton2D } from "./automaton2d"
+import { nextCellColorId } from "../../utils/nextCellColorId"
+import { Automaton2D } from "../automaton2d"
 
 export class CCA2D extends Automaton2D {
 	threshold

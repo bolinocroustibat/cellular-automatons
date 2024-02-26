@@ -1,4 +1,4 @@
-import { Automaton2D } from "./automaton2d"
+import { Automaton2D } from "../automaton2d"
 
 export class EntropyAutomaton extends Automaton2D {
 	constructor(...args) {

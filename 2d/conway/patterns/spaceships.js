@@ -1,4 +1,4 @@
-import { randomInt } from "../../utils/randomInt"
+import { randomInt } from "../../../utils/randomInt"
 
 // Spaceships patterns
 
