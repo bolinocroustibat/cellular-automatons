@@ -1,15 +1,25 @@
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
+import { gosperGliderGunPattern } from "./patterns/guns"
 import {
-	addBeacon,
-	addBlinker,
-	addPentadecathlon,
-	addPulsar,
+	beaconPattern,
+	blinkerPattern,
+	pentadecathlonPattern,
+	pulsarPattern,
 } from "./patterns/oscillators"
-import { addGosperGliderGun } from ".patterns/guns"
-import { addGlider, addHWSS, addLWSS, addMWSS } from ".patterns/spaceships"
-import { addBeehive, addBlock, addBoat, addLoaf } from ".patterns/still_lifes"
+import {
+	HWSSPattern,
+	LWSSPattern,
+	MWSSPattern,
+	gliderPattern,
+} from "./patterns/spaceships"
+import {
+	beehivePattern,
+	blockPattern,
+	boatPattern,
+	loafPattern,
+} from "./patterns/still_lifes"
 
 export class ConwayAutomaton extends Automaton2D {
 	constructor(...args) {
@@ -31,22 +41,22 @@ export class ConwayAutomaton extends Automaton2D {
 		// Add patterns at random positions
 		// Conway patterns: https://blog.amandaghassaei.com/2020/05/01/the-recursive-universe/
 		// Still lifes
-		addBlock(this)
-		addLoaf(this)
-		addBoat(this)
-		addBeehive(this)
+		this.placePatternRandomly(blockPattern)
+		this.placePatternRandomly(loafPattern)
+		this.placePatternRandomly(boatPattern)
+		this.placePatternRandomly(beehivePattern)
 		// Oscillators
-		addBlinker(this)
-		addBeacon(this)
-		addPulsar(this)
-		addPentadecathlon(this)
+		this.placePatternRandomly(blinkerPattern())
+		this.placePatternRandomly(beaconPattern())
+		this.placePatternRandomly(pulsarPattern())
+		this.placePatternRandomly(pentadecathlonPattern())
 		// Spaceships
-		addGlider(this)
-		addLWSS(this)
-		addMWSS(this)
-		addHWSS(this)
+		this.placePatternRandomly(gliderPattern())
+		this.placePatternRandomly(LWSSPattern())
+		this.placePatternRandomly(MWSSPattern())
+		this.placePatternRandomly(HWSSPattern())
 		// Guns
-		addGosperGliderGun(this)
+		this.placePatternRandomly(gosperGliderGunPattern())
 	}
 
 	updateState = () => {

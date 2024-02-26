@@ -1,5 +1,5 @@
-export const addGosperGliderGun = (automaton) => {
-	const gosperGliderGunPattern = [
+export const gosperGliderGunPattern = () => {
+	return [
 		[
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -45,5 +45,4 @@ export const addGosperGliderGun = (automaton) => {
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 		],
 	]
-	automaton.placePatternRandomly(gosperGliderGunPattern)
 }

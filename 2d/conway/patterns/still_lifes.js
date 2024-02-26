@@ -1,37 +1,25 @@
 // Still Lifes patterns
 
-export const addBlock = (automaton) => {
-	const loafPattern = [
-		[1, 1],
-		[0, 0],
-	]
-	automaton.placePatternRandomly(loafPattern)
-}
+export const blockPattern = [
+	[1, 1],
+	[0, 0],
+]
 
-export const addLoaf = (automaton) => {
-	const loafPattern = [
-		[0, 1, 1, 0],
-		[1, 0, 0, 1],
-		[0, 1, 0, 1],
-		[0, 0, 1, 0],
-	]
-	automaton.placePatternRandomly(loafPattern)
-}
+export const loafPattern = [
+	[0, 1, 1, 0],
+	[1, 0, 0, 1],
+	[0, 1, 0, 1],
+	[0, 0, 1, 0],
+]
 
-export const addBoat = (automaton) => {
-	const boatPattern = [
-		[1, 1, 0],
-		[1, 0, 1],
-		[0, 1, 0],
-	]
-	automaton.placePatternRandomly(boatPattern)
-}
+export const boatPattern = [
+	[1, 1, 0],
+	[1, 0, 1],
+	[0, 1, 0],
+]
 
-export const addBeehive = (automaton) => {
-	const beehivePattern = [
-		[0, 1, 1, 0],
-		[1, 0, 0, 1],
-		[0, 1, 1, 0],
-	]
-	automaton.placePatternRandomly(beehivePattern)
-}
+export const beehivePattern = [
+	[0, 1, 1, 0],
+	[1, 0, 0, 1],
+	[0, 1, 1, 0],
+]

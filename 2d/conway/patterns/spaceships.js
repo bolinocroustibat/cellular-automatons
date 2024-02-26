@@ -2,124 +2,106 @@ import { randomInt } from "../../../utils/randomInt"
 
 // Spaceships patterns
 
-export const addGlider = (automaton) => {
-	let gliderPattern = null
+export const gliderPattern = () => {
 	const r = randomInt(1, 4)
 	switch (r) {
 		case 1:
-			gliderPattern = [
+			return [
 				[0, 1, 0],
 				[0, 0, 1],
 				[1, 1, 1],
 			]
-			break
 		case 2:
-			gliderPattern = [
+			return [
 				[1, 1, 1],
 				[1, 0, 0],
 				[0, 1, 0],
 			]
-			break
 		case 3:
-			gliderPattern = [
+			return [
 				[0, 0, 1],
 				[1, 1, 0],
 				[0, 1, 1],
 			]
-			break
 		case 4:
-			gliderPattern = [
+			return [
 				[1, 1, 0],
 				[0, 1, 1],
 				[1, 0, 0],
 			]
-			break
 	}
-	automaton.placePatternRandomly(gliderPattern)
 }
 
-export const addLWSS = (automaton) => {
-	let lwssPattern = null
+export const LWSSPattern = () => {
 	const r = randomInt(1, 4)
 	switch (r) {
 		case 1:
-			lwssPattern = [
+			return [
 				[0, 1, 0, 0, 1],
 				[1, 0, 0, 0, 0],
 				[1, 0, 0, 0, 1],
 				[1, 1, 1, 1, 0],
 			]
-			break
 		case 2:
-			lwssPattern = [
+			return [
 				[1, 0, 0, 1, 0],
 				[0, 0, 0, 0, 1],
 				[1, 0, 0, 0, 1],
 				[0, 1, 1, 1, 1],
 			]
-			break
 		case 3:
-			lwssPattern = [
+			return [
 				[0, 1, 0, 1],
 				[1, 0, 0, 0],
 				[1, 0, 0, 0],
 				[1, 0, 0, 1],
 				[1, 1, 1, 0],
 			]
-			break
 		case 4:
-			lwssPattern = [
+			return [
 				[1, 1, 1, 0],
 				[1, 0, 0, 1],
 				[1, 0, 0, 0],
 				[1, 0, 0, 0],
 				[0, 1, 0, 1],
 			]
-			break
 	}
-	automaton.placePatternRandomly(lwssPattern)
 }
 
-export const addMWSS = (automaton) => {
-	let mwssPattern = null
+export const MWSSPattern = () => {
 	const r = randomInt(1, 2)
 	if (r === 1) {
-		mwssPattern = [
+		return [
 			[0, 1, 0, 0, 0, 0, 1],
 			[1, 0, 0, 0, 0, 0, 0],
 			[1, 0, 0, 0, 0, 0, 1],
 			[1, 1, 1, 1, 1, 1, 0],
 		]
-	} else {
-		mwssPattern = [
-			[1, 0, 0, 0, 0, 1, 0],
-			[0, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 1],
-			[0, 1, 1, 1, 1, 1, 1],
-		]
 	}
-	automaton.placePatternRandomly(mwssPattern)
+	return [
+		[1, 0, 0, 0, 0, 1, 0],
+		[0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 1],
+		[0, 1, 1, 1, 1, 1, 1],
+	]
 }
 
-export const addHWSS = (automaton) => {
-	let hwssPattern = null
+export const HWSSPattern = () => {
 	const r = randomInt(1, 2)
 	if (r === 1) {
-		hwssPattern = [
+		return [
 			[0, 1, 1, 1, 1, 1, 1],
 			[1, 0, 0, 0, 0, 0, 1],
 			[0, 0, 0, 0, 0, 0, 1],
 			[1, 0, 0, 0, 0, 1, 0],
 			[0, 0, 1, 1, 0, 0, 0],
 		]
-	} else {
-		hwssPattern = [
-			[1, 1, 1, 1, 1, 1, 0],
-			[1, 0, 0, 0, 0, 0, 1],
-			[1, 0, 0, 0, 0, 0, 0],
-			[0, 1, 0, 0, 0, 0, 1],
-			[0, 0, 0, 1, 1, 0, 0],
-		]
 	}
-	automaton.placePatternRandomly(hwssPattern)
+	return [
+		[1, 1, 1, 1, 1, 1, 0],
+		[1, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0],
+		[0, 1, 0, 0, 0, 0, 1],
+		[0, 0, 0, 1, 1, 0, 0],
+	]
 }

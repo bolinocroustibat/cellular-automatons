@@ -1,18 +1,20 @@
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
+import { ConwayAutomaton } from "./2d/conway/conway"
+import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
 import {
-	ConwayAutomaton,
-	addBeacon,
-	addBlinker,
-	addGlider,
-	addGosperGliderGun,
-	addHWSS,
-	addLWSS,
-	addMWSS,
-	addPentadecathlon,
-	addPulsar,
-} from "./2d/conway/conway"
+	beaconPattern,
+	blinkerPattern,
+	pentadecathlonPattern,
+	pulsarPattern,
+} from "./2d/conway/patterns/oscillators"
+import {
+	HWSSPattern,
+	LWSSPattern,
+	MWSSPattern,
+	gliderPattern,
+} from "./2d/conway/patterns/spaceships"
 import { EntropyAutomaton } from "./2d/entropy/entropy"
 import { LangtonAutomaton } from "./2d/langton/langton"
 
@@ -183,31 +185,31 @@ window.onload = () => {
 	})
 
 	addBlinkerBtn.on("click", () => {
-		automaton = addBlinker(automaton)
+		automaton.placePatternRandomly(blinkerPattern())
 	})
 	addBeaconBtn.on("click", () => {
-		automaton = addBeacon(automaton)
+		automaton.placePatternRandomly(beaconPattern())
 	})
 	addPulsarBtn.on("click", () => {
-		automaton = addPulsar(automaton)
+		automaton.placePatternRandomly(pulsarPattern())
 	})
 	addPentadecathlonBtn.on("click", () => {
-		automaton = addPentadecathlon(automaton)
+		automaton.placePatternRandomly(pentadecathlonPattern())
 	})
 	addGliderBtn.on("click", () => {
-		automaton = addGlider(automaton)
+		automaton.placePatternRandomly(gliderPattern())
 	})
 	addLWSSBtn.on("click", () => {
-		automaton = addLWSS(automaton)
+		automaton.placePatternRandomly(LWSSPattern())
 	})
 	addMWSSBtn.on("click", () => {
-		automaton = addMWSS(automaton)
+		automaton.placePatternRandomly(MWSSPattern())
 	})
 	addHWSSBtn.on("click", () => {
-		automaton = addHWSS(automaton)
+		automaton.placePatternRandomly(HWSSPattern())
 	})
 	addGosperGliderGunBtn.on("click", () => {
-		automaton = addGosperGliderGun(automaton)
+		automaton.placePatternRandomly(gosperGliderGunPattern())
 	})
 
 	resetBtn.on("click", () => {

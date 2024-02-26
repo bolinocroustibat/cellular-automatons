@@ -1,39 +1,33 @@
 // Oscillator patterns
 
-export const addBlinker = (automaton) => {
+export const blinkerPattern = () => {
 	const r = Math.random()
 	if (r < 0.5) {
-		const horizontalBlinkerPattern = [[1, 1, 1]]
-		automaton.placePatternRandomly(horizontalBlinkerPattern)
-	} else {
-		const verticalBlinkerPattern = [[1], [1], [1]]
-		automaton.placePatternRandomly(verticalBlinkerPattern)
+		return [[1, 1, 1]]
 	}
+	return [[1], [1], [1]]
 }
 
-export const addBeacon = (automaton) => {
+export const beaconPattern = () => {
 	const r = Math.random()
 	if (r < 0.5) {
-		const beaconPattern = [
+		return [
 			[1, 1, 0, 0],
 			[1, 1, 0, 0],
 			[0, 0, 1, 1],
 			[0, 0, 1, 1],
 		]
-		automaton.placePatternRandomly(beaconPattern)
-	} else {
-		const beaconPattern = [
-			[0, 0, 1, 1],
-			[0, 0, 1, 1],
-			[1, 1, 0, 0],
-			[1, 1, 0, 0],
-		]
-		automaton.placePatternRandomly(beaconPattern)
 	}
+	return [
+		[0, 0, 1, 1],
+		[0, 0, 1, 1],
+		[1, 1, 0, 0],
+		[1, 1, 0, 0],
+	]
 }
 
-export const addPulsar = (automaton) => {
-	const pulsarPattern = [
+export const pulsarPattern = () => {
+	return [
 		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		[1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1],
@@ -48,31 +42,27 @@ export const addPulsar = (automaton) => {
 		[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		[0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0],
 	]
-	automaton.placePatternRandomly(pulsarPattern)
 }
 
-export const addPentadecathlon = (automaton) => {
+export const pentadecathlonPattern = () => {
 	const r = Math.random()
 	if (r < 0.5) {
-		const horizontalPentadecathlonPattern = [
+		return [
 			[0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
 			[1, 1, 0, 1, 1, 1, 1, 0, 1, 1],
 			[0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
 		]
-		automaton.placePatternRandomly(horizontalPentadecathlonPattern)
-	} else {
-		const verticalPentadecathlonPattern = [
-			[0, 1, 0],
-			[0, 1, 0],
-			[1, 0, 1],
-			[0, 1, 0],
-			[0, 1, 0],
-			[0, 1, 0],
-			[0, 1, 0],
-			[1, 0, 1],
-			[0, 1, 0],
-			[0, 1, 0],
-		]
-		automaton.placePatternRandomly(verticalPentadecathlonPattern)
 	}
+	return [
+		[0, 1, 0],
+		[0, 1, 0],
+		[1, 0, 1],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[0, 1, 0],
+		[1, 0, 1],
+		[0, 1, 0],
+		[0, 1, 0],
+	]
 }
