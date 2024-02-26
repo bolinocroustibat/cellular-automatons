@@ -83,12 +83,11 @@ export class ConwayAutomaton extends Automaton2D {
 					if (cell === colorOn) nbAlive++
 				}
 
-				// Change the nextState according to the neighbors
+				// Change the newState according to the neighbors
 				const isCellAlive = this.state[y][x] === colorOn
 				const isUnderpopulated = nbAlive < 2
 				const isOverpopulated = nbAlive > 3
 				const isReproduction = nbAlive === 3
-
 				if (
 					(isCellAlive && (isUnderpopulated || isOverpopulated)) ||
 					(!isCellAlive && isReproduction)
