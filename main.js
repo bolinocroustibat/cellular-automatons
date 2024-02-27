@@ -2,7 +2,6 @@ import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
-import { ImmigrationAutomaton } from "./2d/immigration/immigration"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
 import {
 	beaconPattern,
@@ -17,6 +16,7 @@ import {
 	gliderPattern,
 } from "./2d/conway/patterns/spaceships"
 import { EntropyAutomaton } from "./2d/entropy/entropy"
+import { ImmigrationAutomaton } from "./2d/immigration/immigration"
 import { LangtonAutomaton } from "./2d/langton/langton"
 
 let pane
@@ -284,20 +284,10 @@ const reset = () => {
 			)
 			break
 		case "conway":
-			automaton = new ConwayAutomaton(
-				canvasEl,
-				width,
-				height,
-				resolution,
-			)
+			automaton = new ConwayAutomaton(canvasEl, width, height, resolution)
 			break
 		case "immigration":
-			automaton = new ImmigrationAutomaton(
-				canvasEl,
-				width,
-				height,
-				resolution,
-			)
+			automaton = new ImmigrationAutomaton(canvasEl, width, height, resolution)
 			break
 		case "langton":
 			automaton = new LangtonAutomaton(canvasEl, width, height, resolution)

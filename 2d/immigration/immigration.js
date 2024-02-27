@@ -1,7 +1,6 @@
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
-
 export class ImmigrationAutomaton extends Automaton2D {
 	constructor(...args) {
 		super(...args)
@@ -23,7 +22,6 @@ export class ImmigrationAutomaton extends Automaton2D {
 				y * this.resolution,
 			)
 		})
-
 	}
 
 	getCursorPosition = (event) => {
@@ -35,69 +33,48 @@ export class ImmigrationAutomaton extends Automaton2D {
 		return [x, y]
 	}
 
-	getMostFrequentAliveColor = (colors) => {
-		aliveColors = colors.filter((color) => color !== this.colors[0])
-		if (aliveColors.length === 0) return null
-
-		// Count occurrences of each color id
-		const occurrences = new Map()
-		for (const color of aliveColors) {
-			const colorId = color.id
-			occurrences.set(colorId, (occurrences.get(colorId) || 0) + 1)
-		}
-		// Find the maximum occurrence count
-		let maxCount = 0
-		let mostFrequentIds = []
-		occurrences.forEach((count, colorId) => {
-			if (count > maxCount) {
-				maxCount = count
-				mostFrequentIds = [colorId]
-			} else if (count === maxCount) {
-				mostFrequentIds.push(colorId)
+	getMostFrequentAliveColor = (aliveNeighbours) => {
+		if (aliveNeighbours.length === 0) return null
+		const occurences = {}
+		let mostFrequentColor = aliveNeighbours[0]
+		let maxFrequency = 1
+		for (const cell of aliveNeighbours) {
+			if (occurences[cell] == null) occurences[cell] = 1
+			else occurences[cell]++
+			if (occurences[cell] > maxFrequency) {
+				mostFrequentColor = cell
+				maxFrequency = occurences[cell]
 			}
-		})
-
-
-
-		// // If there is only one most frequent color, return it
-		// if (mostFrequentIds.length === 1) {
-		// 	return colors.find((color) => color.id === mostFrequentIds[0])
-		// }
-
-		// // Else, select a random color among the most frequent ones
-		// const randomIndex = Math.floor(Math.random() * mostFrequentIds.length)
-		// const randomColorId = parseInt(mostFrequentIds[randomIndex], 10)
-		// return colors.find((color) => color.id === randomColorId)
+		}
+		return mostFrequentColor
 	}
 
 	updateState = () => {
 		const newState = []
 		const colorOff = this.colors[0]
-		const aliveColors = colors.filter((color) => color !== this.colors[0])
+		const aliveColorIds = [1, 2]
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
 				const neighbours = this.getNeighborsColors(x, y)
 
 				// Analyse neighbors info
-				let nbAlive = 0
+				const aliveNeighbours = []
 				for (const cell of neighbours) {
-					if (cell === colorOn) nbAlive++
+					if (aliveColorIds.includes(cell.id)) {
+						aliveNeighbours.push(cell)
+					}
 				}
 
 				// Change the newState according to the neighbors
-				const isCellAlive = this.state[y][x] === colorOn
-				const isUnderpopulated = nbAlive < 2
-				const isOverpopulated = nbAlive > 3
-				const isReproduction = nbAlive === 3
-				if (isCellAlive && (isUnderpopulated || isOverpopulated)
-				) {
+				const isCellAlive = aliveColorIds.includes(this.state[y][x].id)
+				const isUnderpopulated = aliveNeighbours.length < 2
+				const isOverpopulated = aliveNeighbours.length > 3
+				const isReproduction = aliveNeighbours.length === 3
+				if (isCellAlive && (isUnderpopulated || isOverpopulated)) {
 					newState[y][x] = colorOff
-				}
-				else if (!isCellAlive && isReproduction) {
-					//TODO: use the most frequent color of the neighbors
-					newState[y][x] = getMostFrequentAliveColor(neighbours)
-
+				} else if (!isCellAlive && isReproduction) {
+					newState[y][x] = this.getMostFrequentAliveColor(aliveNeighbours)
 				} else {
 					newState[y][x] = this.state[y][x]
 				}
