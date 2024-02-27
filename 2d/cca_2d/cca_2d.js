@@ -22,7 +22,6 @@ export class CCA2D extends Automaton2D {
 			for (let x = 0; x < this.colsCount; ++x) {
 				const neighbours = this.getNeighborsColors(x, y)
 				const nextColorId = nextCellColorId(this.state[y][x], this.colors)
-				console.log(neighbours)
 				const successorNeighboursCount = neighbours.filter(
 					(neighbour) => neighbour.id === nextColorId,
 				)
