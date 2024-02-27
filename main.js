@@ -2,6 +2,7 @@ import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
+import { ImmigrationAutomaton } from "./2d/immigration/immigration"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
 import {
 	beaconPattern,
@@ -34,6 +35,7 @@ window.onload = () => {
 			"1 dimension Cyclic Cellular Automaton": "cca-1D",
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
 			"Conway's game of Life": "conway",
+			"Immigration game": "immigration",
 			"Langton's ant": "langton",
 			"2 dimensions Entropy Automaton": "entropy",
 		},
@@ -145,6 +147,13 @@ window.onload = () => {
 		conwayPatterns.hidden = false
 	}
 
+	const setImmigrationBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		resolutionBlade.hidden = false
+	}
+
 	const setLangtonBlades = () => {
 		for (const blade of blades) {
 			blade.hidden = true
@@ -173,6 +182,9 @@ window.onload = () => {
 				break
 			case "conway":
 				setConwayBlades()
+				break
+			case "immigration":
+				setImmigrationBlades()
 				break
 			case "langton":
 				setLangtonBlades()
@@ -228,6 +240,9 @@ window.onload = () => {
 			case "conway":
 				automaton.start(25, 12000)
 				break
+			case "immigration":
+				automaton.start(25, 12000)
+				break
 			case "langton":
 				automaton.start(3, 12000)
 				break
@@ -274,7 +289,14 @@ const reset = () => {
 				width,
 				height,
 				resolution,
-				settings.cca2dColorsCount,
+			)
+			break
+		case "immigration":
+			automaton = new ImmigrationAutomaton(
+				canvasEl,
+				width,
+				height,
+				resolution,
 			)
 			break
 		case "langton":
