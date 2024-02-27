@@ -69,7 +69,7 @@ window.onload = () => {
 	const cca2dResolutionBlade = pane.addBinding(
 		{ cca2dResolution: 10 },
 		"cca2dResolution",
-		{ label: "Resolution", min: 4, max: 20, step: 1 },
+		{ label: "Resolution", min: 1, max: 20, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
