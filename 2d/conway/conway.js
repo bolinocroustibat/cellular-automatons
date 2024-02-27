@@ -84,11 +84,11 @@ export class ConwayAutomaton extends Automaton2D {
 				// Analyse neighbors info
 				let nbAlive = 0
 				for (const cell of neighbours) {
-					if (cell === colorOn) nbAlive++
+					if (cell.id === colorOn.id) nbAlive++
 				}
 
 				// Change the newState according to the neighbors
-				const isCellAlive = this.state[y][x] === colorOn
+				const isCellAlive = this.state[y][x].id === colorOn.id
 				const isUnderpopulated = nbAlive < 2
 				const isOverpopulated = nbAlive > 3
 				const isReproduction = nbAlive === 3
