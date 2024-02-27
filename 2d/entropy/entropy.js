@@ -30,7 +30,7 @@ export class EntropyAutomaton extends Automaton2D {
 				// Optimization - fill pixels only if color value changes from previous state
 				if (newState[y][x] !== this.state[y][x]) {
 					this.fillSquare(
-						newState[y][x],
+						newState[y][x].colorRgb,
 						x * this.resolution,
 						y * this.resolution,
 					)

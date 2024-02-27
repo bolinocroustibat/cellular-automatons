@@ -35,7 +35,11 @@ export class ConwayAutomaton extends Automaton2D {
 		this.canvasEl.addEventListener("mousedown", (event) => {
 			const [x, y] = this.getCursorPosition(event)
 			this.state[y][x] = this.colors[1]
-			this.fillSquare(this.colors[1], x * this.resolution, y * this.resolution)
+			this.fillSquare(
+				this.colors[1].colorRgb,
+				x * this.resolution,
+				y * this.resolution,
+			)
 		})
 
 		// Add patterns at random positions
@@ -101,7 +105,7 @@ export class ConwayAutomaton extends Automaton2D {
 				// Optimization - fill pixels only if color value changes from previous state
 				if (newState[y][x] !== this.state[y][x]) {
 					this.fillSquare(
-						newState[y][x],
+						newState[y][x].colorRgb,
 						x * this.resolution,
 						y * this.resolution,
 					)

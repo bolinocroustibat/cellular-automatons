@@ -40,7 +40,7 @@ export class LangtonAutomaton extends Automaton2D {
 			// Flip the color of the current cell
 			this.state[this.positionX][this.positionY] = this.colors[1]
 			this.fillSquare(
-				this.colors[1],
+				this.colors[1].colorRgb,
 				this.positionX * this.resolution,
 				this.positionY * this.resolution,
 			)
@@ -51,7 +51,7 @@ export class LangtonAutomaton extends Automaton2D {
 			// Flip the color of the current cell
 			this.state[this.positionX][this.positionY] = this.colors[0]
 			this.fillSquare(
-				this.colors[0],
+				this.colors[0].colorRgb,
 				this.positionX * this.resolution,
 				this.positionY * this.resolution,
 			)

@@ -1,38 +1,36 @@
 import chroma from "chroma-js"
 
 export const pickColors = (colorsCount) => {
-	const rgbColorsWithId = []
+	const colors = []
 	if (colorsCount === 2) {
 		// Chose two colors with a contrast > 4.5 (see https://gka.github.io/chroma.js/#chroma-contrast)
-		let rgbColor1 = chroma.random().rgb()
-		let rgbColor2 = chroma.random().rgb()
+		let colorRgb1 = chroma.random().rgb()
+		let colorRgb2 = chroma.random().rgb()
 		let retries = 0
-		while (chroma.contrast(rgbColor1, rgbColor2) <= 4.5) {
-			rgbColor2 = chroma.random().rgb()
+		while (chroma.contrast(colorRgb1, colorRgb2) <= 4.5) {
+			colorRgb2 = chroma.random().rgb()
 			retries += 1
 			if (retries > 4) {
-				rgbColor1 = chroma.random().rgb()
+				colorRgb1 = chroma.random().rgb()
 			}
 		}
-		rgbColor1.id = 1
-		rgbColor2.id = 2
-		return [rgbColor1, rgbColor2]
+		colors[0] = { id: 0, colorRgb: colorRgb1 }
+		colors[1] = { id: 1, colorRgb: colorRgb2 }
+	} else {
+		for (let i = 0; i < colorsCount; ++i) {
+			const colorRgb = chroma.random().rgb()
+			colors[i] = { id: i, colorRgb: colorRgb }
+		}
 	}
-	for (let i = 0; i < colorsCount; ++i) {
-		const rgbColor = chroma.random().rgb()
-		rgbColor.id = i
-		rgbColorsWithId.push(rgbColor)
-	}
-	return rgbColorsWithId
+	return colors
 }
 
 // export const pickSpectralColors = (colorsCount) => {
 // 	let colors = chroma.scale('Spectral').colors(colorsCount)
-// 	let rgbColorsWithId = []
+// 	let colors = []
 // 	for (let i = 0; i < colors.length; ++i) {
-// 		let rgbColor = chroma(colors[i]).rgb()
-// 		rgbColor.id = i
-// 		rgbColorsWithId.push(rgbColor)
+// 		const colorRgb = chroma(colors[i]).rgb()
+// 		colors[i] = { "id": id, "color": colorRgb }
 // 	}
-// 	return rgbColorsWithId
+// 	return colors
 // }

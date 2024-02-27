@@ -22,6 +22,7 @@ export class CCA2D extends Automaton2D {
 			for (let x = 0; x < this.colsCount; ++x) {
 				const neighbours = this.getNeighborsColors(x, y)
 				const nextColorId = nextCellColorId(this.state[y][x], this.colors)
+				console.log(neighbours)
 				const successorNeighboursCount = neighbours.filter(
 					(neighbour) => neighbour.id === nextColorId,
 				)
@@ -34,7 +35,7 @@ export class CCA2D extends Automaton2D {
 				// Optimization - fill pixels only if color value changes from previous state
 				if (newState[y][x] !== this.state[y][x]) {
 					this.fillSquare(
-						newState[y][x],
+						newState[y][x].colorRgb,
 						x * this.resolution,
 						y * this.resolution,
 					)

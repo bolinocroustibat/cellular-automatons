@@ -37,7 +37,7 @@ export class Automaton2D {
 				if (!this.state[y]) this.state[y] = []
 				this.state[y][x] = this.colors[0]
 				this.fillSquare(
-					this.state[y][x],
+					this.state[y][x].colorRgb,
 					x * this.resolution,
 					y * this.resolution,
 				)
@@ -53,7 +53,7 @@ export class Automaton2D {
 				this.state[y][x] =
 					this.colors[Math.floor(Math.random() * this.colors.length)]
 				this.fillSquare(
-					this.state[y][x],
+					this.state[y][x].colorRgb,
 					x * this.resolution,
 					y * this.resolution,
 				)
@@ -71,7 +71,7 @@ export class Automaton2D {
 				this.state[posY + y][posX + x] = this.colors[pattern[y][x]]
 				// Change canvas pixels
 				this.fillSquare(
-					this.colors[pattern[y][x]],
+					this.colors[pattern[y][x]].colorRgb,
 					(posX + x) * this.resolution,
 					(posY + y) * this.resolution,
 				)
@@ -121,7 +121,7 @@ export class Automaton2D {
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
 				this.fillSquare(
-					this.state[y][x],
+					this.state[y][x].colorRgb,
 					x * this.resolution,
 					y * this.resolution,
 				)

@@ -64,19 +64,19 @@ export class CCA1D {
 					? successorNeighboursCount[0]
 					: this.state[x]
 			// Render directly to the canvas to avoid another loop
-			this.fillPixel(this.state[x], x, line)
+			this.fillPixel(this.state[x].colorRgb, x, line)
 		}
 		this.state = newState
 	}
 
-	fillPixel = (colorRgb, x, y) => {
+	fillPixel = (color, x, y) => {
 		this.ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
 		this.ctx.fillRect(x, y, 1, 1)
 	}
 
 	render = (line) => {
 		for (let x = 0; x < this.width; x++) {
-			this.fillPixel(this.state[x], x, line)
+			this.fillPixel(this.state[x].colorRgb, x, line)
 		}
 	}
 }
