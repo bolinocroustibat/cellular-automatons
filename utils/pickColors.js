@@ -18,7 +18,7 @@ export const pickColors = (colorsCount) => {
 		rgbColor2.id = 2
 		return [rgbColor1, rgbColor2]
 	}
-	for (let i = 0; i < colorsCount; i++) {
+	for (let i = 0; i < colorsCount; ++i) {
 		const rgbColor = chroma.random().rgb()
 		rgbColor.id = i
 		rgbColorsWithId.push(rgbColor)
@@ -29,7 +29,7 @@ export const pickColors = (colorsCount) => {
 // export const pickSpectralColors = (colorsCount) => {
 // 	let colors = chroma.scale('Spectral').colors(colorsCount)
 // 	let rgbColorsWithId = []
-// 	for (let i = 0; i < colors.length; i++) {
+// 	for (let i = 0; i < colors.length; ++i) {
 // 		let rgbColor = chroma(colors[i]).rgb()
 // 		rgbColor.id = i
 // 		rgbColorsWithId.push(rgbColor)

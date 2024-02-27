@@ -65,8 +65,8 @@ export class Automaton2D {
 		const posX = randomInt(0, this.colsCount - pattern[0].length) // Adjusted to ensure pattern fits within the grid
 		const posY = randomInt(0, this.rowsCount - pattern.length) // Adjusted to ensure pattern fits within the grid
 		// Place the pattern at the specified position
-		for (let y = 0; y < pattern.length; y++) {
-			for (let x = 0; x < pattern[y].length; x++) {
+		for (let y = 0; y < pattern.length; ++y) {
+			for (let x = 0; x < pattern[y].length; ++x) {
 				// Change state at the specified squares
 				this.state[posY + y][posX + x] = this.colors[pattern[y][x]]
 				// Change canvas pixels
