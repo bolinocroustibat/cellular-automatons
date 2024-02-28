@@ -69,7 +69,7 @@ export class CCA1D {
 		this.state = newState
 	}
 
-	fillPixel = (color, x, y) => {
+	fillPixel = (colorRgb, x, y) => {
 		this.ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
 		this.ctx.fillRect(x, y, 1, 1)
 	}

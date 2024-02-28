@@ -17,8 +17,8 @@ import {
 } from "./2d/conway/patterns/spaceships"
 import { EntropyAutomaton } from "./2d/entropy/entropy"
 import { ImmigrationAutomaton } from "./2d/immigration/immigration"
-import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 import { LangtonAutomaton } from "./2d/langton/langton"
+import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 
 let pane
 let settings

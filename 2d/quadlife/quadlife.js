@@ -64,7 +64,9 @@ export class QuadLifeAutomaton extends Automaton2D {
 		if (mostFrequentColors.length === 3) {
 			// Specific QuadLife rule:
 			// Return the only alive color that is not among the most frequent colors
-			return this.aliveColors.find((color) => !mostFrequentColors.includes(color))
+			return this.aliveColors.find(
+				(color) => !mostFrequentColors.includes(color),
+			)
 		}
 	}
 
