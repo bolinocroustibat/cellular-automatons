@@ -14,8 +14,7 @@ export class EntropyAutomaton extends Automaton2D {
 		// Count occurrences of each color id
 		const occurrences = new Map()
 		for (const color of colors) {
-			const colorId = color.id
-			occurrences.set(colorId, (occurrences.get(colorId) || 0) + 1)
+			occurrences.set(color.id, (occurrences.get(color.id) || 0) + 1)
 		}
 
 		// Find the maximum occurrence count

@@ -1,10 +1,10 @@
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
-export class ImmigrationAutomaton extends Automaton2D {
+export class QuadLifeAutomaton extends Automaton2D {
 	constructor(...args) {
 		super(...args)
-		this.colorsCount = 3
+		this.colorsCount = 5
 		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.aliveColors = this.colors.slice(1)
@@ -36,20 +36,36 @@ export class ImmigrationAutomaton extends Automaton2D {
 		return [x, y]
 	}
 
-	getMostFrequentAliveColor = (aliveNeighbours) => {
+	getQuadLifeColor = (aliveNeighbours) => {
 		if (aliveNeighbours.length === 0) return null
-		const occurences = {}
-		let mostFrequentColor = aliveNeighbours[0]
-		let maxFrequency = 1
-		for (const cell of aliveNeighbours) {
-			if (occurences[cell] == null) occurences[cell] = 1
-			else occurences[cell]++
-			if (occurences[cell] > maxFrequency) {
-				mostFrequentColor = cell
-				maxFrequency = occurences[cell]
-			}
+
+		// Count occurrences of each color
+		const occurrences = new Map()
+		for (const color of aliveNeighbours) {
+			occurrences.set(color, (occurrences.get(color) || 0) + 1)
 		}
-		return mostFrequentColor
+
+		// Find the maximum occurrence count
+		let maxCount = 0
+		let mostFrequentColors = []
+		occurrences.forEach((count, color) => {
+			if (count > maxCount) {
+				maxCount = count
+				mostFrequentColors = [color]
+			} else if (count === maxCount) {
+				mostFrequentColors.push(color)
+			}
+		})
+
+		if (mostFrequentColors.length === 1) {
+			// If there is only one most frequent color, returns it
+			return mostFrequentColors[0]
+		}
+		if (mostFrequentColors.length === 3) {
+			// Specific QuadLife rule:
+			// Return the only alive color that is not among the most frequent colors
+			return this.aliveColors.find((color) => !mostFrequentColors.includes(color))
+		}
 	}
 
 	updateState = () => {
@@ -75,7 +91,7 @@ export class ImmigrationAutomaton extends Automaton2D {
 				if (isCellAlive && (isUnderpopulated || isOverpopulated)) {
 					newState[y][x] = this.colorOff
 				} else if (!isCellAlive && isReproduction) {
-					newState[y][x] = this.getMostFrequentAliveColor(aliveNeighbours)
+					newState[y][x] = this.getQuadLifeColor(aliveNeighbours)
 				} else {
 					newState[y][x] = this.state[y][x]
 				}

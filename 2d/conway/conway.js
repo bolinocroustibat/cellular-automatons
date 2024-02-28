@@ -26,6 +26,8 @@ export class ConwayAutomaton extends Automaton2D {
 		super(...args)
 		this.colorsCount = 2
 		this.colors = pickColors(this.colorsCount)
+		this.colorOff = this.colors[0]
+		this.colorOn = this.colors[1]
 
 		clearInterval(this.renderInterval)
 
@@ -74,8 +76,6 @@ export class ConwayAutomaton extends Automaton2D {
 
 	updateState = () => {
 		const newState = []
-		const colorOff = this.colors[0]
-		const colorOn = this.colors[1]
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
@@ -84,11 +84,11 @@ export class ConwayAutomaton extends Automaton2D {
 				// Analyse neighbors info
 				let nbAlive = 0
 				for (const cell of neighbours) {
-					if (cell.id === colorOn.id) nbAlive++
+					if (cell.id === this.colorOn.id) nbAlive++
 				}
 
 				// Change the newState according to the neighbors
-				const isCellAlive = this.state[y][x].id === colorOn.id
+				const isCellAlive = this.state[y][x].id === this.colorOn.id
 				const isUnderpopulated = nbAlive < 2
 				const isOverpopulated = nbAlive > 3
 				const isReproduction = nbAlive === 3
@@ -96,7 +96,7 @@ export class ConwayAutomaton extends Automaton2D {
 					(isCellAlive && (isUnderpopulated || isOverpopulated)) ||
 					(!isCellAlive && isReproduction)
 				) {
-					newState[y][x] = isCellAlive ? colorOff : colorOn
+					newState[y][x] = isCellAlive ? this.colorOff : this.colorOn
 				} else {
 					newState[y][x] = this.state[y][x]
 				}

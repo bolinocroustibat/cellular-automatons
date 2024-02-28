@@ -17,6 +17,7 @@ import {
 } from "./2d/conway/patterns/spaceships"
 import { EntropyAutomaton } from "./2d/entropy/entropy"
 import { ImmigrationAutomaton } from "./2d/immigration/immigration"
+import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 import { LangtonAutomaton } from "./2d/langton/langton"
 
 let pane
@@ -36,6 +37,7 @@ window.onload = () => {
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
 			"Conway's game of Life": "conway",
 			"Immigration game": "immigration",
+			"Quad-Life": "quadlife",
 			"Langton's ant": "langton",
 			"2 dimensions Entropy Automaton": "entropy",
 		},
@@ -154,6 +156,13 @@ window.onload = () => {
 		resolutionBlade.hidden = false
 	}
 
+	const setQuadLifeBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		resolutionBlade.hidden = false
+	}
+
 	const setLangtonBlades = () => {
 		for (const blade of blades) {
 			blade.hidden = true
@@ -185,6 +194,9 @@ window.onload = () => {
 				break
 			case "immigration":
 				setImmigrationBlades()
+				break
+			case "quadlife":
+				setQuadLifeBlades()
 				break
 			case "langton":
 				setLangtonBlades()
@@ -243,6 +255,9 @@ window.onload = () => {
 			case "immigration":
 				automaton.start(25, 12000)
 				break
+			case "quadlife":
+				automaton.start(25, 12000)
+				break
 			case "langton":
 				automaton.start(3, 12000)
 				break
@@ -288,6 +303,9 @@ const reset = () => {
 			break
 		case "immigration":
 			automaton = new ImmigrationAutomaton(canvasEl, width, height, resolution)
+			break
+		case "quadlife":
+			automaton = new QuadLifeAutomaton(canvasEl, width, height, resolution)
 			break
 		case "langton":
 			automaton = new LangtonAutomaton(canvasEl, width, height, resolution)
