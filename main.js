@@ -24,6 +24,8 @@ let pane
 let settings
 let automaton
 
+console.log(`Version: ${APP_VERSION}`)
+
 window.onload = () => {
 	pane = new Pane({
 		title: "Parameters",
