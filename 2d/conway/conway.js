@@ -1,37 +1,20 @@
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
-import { gosperGliderGunPattern } from "./patterns/guns"
-import {
-	beaconPattern,
-	blinkerPattern,
-	pentadecathlonPattern,
-	pulsarPattern,
-} from "./patterns/oscillators"
-import {
-	HWSSPattern,
-	LWSSPattern,
-	MWSSPattern,
-	gliderPattern,
-} from "./patterns/spaceships"
-import {
-	beehivePattern,
-	blockPattern,
-	boatPattern,
-	loafPattern,
-} from "./patterns/still_lifes"
-
 export class ConwayAutomaton extends Automaton2D {
 	constructor(...args) {
 		super(...args)
-		this.colorsCount = 2
+		if (!this.colorsCount) {
+			this.colorsCount = 2
+		}
 		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.colorOn = this.colors[1]
 
 		clearInterval(this.renderInterval)
 
-		this.setUniformStateAndRender()
+		// Initial random populating
+		this.setRandomStateAndRender()
 
 		// Manual populating
 		this.canvasEl.addEventListener("mousedown", (event) => {
@@ -43,26 +26,6 @@ export class ConwayAutomaton extends Automaton2D {
 				y * this.resolution,
 			)
 		})
-
-		// Add patterns at random positions
-		// Conway patterns: https://blog.amandaghassaei.com/2020/05/01/the-recursive-universe/
-		// Still lifes
-		this.placePatternRandomly(blockPattern)
-		this.placePatternRandomly(loafPattern)
-		this.placePatternRandomly(boatPattern)
-		this.placePatternRandomly(beehivePattern)
-		// Oscillators
-		this.placePatternRandomly(blinkerPattern())
-		this.placePatternRandomly(beaconPattern())
-		this.placePatternRandomly(pulsarPattern())
-		this.placePatternRandomly(pentadecathlonPattern())
-		// Spaceships
-		this.placePatternRandomly(gliderPattern())
-		this.placePatternRandomly(LWSSPattern())
-		this.placePatternRandomly(MWSSPattern())
-		this.placePatternRandomly(HWSSPattern())
-		// Guns
-		this.placePatternRandomly(gosperGliderGunPattern())
 	}
 
 	getCursorPosition = (event) => {

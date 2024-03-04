@@ -1,39 +1,13 @@
-import { pickColors } from "../../utils/pickColors"
-import { Automaton2D } from "../automaton2d"
+import { ConwayAutomaton } from "../conway/conway"
 
-export class ImmigrationAutomaton extends Automaton2D {
+
+export class ImmigrationAutomaton extends ConwayAutomaton {
 	constructor(...args) {
+		// Modify the colorsCount to 3
+		args[4] = 3
 		super(...args)
-		this.colorsCount = 3
-		this.colors = pickColors(this.colorsCount)
-		this.colorOff = this.colors[0]
 		this.aliveColors = this.colors.slice(1)
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
-
-		clearInterval(this.renderInterval)
-
-		// Initial random populating
-		this.setRandomStateAndRender()
-
-		// Manual populating
-		this.canvasEl.addEventListener("mousedown", (event) => {
-			const [x, y] = this.getCursorPosition(event)
-			this.state[y][x] = this.colors[1]
-			this.fillSquare(
-				this.colors[1].colorRgb,
-				x * this.resolution,
-				y * this.resolution,
-			)
-		})
-	}
-
-	getCursorPosition = (event) => {
-		const rect = this.canvasEl.getBoundingClientRect()
-		const pixelX = event.clientX - rect.left
-		const pixelY = event.clientY - rect.top
-		const x = ~~(pixelX / this.resolution)
-		const y = ~~(pixelY / this.resolution)
-		return [x, y]
 	}
 
 	getMostFrequentAliveColor = (aliveNeighbours) => {
