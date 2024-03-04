@@ -30,6 +30,10 @@ export class Automaton2D {
 		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
 	}
 
+	clear()	{
+		this.setUniformStateAndRender()
+	}
+
 	setUniformStateAndRender = () => {
 		// Initial empty state populating, create state AND render the canvas
 		for (let y = 0; y < this.rowsCount; ++y) {

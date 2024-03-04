@@ -110,8 +110,11 @@ window.onload = () => {
 	const addGosperGliderGunBtn = guns.addButton({
 		title: "Add a Gosper Glider Gun",
 	})
+	const clearBtn = pane.addButton({
+		title: "Clear",
+	})
 	const resetBtn = pane.addButton({
-		title: "Reset with those values",
+		title: "Reset",
 	})
 	const startBtn = pane.addButton({
 		index: 10,
@@ -125,6 +128,7 @@ window.onload = () => {
 		conwayPatterns,
 		entropyColorsCountBlade,
 		resolutionBlade,
+		clearBtn,
 	]
 
 	const setCca1dBlades = () => {
@@ -149,6 +153,7 @@ window.onload = () => {
 		}
 		resolutionBlade.hidden = false
 		conwayPatterns.hidden = false
+		clearBtn.hidden = false
 	}
 
 	const setImmigrationBlades = () => {
@@ -238,6 +243,12 @@ window.onload = () => {
 		automaton.placePatternRandomly(gosperGliderGunPattern())
 	})
 
+	clearBtn.on("click", () => {
+		if (automaton) {
+			clearInterval(automaton.renderInterval)
+			automaton.clear()
+		}
+	})
 	resetBtn.on("click", () => {
 		reset()
 	})
