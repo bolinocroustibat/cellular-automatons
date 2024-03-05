@@ -4,8 +4,8 @@
   - In 1 dimension
   - In 2 dimensions
 - Conway's game of Life
-- Immigration game (Conway's game of life with 3 colors)
-- Quad-Life  (Conway's game of life with 5 colors)
+- Immigration game ([Conway's game of life with 3 colors](https://conwaylife.com/ref/mniemiec/color.htm#c-imm))
+- Quad-Life ([Conway's game of life with 5 colors](https://conwaylife.com/ref/mniemiec/color.htm#c-quad))
 - Langton's ant
 - Various algorithms
 
