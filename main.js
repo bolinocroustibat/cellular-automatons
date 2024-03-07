@@ -24,8 +24,6 @@ let pane
 let settings
 let automaton
 
-console.log(`Version: ${APP_VERSION}`)
-
 window.onload = () => {
 	pane = new Pane({
 		title: "Parameters",
@@ -119,6 +117,13 @@ window.onload = () => {
 	const startBtn = pane.addButton({
 		index: 10,
 		title: "Start",
+	})
+	pane.addBlade({
+		view: "text",
+		label: "Version",
+		value: `${APP_VERSION}`,
+		parse: () => {},
+		disabled: true,
 	})
 
 	const blades = [
