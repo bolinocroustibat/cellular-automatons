@@ -17,31 +17,31 @@
 ## Install the dependencies
 
 ```bash
-pnpm install
+bun install
 ```
 
 ## Run locally
 
 ```bash
-pnpm run dev
+bun run dev
 ```
 
 ## Build for production
 
-Build for production without including the dev dependencies with:
+Build for production with:
 ```bash
-pnpm run build --omit-dev
+bun run build
 ```
 ...it will create a production build in `./dist` folder.
 
 You can then preview the production build with:
 ```bash
-pnpm run preview
+bun run preview
 ```
 
 ## Format and lint code with Biome
 
 Lint AND format with:
 ```bash
-pnpx @biomejs/biome check --apply .
+biome check --write .
 ```

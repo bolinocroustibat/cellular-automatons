@@ -12,16 +12,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v1
+        name: Install Bun
         with:
-          node-version: "21.x"
+          bun-version: latest
 
-      - name: Install JS dependencies with NPM for building
-        run: npm install
+      - name: Install dependencies with Bun
+        shell: bash
+        run: bun install
 
-      - name: Build with NPM without dev dependencies
-        run: npm run build --omit-dev
+      - name: Build for staging with Bun and Vite
+        shell: bash
+        run: bun run build --omit-dev
 
       - name: Install SSH key
         uses: shimataro/ssh-key-action@v2

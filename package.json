@@ -4,9 +4,10 @@
   "version": "3.2.3",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
+    "preview": "bunx --bun vite preview",
+    "check": "biome check --write ."
   },
   "dependencies": {
     "chroma-js": "^2.4.2",
@@ -14,6 +15,11 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.3",
-    "vite": "^5.1.7"
+    "vite": "^5.1.7",
+    "@types/bun": "latest"
+  },
+  "module": "index.ts",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }
