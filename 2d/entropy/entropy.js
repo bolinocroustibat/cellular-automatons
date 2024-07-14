@@ -36,7 +36,7 @@ export class EntropyAutomaton extends Automaton2D {
 
 		// Else, select a random color among the most frequent ones
 		const randomIndex = Math.floor(Math.random() * mostFrequentIds.length)
-		const randomColorId = parseInt(mostFrequentIds[randomIndex], 10)
+		const randomColorId = Number.parseInt(mostFrequentIds[randomIndex], 10)
 		return colors.find((color) => color.id === randomColorId)
 	}
 

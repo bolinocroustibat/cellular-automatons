@@ -30,7 +30,7 @@ export class Automaton2D {
 		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
 	}
 
-	clear()	{
+	clear() {
 		this.setUniformStateAndRender()
 	}
 

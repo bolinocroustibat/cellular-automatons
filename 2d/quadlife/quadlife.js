@@ -1,6 +1,5 @@
 import { ConwayAutomaton } from "../conway/conway"
 
-
 export class QuadLifeAutomaton extends ConwayAutomaton {
 	constructor(...args) {
 		// Modify the colorsCount to 5

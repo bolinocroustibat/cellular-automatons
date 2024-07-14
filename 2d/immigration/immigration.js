@@ -1,6 +1,5 @@
 import { ConwayAutomaton } from "../conway/conway"
 
-
 export class ImmigrationAutomaton extends ConwayAutomaton {
 	constructor(...args) {
 		// Modify the colorsCount to 3
