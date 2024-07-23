@@ -17,8 +17,8 @@ export class LangtonAutomaton extends Automaton2D {
 		this.setUniformStateAndRender()
 
 		// Initial values for the cursor (has to be set after the initial state)
-		this.positionX = Math.round(this.state.length / 2 - 1)
-		this.positionY = Math.round(this.state[0].length / 2 - 1)
+		this.positionX = Math.round(this.state[0].length / 2 - 1)
+		this.positionY = Math.round(this.state.length / 2 - 1)
 		this.orientationX = -1 // start orientated towards left
 		this.orientationY = 0
 	}
