@@ -3,6 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { nextCellColorId, pickColors } from "../common.js"
 
 export var CCA3DframeId
+test
 
 export class CCA3D {
 
