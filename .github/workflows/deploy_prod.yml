@@ -6,11 +6,24 @@ on:
       - "*"
 
 jobs:
+
   deploy-prod:
+
     name: Deploy to prod from ${{ github.ref_name }}/${{ github.sha }}
+
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Bump version in package.json
+        uses: ramonpaolo/bump-version@v2.3.1
+        with:
+          tag: ${{ github.ref_name }} # Accessing the context and get the reference_name, that in this case, is the created tag (ex: 1.0.0)
+          commit: true
+          branch_to_push: 'main'
 
       - uses: oven-sh/setup-bun@v1
         name: Install Bun
