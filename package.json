@@ -1,24 +1,24 @@
 {
-  "name": "cyclic-cellular-automaton",
-  "private": true,
-  "version": "3.4.2",
-  "type": "module",
-  "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "bunx --bun vite build",
-    "preview": "bunx --bun vite preview",
-    "check": "biome check --write ."
-  },
-  "dependencies": {
-    "chroma-js": "^3.0.0",
-    "tweakpane": "^4.0.4"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "vite": "^5.4.2",
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.5.3"
-  }
+	"name": "cyclic-cellular-automaton",
+	"private": true,
+	"version": "3.4.2",
+	"type": "module",
+	"scripts": {
+		"dev": "bunx --bun vite",
+		"build": "bunx --bun vite build",
+		"preview": "bunx --bun vite preview",
+		"check": "biome check --write ."
+	},
+	"dependencies": {
+		"chroma-js": "^3.0.0",
+		"tweakpane": "^4.0.4"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.8.3",
+		"vite": "^5.4.2",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5.5.3"
+	}
 }
