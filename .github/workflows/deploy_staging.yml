@@ -9,7 +9,7 @@ jobs:
 
   deploy-staging:
 
-    name: Deploy to staging from ${{ github.ref_name }}/${{ github.sha }}
+    name: Deploy to staging because of push on main
 
     runs-on: ubuntu-latest
 
