@@ -14,8 +14,8 @@
 		"tweakpane": "^4.0.4"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.1",
-		"vite": "^5.4.6",
+		"@biomejs/biome": "^1.9.2",
+		"vite": "^5.4.7",
 		"@types/bun": "latest"
 	},
 	"peerDependencies": {
