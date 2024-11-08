@@ -1,7 +1,7 @@
 {
 	"name": "cyclic-cellular-automaton",
 	"private": true,
-	"version": "3.4.3",
+	"version": "3.4.4",
 	"type": "module",
 	"scripts": {
 		"dev": "bunx --bun vite",
