@@ -18,13 +18,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
-        name: Install Bun
+      - name: Cache Bun dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.bun/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies with Bun
-        shell: bash
         run: bun install
 
       - name: Build for staging with Bun and Vite
