@@ -19,10 +19,12 @@ import { EntropyAutomaton } from "./2d/entropy/entropy"
 import { ImmigrationAutomaton } from "./2d/immigration/immigration"
 import { LangtonAutomaton } from "./2d/langton/langton"
 import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
+import type { AutomatonBase } from "./types/Automaton"
+import type { Settings } from "./types/Settings"
 
-let pane
-let settings
-let automaton
+let pane: Pane
+let settings: Settings
+let automaton: AutomatonBase
 
 window.onload = () => {
 	pane = new Pane({
@@ -286,7 +288,7 @@ window.onload = () => {
 	})
 }
 
-const reset = () => {
+const reset = (): void => {
 	if (automaton) {
 		clearInterval(automaton.renderInterval)
 	}
@@ -296,15 +298,23 @@ const reset = () => {
 	for (const s of paneState.children) {
 		if (s.binding) settings[s.binding.key] = s.binding.value
 	}
-	// Add more keys/values to the "settings" object
-	const canvasEl = document.getElementById("canvas")
-	const width = window.innerWidth
-	const height = window.innerHeight
-	const resolution = settings.resolution
+
+	const canvasEl: HTMLCanvasElement | null = document.getElementById(
+		"canvas",
+	) as HTMLCanvasElement
+	const width: number = window.innerWidth
+	const height: number = window.innerHeight
+	const resolution: number = settings.resolution || 5
+
 	// Create the context
 	switch (settings.algo) {
 		case "cca-1D":
-			automaton = new CCA1D(canvasEl, width, height, settings.cca1dColorsCount)
+			automaton = new CCA1D(
+				canvasEl,
+				width,
+				height,
+				settings.cca1dColorsCount || 4,
+			)
 			break
 		case "cca-2D":
 			automaton = new CCA2D(
@@ -340,4 +350,4 @@ const reset = () => {
 	}
 }
 
-window.onresize = () => reset()
+window.onresize = (): void => reset()

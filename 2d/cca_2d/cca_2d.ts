@@ -1,11 +1,11 @@
+import type { ColorObject } from "../../types/ColorObject"
 import { nextCellColorId } from "../../utils/nextCellColorId"
 import { Automaton2D } from "../automaton2d"
 
 export class CCA2D extends Automaton2D {
-	threshold
-	renderInterval
+	private threshold: number
 
-	constructor(threshold, ...args) {
+	constructor(threshold: number, ...args: any[]) {
 		super(...args)
 		this.threshold = threshold
 
@@ -15,14 +15,17 @@ export class CCA2D extends Automaton2D {
 		this.setRandomStateAndRender()
 	}
 
-	updateState = () => {
-		const newState = []
+	updateState = (): void => {
+		const newState: ColorObject[][] = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
-				const neighbours = this.getNeighborsColors(x, y)
-				const nextColorId = nextCellColorId(this.state[y][x], this.colors)
-				const successorNeighboursCount = neighbours.filter(
+				const neighbours: ColorObject[] = this.getNeighborsColors(x, y)
+				const nextColorId: number = nextCellColorId(
+					this.state[y][x],
+					this.colors,
+				)
+				const successorNeighboursCount: ColorObject[] = neighbours.filter(
 					(neighbour) => neighbour.id === nextColorId,
 				)
 				newState[y][x] =

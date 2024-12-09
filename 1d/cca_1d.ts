@@ -1,18 +1,24 @@
+import type { ColorObject } from "../types/ColorObject"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
 import { setupCanvas } from "../utils/setupCanvas"
 
 export class CCA1D {
-	canvasEl
-	width
-	height
-	colorsCount
-	colors
-	state
-	ctx
-	renderInterval
+	private canvasEl: HTMLCanvasElement
+	private width: number
+	private height: number
+	private colorsCount: number
+	private colors: ColorObject[]
+	private state: ColorObject[]
+	private ctx: CanvasRenderingContext2D
+	renderInterval: number
 
-	constructor(canvasEl, width, height, colorsCount) {
+	constructor(
+		canvasEl: HTMLCanvasElement,
+		width: number,
+		height: number,
+		colorsCount: number,
+	) {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
@@ -25,7 +31,7 @@ export class CCA1D {
 		this.render(0)
 	}
 
-	setRandomState = () => {
+	setRandomState = (): void => {
 		if (!this.state) this.state = []
 		for (let x = 0; x < this.width; x++) {
 			const randomColor =
@@ -34,7 +40,7 @@ export class CCA1D {
 		}
 	}
 
-	start = (intervalMs) => {
+	start = (intervalMs: number): void => {
 		let line = 0
 		this.renderInterval = setInterval(() => {
 			if (++line === this.height) clearInterval(this.renderInterval)
@@ -42,12 +48,12 @@ export class CCA1D {
 		}, intervalMs)
 	}
 
-	getCellColor = (x) => {
+	getCellColor = (x: number): ColorObject => {
 		const modifiedX = x === -1 ? this.width - 1 : x === this.width ? 0 : x
 		return this.state[modifiedX]
 	}
 
-	changeState = (line) => {
+	changeState = (line: number): void => {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
 			const neighbours = [
@@ -69,12 +75,16 @@ export class CCA1D {
 		this.state = newState
 	}
 
-	fillPixel = (colorRgb, x, y) => {
+	fillPixel = (
+		colorRgb: [number, number, number],
+		x: number,
+		y: number,
+	): void => {
 		this.ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
 		this.ctx.fillRect(x, y, 1, 1)
 	}
 
-	render = (line) => {
+	render = (line: number): void => {
 		for (let x = 0; x < this.width; x++) {
 			this.fillPixel(this.state[x].colorRgb, x, line)
 		}

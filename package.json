@@ -15,10 +15,11 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"vite": "^6.0.1",
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"@types/node": "^22.10.1",
+		"vite": "^6.0.3"
 	},
 	"peerDependencies": {
-		"typescript": "^5.5.3"
+		"typescript": "^5.7.2"
 	}
 }
