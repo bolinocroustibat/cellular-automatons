@@ -1,12 +1,20 @@
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
+import type { ColorObject } from "../../types/ColorObject"
 
 export class ConwayAutomaton extends Automaton2D {
-	constructor(...args) {
-		super(...args)
-		if (!this.colorsCount) {
-			this.colorsCount = 2
-		}
+	protected colorOff: ColorObject
+	protected colorOn: ColorObject
+
+	constructor(
+		canvasEl: HTMLCanvasElement,
+		width: number,
+		height: number,
+		resolution: number,
+		colorsCount = 2
+	) {
+		super(canvasEl, width, height, resolution, colorsCount)
+		
 		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.colorOn = this.colors[1]
@@ -17,7 +25,7 @@ export class ConwayAutomaton extends Automaton2D {
 		this.setRandomStateAndRender()
 
 		// Manual populating
-		this.canvasEl.addEventListener("mousedown", (event) => {
+		this.canvasEl.addEventListener("mousedown", (event: MouseEvent) => {
 			const [x, y] = this.getCursorPosition(event)
 			this.state[y][x] = this.colors[1]
 			this.fillSquare(
@@ -28,7 +36,7 @@ export class ConwayAutomaton extends Automaton2D {
 		})
 	}
 
-	getCursorPosition = (event) => {
+	private getCursorPosition = (event: MouseEvent): [number, number] => {
 		const rect = this.canvasEl.getBoundingClientRect()
 		const pixelX = event.clientX - rect.left
 		const pixelY = event.clientY - rect.top
@@ -37,8 +45,8 @@ export class ConwayAutomaton extends Automaton2D {
 		return [x, y]
 	}
 
-	updateState = () => {
-		const newState = []
+	protected updateState = (): void => {
+		const newState: ColorObject[][] = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
@@ -77,4 +85,4 @@ export class ConwayAutomaton extends Automaton2D {
 		}
 		this.state = newState
 	}
-}
+} 
