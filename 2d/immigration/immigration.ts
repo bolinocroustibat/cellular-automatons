@@ -1,6 +1,10 @@
 import { ConwayAutomaton } from "../conway/conway"
+import type { ColorObject } from "../../types/ColorObject"
 
 export class ImmigrationAutomaton extends ConwayAutomaton {
+	private aliveColors: ColorObject[]
+	private aliveColorIds: number[]
+
 	constructor(...args) {
 		// Modify the colorsCount to 3
 		args[4] = 3
@@ -9,23 +13,23 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
 	}
 
-	getMostFrequentAliveColor = (aliveNeighbours) => {
+	getMostFrequentAliveColor = (aliveNeighbours: ColorObject[]): ColorObject | null => {
 		if (aliveNeighbours.length === 0) return null
 		const occurences = {}
 		let mostFrequentColor = aliveNeighbours[0]
 		let maxFrequency = 1
 		for (const cell of aliveNeighbours) {
-			if (occurences[cell] == null) occurences[cell] = 1
-			else occurences[cell]++
-			if (occurences[cell] > maxFrequency) {
+			if (occurences[cell.id] == null) occurences[cell.id] = 1
+			else occurences[cell.id]++
+			if (occurences[cell.id] > maxFrequency) {
 				mostFrequentColor = cell
-				maxFrequency = occurences[cell]
+				maxFrequency = occurences[cell.id]
 			}
 		}
 		return mostFrequentColor
 	}
 
-	updateState = () => {
+	updateState = (): void => {
 		const newState = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
