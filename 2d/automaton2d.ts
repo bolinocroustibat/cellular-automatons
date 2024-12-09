@@ -1,40 +1,45 @@
+import type { ColorObject } from "../types/ColorObject"
 import { pickColors } from "../utils/pickColors"
 import { randomInt } from "../utils/randomInt"
 import { setupCanvas } from "../utils/setupCanvas"
 
 export class Automaton2D {
-	canvasEl
-	width
-	height
-	resolution
-	colorsCount
-	rowsCount
-	colsCount
-	colors
-	state
-	ctx
-	renderInterval
+	protected canvasEl: HTMLCanvasElement
+	protected width: number
+	protected height: number
+	protected resolution: number
+	protected colorsCount: number
+	protected rowsCount: number
+	protected colsCount: number
+	protected colors: ColorObject[]
+	protected state: ColorObject[][]
+	protected ctx: CanvasRenderingContext2D
+	protected renderInterval: NodeJS.Timer
 
-	constructor(canvasEl, width, height, resolution, colorsCount) {
+	constructor(
+		canvasEl: HTMLCanvasElement,
+		width: number,
+		height: number,
+		resolution: number,
+		colorsCount = 2,
+	) {
 		this.canvasEl = canvasEl
 		this.width = width - (width % resolution)
 		this.height = height - (height % resolution)
 		this.resolution = resolution
 		this.rowsCount = this.height / resolution
 		this.colsCount = this.width / resolution
-		if (colorsCount) {
-			this.colorsCount = colorsCount
-			this.colors = pickColors(colorsCount)
-		}
+		this.colorsCount = colorsCount
+		this.colors = pickColors(colorsCount)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
 	}
 
-	clear() {
+	clear(): void {
 		this.setUniformStateAndRender()
 	}
 
-	setUniformStateAndRender = () => {
+	setUniformStateAndRender = (): void => {
 		// Initial empty state populating, create state AND render the canvas
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
@@ -49,7 +54,7 @@ export class Automaton2D {
 		}
 	}
 
-	setRandomStateAndRender = () => {
+	setRandomStateAndRender = (): void => {
 		// Initial random populating, create state AND render the canvas
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
@@ -65,7 +70,7 @@ export class Automaton2D {
 		}
 	}
 
-	placePatternRandomly = (pattern) => {
+	placePatternRandomly = (pattern: number[][]): void => {
 		const posX = randomInt(0, this.colsCount - pattern[0].length) // Adjusted to ensure pattern fits within the grid
 		const posY = randomInt(0, this.rowsCount - pattern.length) // Adjusted to ensure pattern fits within the grid
 		// Place the pattern at the specified position
@@ -83,7 +88,7 @@ export class Automaton2D {
 		}
 	}
 
-	start = (intervalMs, maxIterations) => {
+	start = (intervalMs: number, maxIterations: number): void => {
 		if (this.state.length > 0) {
 			let i = 0
 			this.renderInterval = setInterval(() => {
@@ -93,7 +98,7 @@ export class Automaton2D {
 		}
 	}
 
-	getCellColor = (x, y) => {
+	getCellColor = (x: number, y: number): ColorObject => {
 		const modifiedX =
 			x === -1 ? this.colsCount - 1 : x === this.colsCount ? 0 : x
 		const modifiedY =
@@ -101,7 +106,7 @@ export class Automaton2D {
 		return this.state[modifiedY][modifiedX]
 	}
 
-	getNeighborsColors = (x, y) => {
+	getNeighborsColors = (x: number, y: number): ColorObject[] => {
 		return [
 			this.getCellColor(x - 1, y - 1),
 			this.getCellColor(x, y - 1),
@@ -116,12 +121,16 @@ export class Automaton2D {
 		]
 	}
 
-	fillSquare = (colorRgb, x, y) => {
+	fillSquare = (
+		colorRgb: [number, number, number],
+		x: number,
+		y: number,
+	): void => {
 		this.ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
 		this.ctx.fillRect(x, y, this.resolution, this.resolution)
 	}
 
-	render = () => {
+	render = (): void => {
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
 				this.fillSquare(
