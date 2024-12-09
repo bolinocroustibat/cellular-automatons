@@ -2,13 +2,19 @@ import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
 export class LangtonAutomaton extends Automaton2D {
-	positionX
-	positionY
-	orientationX
-	orientationY
+	private positionX: number
+	private positionY: number
+	private orientationX: number
+	private orientationY: number
 
-	constructor(...args) {
-		super(...args)
+	constructor(
+		canvasEl: HTMLCanvasElement,
+		width: number,
+		height: number,
+		resolution: number,
+		colorsCount = 2,
+	) {
+		super(canvasEl, width, height, resolution, colorsCount)
 		this.colorsCount = 2
 		this.colors = pickColors(this.colorsCount)
 
@@ -23,22 +29,23 @@ export class LangtonAutomaton extends Automaton2D {
 		this.orientationY = 0
 	}
 
-	getCurrentPositionColorId = () => {
+	private getCurrentPositionColorId = (): number => {
 		// // TODO: check if position is out of bounds
 		// let x = (this.positionX === -1) ? this.colsCount - 1 : this.positionX
 		// x = (this.positionX === this.colsCount) ? 0 : this.positionX
 
 		// let y = (this.positionY === -1) ? this.rowsCount - 1 : this.positionY
 		// y = (this.positionY === this.rowsCount) ? 0 : this.positionY
-		return this.state[this.positionX][this.positionY]
+		return this.state[this.positionY][this.positionX].id
 	}
 
-	updateState = () => {
-		const turnX = this.orientationX
-		const turnY = this.orientationY
-		if (this.getCurrentPositionColorId() === this.colors[0]) {
+	protected updateState = (): void => {
+		const turnX: number = this.orientationX
+		const turnY: number = this.orientationY
+
+		if (this.getCurrentPositionColorId() === this.colors[0].id) {
 			// Flip the color of the current cell
-			this.state[this.positionX][this.positionY] = this.colors[1]
+			this.state[this.positionY][this.positionX] = this.colors[1]
 			this.fillSquare(
 				this.colors[1].colorRgb,
 				this.positionX * this.resolution,
@@ -47,9 +54,9 @@ export class LangtonAutomaton extends Automaton2D {
 			// Turn 90° clockwise
 			this.orientationX = -turnY
 			this.orientationY = turnX
-		} else if (this.getCurrentPositionColorId() === this.colors[1]) {
+		} else if (this.getCurrentPositionColorId() === this.colors[1].id) {
 			// Flip the color of the current cell
-			this.state[this.positionX][this.positionY] = this.colors[0]
+			this.state[this.positionY][this.positionX] = this.colors[0]
 			this.fillSquare(
 				this.colors[0].colorRgb,
 				this.positionX * this.resolution,
@@ -59,6 +66,7 @@ export class LangtonAutomaton extends Automaton2D {
 			this.orientationX = turnY
 			this.orientationY = -turnX
 		}
+
 		// console.log(
 		// 	'\npositionX:' + this.positionX +
 		// 	'/ positionY:' + this.positionY +
@@ -66,6 +74,7 @@ export class LangtonAutomaton extends Automaton2D {
 		// 	'/ orientationX:' + this.orientationX +
 		// 	'/ orientationY:' + this.orientationY
 		// )
+
 		// Move forward
 		this.positionX = this.positionX + this.orientationX
 		this.positionY = this.positionY + this.orientationY
