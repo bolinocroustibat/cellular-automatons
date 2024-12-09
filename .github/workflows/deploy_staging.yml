@@ -7,12 +7,9 @@ on:
 
 jobs:
 
-  deploy-staging:
-
+  build-and-deploy:
     name: Deploy to staging because of push on main
-
     runs-on: ubuntu-latest
-
     steps:
 
       - name: Checkout repo
