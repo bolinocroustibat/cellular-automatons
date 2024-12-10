@@ -13,7 +13,7 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
 	}
 
-	getMostFrequentAliveColor = (aliveNeighbours: ColorObject[]): ColorObject | null => {
+	private getMostFrequentAliveColor = (aliveNeighbours: ColorObject[]): ColorObject | null => {
 		if (aliveNeighbours.length === 0) return null
 		const occurences = {}
 		let mostFrequentColor = aliveNeighbours[0]
@@ -29,7 +29,7 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 		return mostFrequentColor
 	}
 
-	updateState = (): void => {
+	protected updateState = (): void => {
 		const newState = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
