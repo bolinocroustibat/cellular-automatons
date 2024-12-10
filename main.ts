@@ -355,9 +355,11 @@ const reset = (): void => {
 		case "cca-3D":
 			automaton = new CCA3D(
 				canvasEl,
-				30,
-				30,
-				30,
+				width,
+				height,
+				10,
+				10,
+				10,
 				settings.cca3dThreshold,
 				settings.cca3dColorsCount,
 			)

@@ -2,39 +2,65 @@ import * as THREE from 'three'
 import type { ColorObject } from "../types/ColorObject"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
+import { setupCanvas } from "../utils/setupCanvas"
 
 export class CCA3D {
 	private canvasEl: HTMLCanvasElement
 	private width: number
 	private height: number
-	private depth: number
+	private cubeWidth: number
+	private cubeHeight: number
+	private cubeDepth: number
+	private cubeSize: number
 	private threshold: number
 	private colorsCount: number
 	private colors: ColorObject[]
 	private state: ColorObject[][][]
-	private cubeSize: number
+	private ctx: CanvasRenderingContext2D
 	private scene: THREE.Scene
 	private renderInterval: NodeJS.Timer
+	private camera: THREE.PerspectiveCamera
+	private renderer: THREE.WebGLRenderer
 
-	constructor(canvasEl: HTMLCanvasElement, width: number, height: number, depth: number, threshold: number, colorsCount: number) {
+	constructor(canvasEl: HTMLCanvasElement, width: number, height: number, cubeWidth:number, cubeHeight:number, cubeDepth: number, threshold: number, colorsCount: number) {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.depth = depth
+		this.cubeWidth = cubeWidth
+		this.cubeHeight = cubeHeight
+		this.cubeDepth = cubeDepth
+		this.cubeSize = 10
 		this.threshold = threshold
 		this.colorsCount = colorsCount
 		this.colors = pickColors(colorsCount)
 		this.state = []
+		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
 		this.scene = new THREE.Scene()
-		this.render(0)
+
+		// Set up camera
+		this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
+		this.camera.position.z = 5
+
+		// Set up renderer
+		this.renderer = new THREE.WebGLRenderer()
+		this.renderer.setSize(width, height)
+		document.body.appendChild(this.renderer.domElement)
+
+		// DEBUG: add axes
+		const axesHelper = new THREE.AxesHelper(5)
+		this.scene.add(axesHelper)
+
+		// Initial random populating
+		this.setRandomStateAndRender()
+		// this.render(0)
 	}
 
-	initializeState = (): void => {
-		for (let z = 0; z < this.depth; z++) {
+	setRandomStateAndRender = (): void => {
+		for (let z = 0; z < this.cubeDepth; z++) {
 			this.state[z] = []
-			for (let y = 0; y < this.height; y++) {
+			for (let y = 0; y < this.cubeHeight; y++) {
 				this.state[z][y] = []
-				for (let x = 0; x < this.width; x++) {
+				for (let x = 0; x < this.cubeWidth; x++) {
 					this.state[z][y][x] = this.colors[Math.floor(Math.random() * this.colors.length)]
 					this.fillCube(
 						this.state[z][y][x].colorRgb,
@@ -59,9 +85,9 @@ export class CCA3D {
 
 	updateState = (): void => {
 		const newState: ColorObject[][][] = []
-		for (let z = 0; z < this.depth; z++) {
-			for (let y = 0; y < this.height; y++) {
-				for (let x = 0; x < this.width; x++) {
+		for (let z = 0; z < this.cubeDepth; z++) {
+			for (let y = 0; y < this.cubeHeight; y++) {
+				for (let x = 0; x < this.cubeWidth; x++) {
 					const neighbours = this.getNeighbours(x, y, z)
 					const nextColorId = nextCellColorId(this.state[z][y][x], this.colors)
 					const successorNeighboursCount = neighbours.filter(neighbour => neighbour.id === nextColorId)
@@ -87,9 +113,9 @@ export class CCA3D {
 	}
 
 	private getCellColor(x: number, y: number, z: number): ColorObject {
-		const modifiedX = (x + this.width) % this.width
-		const modifiedY = (y + this.height) % this.height
-		const modifiedZ = (z + this.depth) % this.depth
+		const modifiedX = (x + this.cubeWidth) % this.cubeWidth
+		const modifiedY = (y + this.cubeHeight) % this.cubeHeight
+		const modifiedZ = (z + this.cubeDepth) % this.cubeDepth
 		return this.state[modifiedZ][modifiedY][modifiedX]
 	}
 
@@ -101,13 +127,14 @@ export class CCA3D {
 		this.scene.add(cube)
 	}
 
-	render = (line: number): void => {
-		for (let z = 0; z < this.depth; z++) {
-			for (let y = 0; y < this.height; y++) {
-				for (let x = 0; x < this.width; x++) {
-					this.fillCube(this.state[z][y][x].colorRgb, x, y, z)
-				}
-			}
-		}
-	}
+	// render = (line: number): void => {
+	// 	this.renderer.render(this.scene, this.camera) // Render the scene
+	// 	for (let z = 0; z < this.cubeDepth; z++) {
+	// 		for (let y = 0; y < this.cubeHeight; y++) {
+	// 			for (let x = 0; x < this.cubeWidth; x++) {
+	// 				this.fillCube(this.state[z][y][x].colorRgb, x, y, z)
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
