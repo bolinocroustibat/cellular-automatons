@@ -4,53 +4,61 @@ import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
 
 export class CCA3D {
+	private canvasEl: HTMLCanvasElement
+	private width: number
+	private height: number
+	private depth: number
+	private threshold: number
 	private colorsCount: number
 	private colors: ColorObject[]
 	private state: ColorObject[][][]
 	private cubeSize: number
-	private width: number
-	private height: number
-	private depth: number
 	private scene: THREE.Scene
 	private renderInterval: NodeJS.Timer
 
-	constructor(canvasEl: HTMLCanvasElement, width: number, height: number, depth: number, colorsCount: number, cubeSize: number) {
+	constructor(canvasEl: HTMLCanvasElement, width: number, height: number, depth: number, threshold: number, colorsCount: number) {
+		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
 		this.depth = depth
+		this.threshold = threshold
 		this.colorsCount = colorsCount
 		this.colors = pickColors(colorsCount)
-		this.state = this.initializeState(width, height, depth)
-		this.cubeSize = cubeSize
+		this.state = []
 		this.scene = new THREE.Scene()
 		this.render(0)
 	}
 
-	private initializeState(width: number, height: number, depth: number): ColorObject[][][] {
-		const state: ColorObject[][][] = []
-		for (let z = 0; z < depth; z++) {
-			state[z] = []
-			for (let y = 0; y < height; y++) {
-				state[z][y] = []
-				for (let x = 0; x < width; x++) {
-					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
-					state[z][y][x] = randomColor
+	initializeState = (): void => {
+		for (let z = 0; z < this.depth; z++) {
+			this.state[z] = []
+			for (let y = 0; y < this.height; y++) {
+				this.state[z][y] = []
+				for (let x = 0; x < this.width; x++) {
+					this.state[z][y][x] = this.colors[Math.floor(Math.random() * this.colors.length)]
+					this.fillCube(
+						this.state[z][y][x].colorRgb,
+						x,
+						y,
+						z,
+					)
 				}
 			}
 		}
-		return state
 	}
 
-	start = (intervalMs: number): void => {
-		let line = 0
-		this.renderInterval = setInterval(() => {
-			if (++line === this.depth) clearInterval(this.renderInterval)
-			this.changeState(line)
-		}, intervalMs)
+	start = (intervalMs: number, maxIterations: number): void => {
+		if (this.state.length > 0) {
+			let i = 0
+			this.renderInterval = setInterval(() => {
+				if (++i === maxIterations) clearInterval(this.renderInterval)
+				this.updateState()
+			}, intervalMs)
+		}
 	}
 
-	changeState = (line: number): void => {
-		const newState: ColorObject[][][] = this.initializeState(this.width, this.height, this.depth)
+	updateState = (): void => {
+		const newState: ColorObject[][][] = []
 		for (let z = 0; z < this.depth; z++) {
 			for (let y = 0; y < this.height; y++) {
 				for (let x = 0; x < this.width; x++) {
@@ -103,4 +111,3 @@ export class CCA3D {
 		}
 	}
 }
-

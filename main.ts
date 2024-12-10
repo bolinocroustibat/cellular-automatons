@@ -61,6 +61,16 @@ window.onload = () => {
 		"cca2dThreshold",
 		{ label: "Threshold", min: 1, max: 3, step: 1 },
 	)
+	const cca3dColorsCountBlade = pane.addBinding(
+		{ cca3dColorsCount: 4 },
+		"cca3dColorsCount",
+		{ label: "Number of colors", min: 4, max: 10, step: 1 },
+	)
+	const cca3dThresholdBlade = pane.addBinding(
+		{ cca3dThreshold: 25 },
+		"cca3dThreshold",
+		{ label: "Threshold", min: 1, max: 26, step: 1 },
+	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
 		"entropyColorsCount",
@@ -134,6 +144,8 @@ window.onload = () => {
 		cca1dColorsCountBlade,
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
+		cca3dColorsCountBlade,
+		cca3dThresholdBlade,
 		conwayPatterns,
 		entropyColorsCountBlade,
 		resolutionBlade,
@@ -160,6 +172,8 @@ window.onload = () => {
 		for (const blade of blades) {
 			blade.hidden = true
 		}
+		cca3dColorsCountBlade.hidden = false
+		cca3dThresholdBlade.hidden = false
 		resolutionBlade.hidden = false
 	}
 
@@ -212,7 +226,7 @@ window.onload = () => {
 			case "cca-2D":
 				setCca2dBlades()
 				break
-			case "cca-3D": // Add handling for the new 3D option
+			case "cca-3D":
 				setCca3dBlades()
 				break
 			case "conway":
@@ -316,7 +330,6 @@ const reset = (): void => {
 	) as HTMLCanvasElement
 	const width: number = window.innerWidth
 	const height: number = window.innerHeight
-	const depth: number = 10
 	const resolution: number = settings.resolution || 5
 
 	// Create the context
@@ -339,8 +352,15 @@ const reset = (): void => {
 				settings.cca2dColorsCount,
 			)
 			break
-		case "cca-3D": // Handle the new 3D automaton
-			automaton = new CCA3D(canvasEl, width, height, depth, settings.cca2dColorsCount || 4, 1)
+		case "cca-3D":
+			automaton = new CCA3D(
+				canvasEl,
+				30,
+				30,
+				30,
+				settings.cca3dThreshold,
+				settings.cca3dColorsCount,
+			)
 			break
 		case "conway":
 			automaton = new ConwayAutomaton(canvasEl, width, height, resolution)
