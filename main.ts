@@ -1,6 +1,7 @@
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
+import { CCA3D } from "./3d/cca_3d"
 import { ConwayAutomaton } from "./2d/conway/conway"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
 import {
@@ -37,6 +38,7 @@ window.onload = () => {
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "cca-1D",
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
+			"3 dimensions Cyclic Cellular Automaton": "cca-3D",
 			"Conway's game of Life": "conway",
 			"Immigration game": "immigration",
 			"Quad-Life": "quadlife",
@@ -154,6 +156,13 @@ window.onload = () => {
 		resolutionBlade.hidden = false
 	}
 
+	const setCca3dBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		resolutionBlade.hidden = false
+	}
+
 	const setConwayBlades = () => {
 		for (const blade of blades) {
 			blade.hidden = true
@@ -202,6 +211,9 @@ window.onload = () => {
 				break
 			case "cca-2D":
 				setCca2dBlades()
+				break
+			case "cca-3D": // Add handling for the new 3D option
+				setCca3dBlades()
 				break
 			case "conway":
 				setConwayBlades()
@@ -304,6 +316,7 @@ const reset = (): void => {
 	) as HTMLCanvasElement
 	const width: number = window.innerWidth
 	const height: number = window.innerHeight
+	const depth: number = 10
 	const resolution: number = settings.resolution || 5
 
 	// Create the context
@@ -325,6 +338,9 @@ const reset = (): void => {
 				resolution,
 				settings.cca2dColorsCount,
 			)
+			break
+		case "cca-3D": // Handle the new 3D automaton
+			automaton = new CCA3D(canvasEl, width, height, depth, settings.cca2dColorsCount || 4, 1)
 			break
 		case "conway":
 			automaton = new ConwayAutomaton(canvasEl, width, height, resolution)
