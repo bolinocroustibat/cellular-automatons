@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import * as THREE from "three"
 import type { ColorObject } from "../types/ColorObject"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
@@ -22,7 +22,16 @@ export class CCA3D {
 	private camera: THREE.PerspectiveCamera
 	private renderer: THREE.WebGLRenderer
 
-	constructor(canvasEl: HTMLCanvasElement, width: number, height: number, cubeWidth:number, cubeHeight:number, cubeDepth: number, threshold: number, colorsCount: number) {
+	constructor(
+		canvasEl: HTMLCanvasElement,
+		width: number,
+		height: number,
+		cubeWidth: number,
+		cubeHeight: number,
+		cubeDepth: number,
+		threshold: number,
+		colorsCount: number,
+	) {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
@@ -41,10 +50,27 @@ export class CCA3D {
 		this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
 		this.camera.position.z = 5
 
-		// Set up renderer
-		this.renderer = new THREE.WebGLRenderer()
-		this.renderer.setSize(width, height)
-		document.body.appendChild(this.renderer.domElement)
+		// Initialize renderer
+		this.renderer = new THREE.WebGLRenderer({ canvas: this.canvasEl })
+		this.renderer.setSize(this.width, this.height)
+
+		// Add a test cube
+		const geometry = new THREE.BoxGeometry(1, 1, 1)
+		const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+		const cube = new THREE.Mesh(geometry, material)
+		this.scene.add(cube)
+
+		// Start rendering
+		const animate = () => {
+			requestAnimationFrame(animate)
+			
+			// Rotate the cube
+			cube.rotation.x += 0.01
+			cube.rotation.y += 0.01
+			
+			this.renderer.render(this.scene, this.camera)
+		}
+		animate()
 
 		// DEBUG: add axes
 		const axesHelper = new THREE.AxesHelper(5)
@@ -61,13 +87,9 @@ export class CCA3D {
 			for (let y = 0; y < this.cubeHeight; y++) {
 				this.state[z][y] = []
 				for (let x = 0; x < this.cubeWidth; x++) {
-					this.state[z][y][x] = this.colors[Math.floor(Math.random() * this.colors.length)]
-					this.fillCube(
-						this.state[z][y][x].colorRgb,
-						x,
-						y,
-						z,
-					)
+					this.state[z][y][x] =
+						this.colors[Math.floor(Math.random() * this.colors.length)]
+					this.fillCube(this.state[z][y][x].colorRgb, x, y, z)
 				}
 			}
 		}
@@ -90,8 +112,13 @@ export class CCA3D {
 				for (let x = 0; x < this.cubeWidth; x++) {
 					const neighbours = this.getNeighbours(x, y, z)
 					const nextColorId = nextCellColorId(this.state[z][y][x], this.colors)
-					const successorNeighboursCount = neighbours.filter(neighbour => neighbour.id === nextColorId)
-					newState[z][y][x] = successorNeighboursCount.length >= 1 ? successorNeighboursCount[0] : this.state[z][y][x]
+					const successorNeighboursCount = neighbours.filter(
+						(neighbour) => neighbour.id === nextColorId,
+					)
+					newState[z][y][x] =
+						successorNeighboursCount.length >= 1
+							? successorNeighboursCount[0]
+							: this.state[z][y][x]
 					this.fillCube(newState[z][y][x].colorRgb, x, y, z)
 				}
 			}
@@ -119,9 +146,20 @@ export class CCA3D {
 		return this.state[modifiedZ][modifiedY][modifiedX]
 	}
 
-	private fillCube(colorRgb: [number, number, number], x: number, y: number, z: number): void {
-		const geometry = new THREE.BoxGeometry(this.cubeSize, this.cubeSize, this.cubeSize)
-		const material = new THREE.MeshBasicMaterial({ color: `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})` })
+	private fillCube(
+		colorRgb: [number, number, number],
+		x: number,
+		y: number,
+		z: number,
+	): void {
+		const geometry = new THREE.BoxGeometry(
+			this.cubeSize,
+			this.cubeSize,
+			this.cubeSize,
+		)
+		const material = new THREE.MeshBasicMaterial({
+			color: `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`,
+		})
 		const cube = new THREE.Mesh(geometry, material)
 		cube.position.set(x * this.cubeSize, y * this.cubeSize, z * this.cubeSize)
 		this.scene.add(cube)

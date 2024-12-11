@@ -1,7 +1,6 @@
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
-import { CCA3D } from "./3d/cca_3d"
 import { ConwayAutomaton } from "./2d/conway/conway"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
 import {
@@ -20,6 +19,7 @@ import { EntropyAutomaton } from "./2d/entropy/entropy"
 import { ImmigrationAutomaton } from "./2d/immigration/immigration"
 import { LangtonAutomaton } from "./2d/langton/langton"
 import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
+import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
 import type { Settings } from "./types/Settings"
 
@@ -293,6 +293,9 @@ window.onload = () => {
 				automaton.start(10)
 				break
 			case "cca-2D":
+				automaton.start(25, 2500)
+				break
+			case "cca-3D":
 				automaton.start(25, 2500)
 				break
 			case "conway":
