@@ -1,5 +1,5 @@
-import { ConwayAutomaton } from "../conway/conway"
 import type { ColorObject } from "../../types/ColorObject"
+import { ConwayAutomaton } from "../conway/conway"
 
 export class ImmigrationAutomaton extends ConwayAutomaton {
 	private aliveColors: ColorObject[]
@@ -13,7 +13,9 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
 	}
 
-	private getMostFrequentAliveColor = (aliveNeighbours: ColorObject[]): ColorObject | null => {
+	private getMostFrequentAliveColor = (
+		aliveNeighbours: ColorObject[],
+	): ColorObject | null => {
 		if (aliveNeighbours.length === 0) return null
 		const occurences = {}
 		let mostFrequentColor = aliveNeighbours[0]

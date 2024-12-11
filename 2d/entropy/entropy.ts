@@ -1,5 +1,5 @@
-import { Automaton2D } from "../automaton2d"
 import type { ColorObject } from "../../types/ColorObject"
+import { Automaton2D } from "../automaton2d"
 
 export class EntropyAutomaton extends Automaton2D {
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
@@ -9,7 +9,9 @@ export class EntropyAutomaton extends Automaton2D {
 		this.setRandomStateAndRender()
 	}
 
-	private getMostFrequentColor = (colors: ColorObject[]): ColorObject | null => {
+	private getMostFrequentColor = (
+		colors: ColorObject[],
+	): ColorObject | null => {
 		if (colors.length === 0) return null
 
 		// Count occurrences of each color id
@@ -66,4 +68,4 @@ export class EntropyAutomaton extends Automaton2D {
 		}
 		this.state = newState
 	}
-} 
+}

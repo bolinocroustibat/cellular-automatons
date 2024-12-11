@@ -1,5 +1,5 @@
-import { ConwayAutomaton } from "../conway/conway"
 import type { ColorObject } from "../../types/ColorObject"
+import { ConwayAutomaton } from "../conway/conway"
 
 export class QuadLifeAutomaton extends ConwayAutomaton {
 	private aliveColors: ColorObject[]
@@ -13,7 +13,9 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
 	}
 
-	private getQuadLifeColor = (aliveNeighbours: ColorObject[]): ColorObject | null => {
+	private getQuadLifeColor = (
+		aliveNeighbours: ColorObject[],
+	): ColorObject | null => {
 		if (aliveNeighbours.length === 0) return null
 
 		// Count occurrences of each color
@@ -41,9 +43,10 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 		if (mostFrequentColors.length === 3) {
 			// Specific QuadLife rule:
 			// Return the only alive color that is not among the most frequent colors
-			return this.aliveColors.find(
-				(color) => !mostFrequentColors.includes(color),
-			) || null
+			return (
+				this.aliveColors.find((color) => !mostFrequentColors.includes(color)) ||
+				null
+			)
 		}
 		return null
 	}
@@ -71,7 +74,8 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 				if (isCellAlive && (isUnderpopulated || isOverpopulated)) {
 					newState[y][x] = this.colorOff
 				} else if (!isCellAlive && isReproduction) {
-					newState[y][x] = this.getQuadLifeColor(aliveNeighbours) || this.colorOff
+					newState[y][x] =
+						this.getQuadLifeColor(aliveNeighbours) || this.colorOff
 				} else {
 					newState[y][x] = this.state[y][x]
 				}
@@ -89,4 +93,4 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 		}
 		this.state = newState
 	}
-} 
+}

@@ -1,6 +1,6 @@
+import type { ColorObject } from "../../types/ColorObject"
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
-import type { ColorObject } from "../../types/ColorObject"
 
 export class ConwayAutomaton extends Automaton2D {
 	protected colorOff: ColorObject
@@ -11,10 +11,10 @@ export class ConwayAutomaton extends Automaton2D {
 		width: number,
 		height: number,
 		resolution: number,
-		colorsCount = 2
+		colorsCount = 2,
 	) {
 		super(canvasEl, width, height, resolution, colorsCount)
-		
+
 		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.colorOn = this.colors[1]
@@ -85,4 +85,4 @@ export class ConwayAutomaton extends Automaton2D {
 		}
 		this.state = newState
 	}
-} 
+}
