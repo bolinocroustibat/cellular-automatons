@@ -64,12 +64,17 @@ window.onload = () => {
 	const cca3dColorsCountBlade = pane.addBinding(
 		{ cca3dColorsCount: 8 },
 		"cca3dColorsCount",
-		{ label: "3D Number of colors", min: 4, max: 10, step: 1 },
+		{ label: "Number of colors", min: 5, max: 10, step: 1 },
 	)
 	const cca3dThresholdBlade = pane.addBinding(
 		{ cca3dThreshold: 4 },
 		"cca3dThreshold",
-		{ label: "3D Threshold", min: 1, max: 10, step: 1 },
+		{ label: "Threshold", min: 4, max: 10, step: 1 },
+	)
+	const cca3dCubeDimensionBlade = pane.addBinding(
+		{ cca3dCubeDimension: 15 },
+		"cca3dCubeDimension",
+		{ label: "3D cube size", min: 5, max: 40, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
@@ -146,6 +151,7 @@ window.onload = () => {
 		cca2dThresholdBlade,
 		cca3dColorsCountBlade,
 		cca3dThresholdBlade,
+		cca3dCubeDimensionBlade,
 		conwayPatterns,
 		entropyColorsCountBlade,
 		resolutionBlade,
@@ -174,7 +180,7 @@ window.onload = () => {
 		}
 		cca3dColorsCountBlade.hidden = false
 		cca3dThresholdBlade.hidden = false
-		resolutionBlade.hidden = false
+		cca3dCubeDimensionBlade.hidden = false
 	}
 
 	const setConwayBlades = () => {
@@ -332,10 +338,10 @@ const getSettings = (pane: Pane): Settings => {
 }
 
 const createAutomaton = (
-	settings: Settings,
 	canvasEl: HTMLCanvasElement,
 	width: number,
 	height: number,
+	settings: Settings,
 ): AutomatonBase => {
 	const resolution: number = settings.resolution || 5
 
@@ -356,7 +362,7 @@ const createAutomaton = (
 				canvasEl,
 				width,
 				height,
-				22,
+				settings.cca3dCubeDimension,
 				settings.cca3dThreshold,
 				settings.cca3dColorsCount,
 			)
@@ -395,7 +401,7 @@ const reset = (): void => {
 	const height = window.innerHeight
 
 	// Create new automaton
-	automaton = createAutomaton(settings, canvasEl, width, height)
+	automaton = createAutomaton(canvasEl, width, height, settings)
 }
 
 window.onresize = (): void => reset()

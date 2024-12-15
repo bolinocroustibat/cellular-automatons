@@ -23,12 +23,11 @@ export class CCA3D {
 	private cellGroup: THREE.Group;
 	private camera: THREE.PerspectiveCamera
 	private controls: OrbitControls;
-	private isUserInteracting: boolean = false;
+	private isUserInteracting: boolean = false
 	private renderer: THREE.WebGLRenderer
-	private animationFrameId?: number;  // Add this property to track the animation frame
+	private animationFrameId?: number
 	private animationFrameCount: number = 0
 	renderInterval: NodeJS.Timer
-	private lastFrameTime: number = performance.now()
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
@@ -38,7 +37,6 @@ export class CCA3D {
 		threshold: number,
 		colorsCount: number,
 	) {
-		console.log("instanciate new CCA3D")
 
 		// Clean everything
 		this.clear()
@@ -99,45 +97,24 @@ export class CCA3D {
 	}
 
 	clear = (): void => {
-		console.log('clearing CCDA3D')
-
 		// Cancel the animation frame first
 		if (this.animationFrameId) {
-			cancelAnimationFrame(this.animationFrameId);
-			this.animationFrameId = undefined;
+			cancelAnimationFrame(this.animationFrameId)
+			this.animationFrameId = undefined
 		}
 
 		// Stop any ongoing intervals
 		if (this.renderInterval) {
-			clearInterval(this.renderInterval);
+			clearInterval(this.renderInterval)
 		}
 
-		// Clear state array
-		console.log("clearing state")
-		this.state = []
-
-		// Dispose of geometries and materials
-		console.log(this.cellGroup)
-		if (this.cellGroup) {
-			console.log("clearing cell group")
-			this.cellGroup.traverse((object) => {
-				if (object instanceof THREE.Mesh) {
-					object.geometry.dispose()
-					if (object.material instanceof THREE.Material) {
-						object.material.dispose()
-					}
-				}
-			})
-		}
-
-		// Dispose of controls
-		if (this.controls) {
-			this.controls.dispose()
+		// Remove Scene
+		if (this.scene) {
+			this.scene.remove(this.cellGroup)
 		}
 
 		// Dispose of renderer and restore original canvas
 		if (this.renderer) {
-			console.log("clearing renderer")
 			const rendererDomElement = this.renderer.domElement
 			if (rendererDomElement.parentElement) {
 				// Create a new canvas to replace the renderer
@@ -151,11 +128,7 @@ export class CCA3D {
 	}
 
 	private animate = (): void => {
-		const currentTime = performance.now();
-		const frameTime = currentTime - this.lastFrameTime;
-		this.lastFrameTime = currentTime
-
-		requestAnimationFrame(this.animate)
+		this.animationFrameId = requestAnimationFrame(this.animate)
 
 		// Update controls
 		this.controls.update();
@@ -172,12 +145,6 @@ export class CCA3D {
 
 		// Render every frame
 		this.renderer.render(this.scene, this.camera)
-
-		// Log performance every 60 frames
-		if (this.animationFrameCount % 60 === 0) {
-			console.clear();
-			console.log(`Frame time: ${frameTime.toFixed(2)}ms`)
-		}
 	}
 
 	start = (stateUpdatesPerSecond: number): void => {
