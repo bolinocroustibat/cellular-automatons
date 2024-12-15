@@ -25,9 +25,10 @@ export class CCA3D {
 	private controls: OrbitControls;
 	private isUserInteracting: boolean = false;
 	private renderer: THREE.WebGLRenderer
+	private animationFrameId?: number;  // Add this property to track the animation frame
 	private animationFrameCount: number = 0
-	renderInterval?: NodeJS.Timer  // Store interval reference
-	private lastFrameTime: number = performance.now() 	// Timer
+	renderInterval: NodeJS.Timer
+	private lastFrameTime: number = performance.now()
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
@@ -39,6 +40,9 @@ export class CCA3D {
 	) {
 		console.log("instanciate new CCA3D")
 
+		// Clean everything
+		this.clear()
+
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
@@ -49,9 +53,6 @@ export class CCA3D {
 		this.colors = pickColors(colorsCount) // 10 is good
 		this.state = []
 		this.initialRotationSpeed = 0.004
-
-		// Clean everything
-		this.clear()
 
 		// Initialize scene first
 		this.scene = new THREE.Scene()
@@ -98,18 +99,27 @@ export class CCA3D {
 	}
 
 	clear = (): void => {
-		console.log('clear CCDA3D')
+		console.log('clearing CCDA3D')
 
-		// Stop any ongoing animations
-		if (this.stateUpdateInterval) {
-			clearInterval(this.stateUpdateInterval)
+		// Cancel the animation frame first
+		if (this.animationFrameId) {
+			cancelAnimationFrame(this.animationFrameId);
+			this.animationFrameId = undefined;
+		}
+
+		// Stop any ongoing intervals
+		if (this.renderInterval) {
+			clearInterval(this.renderInterval);
 		}
 
 		// Clear state array
+		console.log("clearing state")
 		this.state = []
 
 		// Dispose of geometries and materials
+		console.log(this.cellGroup)
 		if (this.cellGroup) {
+			console.log("clearing cell group")
 			this.cellGroup.traverse((object) => {
 				if (object instanceof THREE.Mesh) {
 					object.geometry.dispose()
@@ -125,36 +135,19 @@ export class CCA3D {
 			this.controls.dispose()
 		}
 
-		// Dispose of renderer
+		// Dispose of renderer and restore original canvas
 		if (this.renderer) {
+			console.log("clearing renderer")
+			const rendererDomElement = this.renderer.domElement
+			if (rendererDomElement.parentElement) {
+				// Create a new canvas to replace the renderer
+				const newCanvas = document.createElement('canvas')
+				newCanvas.id = 'canvas'
+				rendererDomElement.parentElement.replaceChild(newCanvas, rendererDomElement)
+			}
 			this.renderer.dispose()
 		}
 	
-	}
-
-	start = (stateUpdatesPerSecond: number): void => {
-		// Clear any existing interval
-		if (this.stateUpdateInterval) {
-			clearInterval(this.stateUpdateInterval)
-		}
-
-		const intervalMs = 1000 / stateUpdatesPerSecond
-		this.stateUpdateInterval = setInterval(() => {
-			this.update()
-		}, intervalMs)
-	}
-
-	private setInitialState = (): void => {
-		for (let z = 0; z < this.cubeDimension; z++) {
-			this.state[z] = []
-			for (let y = 0; y < this.cubeDimension; y++) {
-				this.state[z][y] = []
-				for (let x = 0; x < this.cubeDimension; x++) {
-					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
-					this.state[z][y][x] = this.createCell(randomColor, x, y, z)
-				}
-			}
-		}
 	}
 
 	private animate = (): void => {
@@ -187,7 +180,7 @@ export class CCA3D {
 		}
 	}
 
-	public start = (stateUpdatesPerSecond: number): void => {
+	start = (stateUpdatesPerSecond: number): void => {
 		// Clear any existing interval
 		if (this.renderInterval) {
 			clearInterval(this.renderInterval)
@@ -197,13 +190,6 @@ export class CCA3D {
 		this.renderInterval = setInterval(() => {
 			this.update()
 		}, intervalMs)
-	}
-
-	public reset = (): void => {
-		clearInterval(this.renderInterval)
-		this.cellGroup.clear()
-		this.setInitialState()
-		this.renderer.render(this.scene, this.camera)
 	}
 
 	private setInitialState = (): void => {

@@ -278,7 +278,6 @@ window.onload = () => {
 
 	clearBtn.on("click", () => {
 		if (automaton) {
-			clearInterval(automaton.renderInterval)
 			automaton.clear()
 		}
 	})
@@ -357,7 +356,7 @@ const createAutomaton = (
 				canvasEl,
 				width,
 				height,
-				resolution,
+				22,
 				settings.cca3dThreshold,
 				settings.cca3dColorsCount,
 			)
