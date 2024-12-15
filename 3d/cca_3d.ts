@@ -22,6 +22,10 @@ export class CCA3D {
 	private renderer: THREE.WebGLRenderer
 	private frameCount: number
 	private updateEveryNFrames: number
+	// Timer
+	private lastUpdateTime: number = 0;
+	private updateTimes: number[] = [];
+	private readonly MAX_TIMES_TO_TRACK = 10; // Track last 10 updates for average
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
@@ -124,6 +128,8 @@ export class CCA3D {
 	}
 
 	private update = (): void => {
+		const startTime = performance.now()
+
 		// Clear the scene before updating
 		this.clearScene()
 
@@ -162,6 +168,30 @@ export class CCA3D {
 		}
 
 		this.state = newState
+
+		this.logPerformance(startTime)
+	}
+
+	private logPerformance = (startTime: number): void => {
+		// Calculate and log performance metrics
+		const endTime = performance.now()
+		const updateTime = endTime - startTime
+
+		this.updateTimes.push(updateTime);
+		if (this.updateTimes.length > this.MAX_TIMES_TO_TRACK) {
+			this.updateTimes.shift() // Remove oldest time
+		}
+
+		const averageTime = this.updateTimes.reduce((a, b) => a + b) / this.updateTimes.length
+
+		// Clear console and show updated stats
+		console.clear()
+		console.log(`
+Performance Stats (Frame #${++this.frameCount}):
+-----------------------------
+Current Update: ${updateTime.toFixed(2)}ms
+Average (last ${this.MAX_TIMES_TO_TRACK}): ${averageTime.toFixed(2)}ms
+`)
 	}
 
 	private getNeighbours(x: number, y: number, z: number): ColorObject[] {
