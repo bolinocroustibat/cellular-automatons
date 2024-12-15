@@ -1,8 +1,8 @@
 import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import type { Cell } from "../types/ Cell"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 interface Cell3D extends Cell {
 	mesh?: THREE.Mesh
@@ -13,20 +13,25 @@ export class CCA3D {
 	private width: number
 	private height: number
 	private cubeDimension: number
+	private readonly halfCubeDimension: number
 	private cellSize: number
 	private cellFilling: number
 	private threshold: number
 	private colors: Cell[]
+	private readonly colorMap: Map<number, Cell>
 	private state: Cell3D[][][]
 	private initialRotationSpeed: number
+	private rotationDirectionX: number
+	private rotationDirectionY: number
+	private rotationDirectionZ: number
 	private scene: THREE.Scene
-	private cellGroup: THREE.Group;
+	private cellGroup: THREE.Group
 	private camera: THREE.PerspectiveCamera
-	private controls: OrbitControls;
-	private isUserInteracting: boolean = false
+	private controls: OrbitControls
+	private isUserInteracting = false
 	private renderer: THREE.WebGLRenderer
 	private animationFrameId?: number
-	private animationFrameCount: number = 0
+	private animationFrameCount = 0
 	renderInterval: NodeJS.Timer
 
 	constructor(
@@ -37,7 +42,6 @@ export class CCA3D {
 		threshold: number,
 		colorsCount: number,
 	) {
-
 		// Clean everything
 		this.clear()
 
@@ -51,6 +55,10 @@ export class CCA3D {
 		this.colors = pickColors(colorsCount) // 10 is good
 		this.state = []
 		this.initialRotationSpeed = 0.004
+
+		// Pre-calculate values that are used often for performance
+		this.halfCubeDimension = this.cubeDimension / 2
+		this.colorMap = new Map(this.colors.map((color) => [color.id, color]))
 
 		// Initialize scene first
 		this.scene = new THREE.Scene()
@@ -71,19 +79,19 @@ export class CCA3D {
 
 		// Replace the canvas with renderer's domElement
 		if (this.canvasEl) {
-			this.canvasEl.replaceWith(this.renderer.domElement);
+			this.canvasEl.replaceWith(this.renderer.domElement)
 		}
 
 		// Add OrbitControls
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement)
 		this.controls.enableDamping = true // Add smooth damping
 		this.controls.dampingFactor = 0.05
 		this.controls.rotateSpeed = 0.5
 
 		// Add event listeners for user interaction
-		this.controls.addEventListener('start', () => {
+		this.controls.addEventListener("start", () => {
 			this.isUserInteracting = true
-		});
+		})
 
 		// Initial random populating
 		this.setInitialState()
@@ -91,56 +99,78 @@ export class CCA3D {
 		// Initial render
 		this.renderer.render(this.scene, this.camera)
 
+		// Initialize random rotation directions
+		this.setRandomRotationDirections()
+
 		// Animate
 		this.animate()
-
 	}
 
 	clear = (): void => {
-		// Cancel the animation frame first
 		if (this.animationFrameId) {
 			cancelAnimationFrame(this.animationFrameId)
 			this.animationFrameId = undefined
 		}
 
-		// Stop any ongoing intervals
 		if (this.renderInterval) {
 			clearInterval(this.renderInterval)
 		}
 
-		// Remove Scene
+		if (this.cellGroup) {
+			this.cellGroup.traverse((object) => {
+				if (object instanceof THREE.Mesh) {
+					object.geometry.dispose()
+					if (Array.isArray(object.material)) {
+						object.material.forEach((material) => material.dispose())
+					} else {
+						object.material.dispose()
+					}
+				}
+			})
+		}
+
 		if (this.scene) {
 			this.scene.remove(this.cellGroup)
 		}
 
-		// Dispose of renderer and restore original canvas
 		if (this.renderer) {
+			this.renderer.dispose()
 			const rendererDomElement = this.renderer.domElement
 			if (rendererDomElement.parentElement) {
-				// Create a new canvas to replace the renderer
-				const newCanvas = document.createElement('canvas')
-				newCanvas.id = 'canvas'
-				rendererDomElement.parentElement.replaceChild(newCanvas, rendererDomElement)
+				const newCanvas = document.createElement("canvas")
+				newCanvas.id = "canvas"
+				rendererDomElement.parentElement.replaceChild(
+					newCanvas,
+					rendererDomElement,
+				)
 			}
-			this.renderer.dispose()
 		}
-	
+	}
+
+	private setRandomRotationDirections(): void {
+		// Will be either 1 or -1 for each axis
+		this.rotationDirectionX = Math.random() < 0.5 ? 1 : -1
+		this.rotationDirectionY = Math.random() < 0.5 ? 1 : -1
+		this.rotationDirectionZ = Math.random() < 0.5 ? 1 : -1
 	}
 
 	private animate = (): void => {
 		this.animationFrameId = requestAnimationFrame(this.animate)
 
 		// Update controls
-		this.controls.update();
+		this.controls.update()
 
 		// Increment frame counter
 		this.animationFrameCount++
 
 		// Only apply automatic rotation if user is not interacting
 		if (!this.isUserInteracting) {
-			this.cellGroup.rotation.x += this.initialRotationSpeed;
-			this.cellGroup.rotation.y += this.initialRotationSpeed;
-			this.cellGroup.rotation.z += this.initialRotationSpeed;
+			this.cellGroup.rotation.x +=
+				this.initialRotationSpeed * this.rotationDirectionX
+			this.cellGroup.rotation.y +=
+				this.initialRotationSpeed * this.rotationDirectionY
+			this.cellGroup.rotation.z +=
+				this.initialRotationSpeed * this.rotationDirectionZ
 		}
 
 		// Render every frame
@@ -165,41 +195,34 @@ export class CCA3D {
 			for (let y = 0; y < this.cubeDimension; y++) {
 				this.state[z][y] = []
 				for (let x = 0; x < this.cubeDimension; x++) {
-					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
+					const randomColor =
+						this.colors[Math.floor(Math.random() * this.colors.length)]
 					this.state[z][y][x] = this.createCell(randomColor, x, y, z)
 				}
 			}
 		}
 	}
 
-	private createCell(
-		colorObj: Cell,
-		x: number,
-		y: number,
-		z: number,
-	): Cell3D {
+	private createCell(colorObj: Cell, x: number, y: number, z: number): Cell3D {
 		const geometry = new THREE.BoxGeometry(
 			this.cellSize * this.cellFilling,
 			this.cellSize * this.cellFilling,
-			this.cellSize * this.cellFilling
+			this.cellSize * this.cellFilling,
 		)
 
 		const material = new THREE.MeshBasicMaterial({
-			color: new THREE.Color(
-				colorObj.colorRgb[0] / 255,
-				colorObj.colorRgb[1] / 255,
-				colorObj.colorRgb[2] / 255
-			),
 			transparent: true,
 			opacity: 0.4,
-			depthWrite: false
+			depthWrite: false,
 		})
 
 		const mesh = new THREE.Mesh(geometry, material)
 
-		const posX = (x - this.cubeDimension / 2) * this.cellSize
-		const posY = (y - this.cubeDimension / 2) * this.cellSize
-		const posZ = (z - this.cubeDimension / 2) * this.cellSize
+		this.updateCellColor(mesh, colorObj.colorRgb)
+
+		const posX = (x - this.halfCubeDimension) * this.cellSize
+		const posY = (y - this.halfCubeDimension) * this.cellSize
+		const posZ = (z - this.halfCubeDimension) * this.cellSize
 
 		mesh.position.set(posX, posY, posZ)
 		this.cellGroup.add(mesh)
@@ -207,69 +230,53 @@ export class CCA3D {
 		// Simply return the combined object
 		return {
 			...colorObj,
-			mesh
+			mesh,
+		}
+	}
+
+	private updateCellColor(mesh: THREE.Mesh, colorRgb: number[]): void {
+		// Type check only once
+		if (mesh.material instanceof THREE.Material) {
+			// Pre-calculate RGB values once
+			const r = colorRgb[0] / 255
+			const g = colorRgb[1] / 255
+			const b = colorRgb[2] / 255
+			mesh.material.color.setRGB(r, g, b)
 		}
 	}
 
 	private update = (): void => {
-		// Initialize the new state array
-		const newState: Cell3D[][][] = Array(this.cubeDimension)
-			.fill(null)
-			.map(() =>
-				Array(this.cubeDimension)
-					.fill(null)
-					.map(() => Array(this.cubeDimension).fill(null))
-			)
-
-		// Single loop to calculate new state and update changed cells immediately
-		for (let z = 0; z < this.cubeDimension; z++) {
-			for (let y = 0; y < this.cubeDimension; y++) {
-				for (let x = 0; x < this.cubeDimension; x++) {
-					const currentCell = this.state[z][y][x]
-					const neighbours = this.getNeighbours(x, y, z)
+		const newState = this.state.map((zLayer, z) =>
+			zLayer.map((yRow, y) =>
+				yRow.map((currentCell, x) => {
 					const nextColorId = nextCellColorId(currentCell, this.colors)
-
-					// Count neighbors with the next color ID
-					const successorNeighboursCount = neighbours.filter(
+					const successorNeighboursCount = this.getNeighbours(x, y, z).filter(
 						(neighbour) => neighbour.id === nextColorId,
 					).length
 
-					// Update state based on threshold
-					newState[z][y][x] = {
-						...(successorNeighboursCount >= this.threshold
-							? this.colors.find(color => color.id === nextColorId) ?? currentCell
-							: currentCell),
-						mesh: currentCell.mesh // Preserve the mesh reference
-					}
+					if (successorNeighboursCount >= this.threshold) {
+						const newColor = this.colorMap.get(nextColorId) ?? currentCell
 
-					// Only update visual if state changed
-					if (newState[z][y][x].id !== currentCell.id) {
-						if (currentCell.mesh) {
-							// Update existing mesh color
-							if (currentCell.mesh.material instanceof THREE.Material) {
-								currentCell.mesh.material.color.setRGB(
-									newState[z][y][x].colorRgb[0] / 255,
-									newState[z][y][x].colorRgb[1] / 255,
-									newState[z][y][x].colorRgb[2] / 255
-								);
-							}
-						} else {
-							// Create new mesh if it doesn't exist
-							newState[z][y][x].mesh = this.createCell(newState[z][y][x].colorRgb, x, y, z)
+						if (newColor.id !== currentCell.id && currentCell.mesh) {
+							// Use the utility method instead of inline color update
+							this.updateCellColor(currentCell.mesh, newColor.colorRgb)
 						}
+						return { ...newColor, mesh: currentCell.mesh }
 					}
-				}
-			}
-		}
+					return currentCell
+				}),
+			),
+		)
 
 		this.state = newState
 	}
 
 	private getNeighbours(x: number, y: number, z: number): Cell[] {
 		const neighbours: Cell[] = []
-		for (let dz = -1; dz <= 1; dz++) {
-			for (let dy = -1; dy <= 1; dy++) {
-				for (let dx = -1; dx <= 1; dx++) {
+		const offsets = [-1, 0, 1]
+		for (const dz of offsets) {
+			for (const dy of offsets) {
+				for (const dx of offsets) {
 					if (dx === 0 && dy === 0 && dz === 0) continue
 					neighbours.push(this.getCellColor(x + dx, y + dy, z + dz))
 				}
@@ -284,5 +291,4 @@ export class CCA3D {
 		const modifiedZ = (z + this.cubeDimension) % this.cubeDimension
 		return this.state[modifiedZ][modifiedY][modifiedX]
 	}
-
 }
