@@ -62,14 +62,14 @@ window.onload = () => {
 		{ label: "Threshold", min: 1, max: 3, step: 1 },
 	)
 	const cca3dColorsCountBlade = pane.addBinding(
-		{ cca3dColorsCount: 4 },
+		{ cca3dColorsCount: 8 },
 		"cca3dColorsCount",
-		{ label: "Number of colors", min: 4, max: 10, step: 1 },
+		{ label: "3D Number of colors", min: 4, max: 10, step: 1 },
 	)
 	const cca3dThresholdBlade = pane.addBinding(
-		{ cca3dThreshold: 25 },
+		{ cca3dThreshold: 4 },
 		"cca3dThreshold",
-		{ label: "Threshold", min: 1, max: 26, step: 1 },
+		{ label: "3D Threshold", min: 1, max: 10, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
@@ -174,7 +174,7 @@ window.onload = () => {
 		}
 		cca3dColorsCountBlade.hidden = false
 		cca3dThresholdBlade.hidden = false
-		resolutionBlade.hidden = false
+		resolutionBlade.hidden = true
 	}
 
 	const setConwayBlades = () => {
@@ -215,7 +215,7 @@ window.onload = () => {
 		resolutionBlade.hidden = false
 	}
 
-	setCca2dBlades()
+	setCca3dBlades()
 	reset()
 
 	algoSelector.on("change", (event) => {
@@ -357,9 +357,6 @@ const createAutomaton = (
 				canvasEl,
 				width,
 				height,
-				10,
-				10,
-				10,
 				settings.cca3dThreshold,
 				settings.cca3dColorsCount,
 			)
