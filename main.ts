@@ -72,9 +72,9 @@ window.onload = () => {
 		{ label: "Threshold", min: 4, max: 10, step: 1 },
 	)
 	const cca3dCubeDimensionBlade = pane.addBinding(
-		{ cca3dCubeDimension: 15 },
+		{ cca3dCubeDimension: 20 },
 		"cca3dCubeDimension",
-		{ label: "3D cube size", min: 5, max: 40, step: 1 },
+		{ label: "3D cube size", min: 5, max: 30, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
