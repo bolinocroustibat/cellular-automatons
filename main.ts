@@ -32,7 +32,7 @@ window.onload = () => {
 		title: "Parameters",
 		expanded: true,
 	})
-	const algoSelector = pane.addBinding({ algo: "cca-3D" }, "algo", {
+	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
@@ -221,7 +221,7 @@ window.onload = () => {
 		resolutionBlade.hidden = false
 	}
 
-	setCca3dBlades()
+	setCca2dBlades()
 	reset()
 
 	algoSelector.on("change", (event) => {
