@@ -18,7 +18,7 @@ export class CCA3D {
 	private threshold: number
 	private colors: Cell[]
 	private state: Cell3D[][][]
-	private rotationSpeed: number
+	private initialRotationSpeed: number
 	private scene: THREE.Scene
 	private cellGroup: THREE.Group;
 	private camera: THREE.PerspectiveCamera
@@ -37,22 +37,28 @@ export class CCA3D {
 		threshold: number,
 		colorsCount: number,
 	) {
+		console.log("instanciate new CCA3D")
+
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.cubeDimension = 20
-		this.cellSize = 10
+		this.cubeDimension = resolution
+		this.cellSize = Math.min(width, height) / resolution / 4
 		this.cellFilling = 0.8
 		this.threshold = threshold // 4 is good
 		this.colors = pickColors(colorsCount) // 10 is good
 		this.state = []
-		this.rotationSpeed = 0.004
+		this.initialRotationSpeed = 0.004
+
+		// Clean everything
+		this.clear()
 
 		// Initialize scene first
 		this.scene = new THREE.Scene()
 
-		// Create a group to hold all cubes and center it
+		// Create group for cells and center it
 		this.cellGroup = new THREE.Group()
+		this.cellGroup.position.set(0, 0, 0)
 		this.scene.add(this.cellGroup)
 
 		// Set up camera
@@ -63,17 +69,21 @@ export class CCA3D {
 		// Initialize renderer
 		this.renderer = new THREE.WebGLRenderer()
 		this.renderer.setSize(this.width, this.height)
-		this.canvasEl.replaceWith(this.renderer.domElement)
+
+		// Replace the canvas with renderer's domElement
+		if (this.canvasEl) {
+			this.canvasEl.replaceWith(this.renderer.domElement);
+		}
 
 		// Add OrbitControls
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-		this.controls.enableDamping = true; // Add smooth damping
-		this.controls.dampingFactor = 0.05;
-		this.controls.rotateSpeed = 0.5;
+		this.controls.enableDamping = true // Add smooth damping
+		this.controls.dampingFactor = 0.05
+		this.controls.rotateSpeed = 0.5
 
 		// Add event listeners for user interaction
 		this.controls.addEventListener('start', () => {
-			this.isUserInteracting = true;
+			this.isUserInteracting = true
 		});
 
 		// Initial random populating
@@ -82,12 +92,72 @@ export class CCA3D {
 		// Initial render
 		this.renderer.render(this.scene, this.camera)
 
-		// Animate with rotation
+		// Animate
 		this.animate()
 
 	}
 
-	public animate = (): void => {
+	clear = (): void => {
+		console.log('clear CCDA3D')
+
+		// Stop any ongoing animations
+		if (this.stateUpdateInterval) {
+			clearInterval(this.stateUpdateInterval)
+		}
+
+		// Clear state array
+		this.state = []
+
+		// Dispose of geometries and materials
+		if (this.cellGroup) {
+			this.cellGroup.traverse((object) => {
+				if (object instanceof THREE.Mesh) {
+					object.geometry.dispose()
+					if (object.material instanceof THREE.Material) {
+						object.material.dispose()
+					}
+				}
+			})
+		}
+
+		// Dispose of controls
+		if (this.controls) {
+			this.controls.dispose()
+		}
+
+		// Dispose of renderer
+		if (this.renderer) {
+			this.renderer.dispose()
+		}
+	
+	}
+
+	start = (stateUpdatesPerSecond: number): void => {
+		// Clear any existing interval
+		if (this.stateUpdateInterval) {
+			clearInterval(this.stateUpdateInterval)
+		}
+
+		const intervalMs = 1000 / stateUpdatesPerSecond
+		this.stateUpdateInterval = setInterval(() => {
+			this.update()
+		}, intervalMs)
+	}
+
+	private setInitialState = (): void => {
+		for (let z = 0; z < this.cubeDimension; z++) {
+			this.state[z] = []
+			for (let y = 0; y < this.cubeDimension; y++) {
+				this.state[z][y] = []
+				for (let x = 0; x < this.cubeDimension; x++) {
+					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
+					this.state[z][y][x] = this.createCell(randomColor, x, y, z)
+				}
+			}
+		}
+	}
+
+	private animate = (): void => {
 		const currentTime = performance.now();
 		const frameTime = currentTime - this.lastFrameTime;
 		this.lastFrameTime = currentTime
@@ -102,9 +172,9 @@ export class CCA3D {
 
 		// Only apply automatic rotation if user is not interacting
 		if (!this.isUserInteracting) {
-			this.cellGroup.rotation.x += this.rotationSpeed;
-			this.cellGroup.rotation.y += this.rotationSpeed;
-			this.cellGroup.rotation.z += this.rotationSpeed;
+			this.cellGroup.rotation.x += this.initialRotationSpeed;
+			this.cellGroup.rotation.y += this.initialRotationSpeed;
+			this.cellGroup.rotation.z += this.initialRotationSpeed;
 		}
 
 		// Render every frame
