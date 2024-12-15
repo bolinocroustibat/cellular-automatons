@@ -23,9 +23,7 @@ export class CCA3D {
 	private frameCount: number
 	private updateEveryNFrames: number
 	// Timer
-	private lastUpdateTime: number = 0;
-	private updateTimes: number[] = [];
-	private readonly MAX_TIMES_TO_TRACK = 10; // Track last 10 updates for average
+	private lastFrameTime: number = performance.now();
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
@@ -41,7 +39,7 @@ export class CCA3D {
 		this.cubeHeight = 15
 		this.cubeDepth = 15
 		this.cellSize = 10
-		this.threshold =4
+		this.threshold = 4
 		this.colors = pickColors(10)
 		this.state = []
 		this.rotationSpeed = 0.0015
@@ -70,6 +68,10 @@ export class CCA3D {
 
 		// Start animating
 		const animate = () => {
+			const currentTime = performance.now();
+			const frameTime = currentTime - this.lastFrameTime;
+			this.lastFrameTime = currentTime;
+
 			requestAnimationFrame(animate)
 
 			// Increment frame counter
@@ -87,6 +89,16 @@ export class CCA3D {
 
 			// Render every frame
 			this.renderer.render(this.scene, this.camera)
+
+			// Log performance every N frames
+			if (this.frameCount % this.updateEveryNFrames === 0) {
+				console.clear();
+				console.log(`
+Performance Stats (Frame #${this.frameCount}):
+-----------------------------
+Frame time: ${frameTime.toFixed(2)}ms
+`)
+			}
 		}
 
 		animate()
@@ -110,26 +122,24 @@ export class CCA3D {
 	private clearScene(): void {
 		// Remove all meshes from the scene
 		while (this.scene.children.length > 0) {
-			const object = this.scene.children[0];
+			const object = this.scene.children[0]
 			if (object instanceof THREE.Mesh) {
 				if (object.geometry) {
-					object.geometry.dispose();
+					object.geometry.dispose()
 				}
 				if (object.material) {
 					if (Array.isArray(object.material)) {
-						object.material.forEach(material => material.dispose());
+						object.material.forEach(material => material.dispose())
 					} else {
-						object.material.dispose();
+						object.material.dispose()
 					}
 				}
 			}
-			this.scene.remove(object);
+			this.scene.remove(object)
 		}
 	}
 
 	private update = (): void => {
-		const startTime = performance.now()
-
 		// Clear the scene before updating
 		this.clearScene()
 
@@ -160,7 +170,6 @@ export class CCA3D {
 						? this.colors.find(color => color.id === nextColorId)!
 						: currentCell
 
-					// Create all cells
 					this.fillCell(newState[z][y][x].colorRgb, x, y, z);
 
 				}
@@ -169,29 +178,6 @@ export class CCA3D {
 
 		this.state = newState
 
-		this.logPerformance(startTime)
-	}
-
-	private logPerformance = (startTime: number): void => {
-		// Calculate and log performance metrics
-		const endTime = performance.now()
-		const updateTime = endTime - startTime
-
-		this.updateTimes.push(updateTime);
-		if (this.updateTimes.length > this.MAX_TIMES_TO_TRACK) {
-			this.updateTimes.shift() // Remove oldest time
-		}
-
-		const averageTime = this.updateTimes.reduce((a, b) => a + b) / this.updateTimes.length
-
-		// Clear console and show updated stats
-		console.clear()
-		console.log(`
-Performance Stats (Frame #${++this.frameCount}):
------------------------------
-Current Update: ${updateTime.toFixed(2)}ms
-Average (last ${this.MAX_TIMES_TO_TRACK}): ${averageTime.toFixed(2)}ms
-`)
 	}
 
 	private getNeighbours(x: number, y: number, z: number): ColorObject[] {
@@ -228,7 +214,7 @@ Average (last ${this.MAX_TIMES_TO_TRACK}): ${averageTime.toFixed(2)}ms
 		const material = new THREE.MeshBasicMaterial({
 			color: `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`,
 			transparent: true,
-			opacity: 0.5,
+			opacity: 0.2,
 			depthWrite: false // This can help with transparency rendering
 		})
 		const cell = new THREE.Mesh(geometry, material)
@@ -239,5 +225,18 @@ Average (last ${this.MAX_TIMES_TO_TRACK}): ${averageTime.toFixed(2)}ms
 		cell.position.set(posX, posY, posZ)
 		this.scene.add(cell)
 	}
+	
+	private logPerformance = (startTime: number): void => {
+		// Calculate frame time
+		const endTime = performance.now();
+		const frameTime = endTime - startTime;
 
+		// Clear console and show updated stats
+		console.clear();
+		console.log(`
+Performance Stats (Frame #${this.frameCount}):
+-----------------------------
+Frame time: ${frameTime.toFixed(2)}ms
+`)
+	}
 }
