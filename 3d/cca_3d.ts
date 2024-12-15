@@ -1,8 +1,11 @@
 import * as THREE from "three"
-import type { ColorObject } from "../types/ColorObject"
+import type { Cell } from "../types/ Cell"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
-import { setupCanvas } from "../utils/setupCanvas"
+
+interface Cell3D extends Cell {
+	mesh?: THREE.Mesh;
+}
 
 export class CCA3D {
 	private canvasEl: HTMLCanvasElement
@@ -13,8 +16,8 @@ export class CCA3D {
 	private cubeDepth: number
 	private cellSize: number
 	private threshold: number
-	private colors: ColorObject[]
-	private state: ColorObject[][][]
+	private colors:  Cell[]
+	private state: Cell3D[][][]
 	private rotationSpeed: number
 	private scene: THREE.Scene
 	renderInterval: NodeJS.Timer
@@ -35,17 +38,17 @@ export class CCA3D {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.cubeWidth = 15
-		this.cubeHeight = 15
-		this.cubeDepth = 15
+		this.cubeWidth = 22
+		this.cubeHeight = 22
+		this.cubeDepth = 22
 		this.cellSize = 10
-		this.threshold = 4
+		this.threshold = 3
 		this.colors = pickColors(10)
 		this.state = []
-		this.rotationSpeed = 0.0015
+		this.rotationSpeed = 0.004
 		this.scene = new THREE.Scene()
 		this.frameCount = 0
-		this.updateEveryNFrames = 20
+		this.updateEveryNFrames = 2
 
 		// Set up camera
 		this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
@@ -64,7 +67,7 @@ export class CCA3D {
 		this.renderer.render(this.scene, this.camera)
 
 		// Initial random populating
-		this.setRandomStateAndRender()
+		this.setInitialState()
 
 		// Start animating
 		const animate = () => {
@@ -93,11 +96,7 @@ export class CCA3D {
 			// Log performance every N frames
 			if (this.frameCount % this.updateEveryNFrames === 0) {
 				console.clear();
-				console.log(`
-Performance Stats (Frame #${this.frameCount}):
------------------------------
-Frame time: ${frameTime.toFixed(2)}ms
-`)
+				console.log(`Frame time: ${frameTime.toFixed(2)}ms`)
 			}
 		}
 
@@ -105,83 +104,121 @@ Frame time: ${frameTime.toFixed(2)}ms
 
 	}
 
-	private setRandomStateAndRender = (): void => {
+	private setInitialState = (): void => {
 		for (let z = 0; z < this.cubeDepth; z++) {
 			this.state[z] = []
 			for (let y = 0; y < this.cubeHeight; y++) {
 				this.state[z][y] = []
 				for (let x = 0; x < this.cubeWidth; x++) {
-					this.state[z][y][x] =
-						this.colors[Math.floor(Math.random() * this.colors.length)]
-					this.fillCell(this.state[z][y][x].colorRgb, x, y, z)
+					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)];
+					this.state[z][y][x] = this.createCell(randomColor, x, y, z);
 				}
 			}
 		}
 	}
 
-	private clearScene(): void {
-		// Remove all meshes from the scene
-		while (this.scene.children.length > 0) {
-			const object = this.scene.children[0]
-			if (object instanceof THREE.Mesh) {
-				if (object.geometry) {
-					object.geometry.dispose()
-				}
-				if (object.material) {
-					if (Array.isArray(object.material)) {
-						object.material.forEach(material => material.dispose())
-					} else {
-						object.material.dispose()
-					}
-				}
-			}
-			this.scene.remove(object)
-		}
+	private createCell(
+		colorObj: Cell,  // Pass the complete color object instead of just RGB
+		x: number,
+		y: number,
+		z: number,
+	): Cell3D {
+		const radius = 1;
+		const segments = 2;
+
+		const geometry = new THREE.BoxGeometry(
+			this.cellSize,
+			this.cellSize,
+			this.cellSize,
+			segments,
+			segments,
+			segments,
+			radius
+		)
+
+		const material = new THREE.MeshBasicMaterial({
+			color: new THREE.Color(
+				colorObj.colorRgb[0] / 255,
+				colorObj.colorRgb[1] / 255,
+				colorObj.colorRgb[2] / 255
+			),
+			transparent: true,
+			opacity: 0.2,
+			depthWrite: false
+		})
+
+		const mesh = new THREE.Mesh(geometry, material)
+
+		const posX = (x - this.cubeWidth / 2) * this.cellSize
+		const posY = (y - this.cubeHeight / 2) * this.cellSize
+		const posZ = (z - this.cubeDepth / 2) * this.cellSize
+
+		mesh.position.set(posX, posY, posZ)
+		this.scene.add(mesh)
+
+		// Simply return the combined object
+		return {
+			...colorObj,
+			mesh
+		};
 	}
 
 	private update = (): void => {
-		// Clear the scene before updating
-		this.clearScene()
-
-		// Initialize the new state array with proper structure
-		const newState: ColorObject[][][] = Array(this.cubeDepth)
+		// Initialize the new state array
+		const newState: Cell3D[][][] = Array(this.cubeDepth)
 			.fill(null)
 			.map(() =>
 				Array(this.cubeHeight)
 					.fill(null)
 					.map(() => Array(this.cubeWidth).fill(null))
-			)
+			);
 
-		// Single loop to handle both state update and cell creation
+		// Single loop to calculate new state and update changed cells immediately
 		for (let z = 0; z < this.cubeDepth; z++) {
 			for (let y = 0; y < this.cubeHeight; y++) {
 				for (let x = 0; x < this.cubeWidth; x++) {
-					const currentCell = this.state[z][y][x]
-					const neighbours = this.getNeighbours(x, y, z)
-					const nextColorId = nextCellColorId(currentCell, this.colors)
+					const currentCell = this.state[z][y][x];
+					const neighbours = this.getNeighbours(x, y, z);
+					const nextColorId = nextCellColorId(currentCell, this.colors);
 
 					// Count neighbors with the next color ID
 					const successorNeighboursCount = neighbours.filter(
 						(neighbour) => neighbour.id === nextColorId,
-					).length
+					).length;
 
 					// Update state based on threshold
-					newState[z][y][x] = successorNeighboursCount >= this.threshold
-						? this.colors.find(color => color.id === nextColorId)!
-						: currentCell
+					newState[z][y][x] = {
+						...(successorNeighboursCount >= this.threshold
+							? this.colors.find(color => color.id === nextColorId) ?? currentCell
+							: currentCell),
+						mesh: currentCell.mesh // Preserve the mesh reference
+					};
 
-					this.fillCell(newState[z][y][x].colorRgb, x, y, z);
-
+					// Only update visual if state changed
+					if (newState[z][y][x].id !== currentCell.id) {
+						if (currentCell.mesh) {
+							// Update existing mesh color
+							if (currentCell.mesh.material instanceof THREE.Material) {
+								currentCell.mesh.material.color.setRGB(
+									newState[z][y][x].colorRgb[0] / 255,
+									newState[z][y][x].colorRgb[1] / 255,
+									newState[z][y][x].colorRgb[2] / 255
+								);
+							}
+						} else {
+							// Create new mesh if it doesn't exist
+							newState[z][y][x].mesh = this.createCell(newState[z][y][x].colorRgb, x, y, z);
+						}
+					}
 				}
 			}
 		}
 
-		this.state = newState
-
+		this.state = newState;
 	}
 
-	private getNeighbours(x: number, y: number, z: number): ColorObject[] {
-		const neighbours: ColorObject[] = []
+	private getNeighbours(x: number, y: number, z: number):  Cell[] {
+		const neighbours:  Cell[] = []
 		for (let dz = -1; dz <= 1; dz++) {
 			for (let dy = -1; dy <= 1; dy++) {
 				for (let dx = -1; dx <= 1; dx++) {
@@ -193,50 +230,11 @@ Frame time: ${frameTime.toFixed(2)}ms
 		return neighbours
 	}
 
-	private getCellColor(x: number, y: number, z: number): ColorObject {
+	private getCellColor(x: number, y: number, z: number):  Cell {
 		const modifiedX = (x + this.cubeWidth) % this.cubeWidth
 		const modifiedY = (y + this.cubeHeight) % this.cubeHeight
 		const modifiedZ = (z + this.cubeDepth) % this.cubeDepth
 		return this.state[modifiedZ][modifiedY][modifiedX]
 	}
 
-	private fillCell(
-		colorRgb: [number, number, number],
-		x: number,
-		y: number,
-		z: number,
-	): void {
-		const geometry = new THREE.BoxGeometry(
-			this.cellSize,
-			this.cellSize,
-			this.cellSize,
-		)
-		const material = new THREE.MeshBasicMaterial({
-			color: `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`,
-			transparent: true,
-			opacity: 0.2,
-			depthWrite: false // This can help with transparency rendering
-		})
-		const cell = new THREE.Mesh(geometry, material)
-		// Position relative to center
-		const posX = (x - this.cubeWidth / 2) * this.cellSize
-		const posY = (y - this.cubeHeight / 2) * this.cellSize
-		const posZ = (z - this.cubeDepth / 2) * this.cellSize
-		cell.position.set(posX, posY, posZ)
-		this.scene.add(cell)
-	}
-	
-	private logPerformance = (startTime: number): void => {
-		// Calculate frame time
-		const endTime = performance.now();
-		const frameTime = endTime - startTime;
-
-		// Clear console and show updated stats
-		console.clear();
-		console.log(`
-Performance Stats (Frame #${this.frameCount}):
------------------------------
-Frame time: ${frameTime.toFixed(2)}ms
-`)
-	}
 }
