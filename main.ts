@@ -19,6 +19,7 @@ import { EntropyAutomaton } from "./2d/entropy/entropy"
 import { ImmigrationAutomaton } from "./2d/immigration/immigration"
 import { LangtonAutomaton } from "./2d/langton/langton"
 import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
+import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
 import type { Settings } from "./types/Settings"
 
@@ -31,12 +32,13 @@ window.onload = () => {
 		title: "Parameters",
 		expanded: true,
 	})
-	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
+	const algoSelector = pane.addBinding({ algo: "cca-3D" }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "cca-1D",
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
+			"3 dimensions Cyclic Cellular Automaton": "cca-3D",
 			"Conway's game of Life": "conway",
 			"Immigration game": "immigration",
 			"Quad-Life": "quadlife",
@@ -58,6 +60,21 @@ window.onload = () => {
 		{ cca2dThreshold: 2 },
 		"cca2dThreshold",
 		{ label: "Threshold", min: 1, max: 3, step: 1 },
+	)
+	const cca3dColorsCountBlade = pane.addBinding(
+		{ cca3dColorsCount: 8 },
+		"cca3dColorsCount",
+		{ label: "Number of colors", min: 5, max: 10, step: 1 },
+	)
+	const cca3dThresholdBlade = pane.addBinding(
+		{ cca3dThreshold: 4 },
+		"cca3dThreshold",
+		{ label: "Threshold", min: 4, max: 10, step: 1 },
+	)
+	const cca3dCubeDimensionBlade = pane.addBinding(
+		{ cca3dCubeDimension: 20 },
+		"cca3dCubeDimension",
+		{ label: "3D cube size", min: 5, max: 30, step: 1 },
 	)
 	const entropyColorsCountBlade = pane.addBinding(
 		{ entropyColorsCount: 4 },
@@ -132,6 +149,9 @@ window.onload = () => {
 		cca1dColorsCountBlade,
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
+		cca3dColorsCountBlade,
+		cca3dThresholdBlade,
+		cca3dCubeDimensionBlade,
 		conwayPatterns,
 		entropyColorsCountBlade,
 		resolutionBlade,
@@ -152,6 +172,15 @@ window.onload = () => {
 		cca2dColorsCountBlade.hidden = false
 		cca2dThresholdBlade.hidden = false
 		resolutionBlade.hidden = false
+	}
+
+	const setCca3dBlades = () => {
+		for (const blade of blades) {
+			blade.hidden = true
+		}
+		cca3dColorsCountBlade.hidden = false
+		cca3dThresholdBlade.hidden = false
+		cca3dCubeDimensionBlade.hidden = false
 	}
 
 	const setConwayBlades = () => {
@@ -192,7 +221,7 @@ window.onload = () => {
 		resolutionBlade.hidden = false
 	}
 
-	setCca2dBlades()
+	setCca3dBlades()
 	reset()
 
 	algoSelector.on("change", (event) => {
@@ -202,6 +231,9 @@ window.onload = () => {
 				break
 			case "cca-2D":
 				setCca2dBlades()
+				break
+			case "cca-3D":
+				setCca3dBlades()
 				break
 			case "conway":
 				setConwayBlades()
@@ -252,7 +284,6 @@ window.onload = () => {
 
 	clearBtn.on("click", () => {
 		if (automaton) {
-			clearInterval(automaton.renderInterval)
 			automaton.clear()
 		}
 	})
@@ -268,6 +299,9 @@ window.onload = () => {
 				break
 			case "cca-2D":
 				automaton.start(25, 2500)
+				break
+			case "cca-3D":
+				automaton.start(25)
 				break
 			case "conway":
 				automaton.start(25, 12000)
@@ -304,10 +338,10 @@ const getSettings = (pane: Pane): Settings => {
 }
 
 const createAutomaton = (
-	settings: Settings,
 	canvasEl: HTMLCanvasElement,
 	width: number,
 	height: number,
+	settings: Settings,
 ): AutomatonBase => {
 	const resolution: number = settings.resolution || 5
 
@@ -322,6 +356,15 @@ const createAutomaton = (
 				height,
 				resolution,
 				settings.cca2dColorsCount,
+			)
+		case "cca-3D":
+			return new CCA3D(
+				canvasEl,
+				width,
+				height,
+				settings.cca3dCubeDimension,
+				settings.cca3dThreshold,
+				settings.cca3dColorsCount,
 			)
 		case "conway":
 			return new ConwayAutomaton(canvasEl, width, height, resolution)
@@ -358,7 +401,7 @@ const reset = (): void => {
 	const height = window.innerHeight
 
 	// Create new automaton
-	automaton = createAutomaton(settings, canvasEl, width, height)
+	automaton = createAutomaton(canvasEl, width, height, settings)
 }
 
 window.onresize = (): void => reset()
