@@ -174,7 +174,7 @@ window.onload = () => {
 		}
 		cca3dColorsCountBlade.hidden = false
 		cca3dThresholdBlade.hidden = false
-		resolutionBlade.hidden = true
+		resolutionBlade.hidden = false
 	}
 
 	const setConwayBlades = () => {
@@ -296,7 +296,7 @@ window.onload = () => {
 				automaton.start(25, 2500)
 				break
 			case "cca-3D":
-				automaton.start(25, 2500)
+				automaton.start(25)
 				break
 			case "conway":
 				automaton.start(25, 12000)
@@ -357,6 +357,7 @@ const createAutomaton = (
 				canvasEl,
 				width,
 				height,
+				resolution,
 				settings.cca3dThreshold,
 				settings.cca3dColorsCount,
 			)
