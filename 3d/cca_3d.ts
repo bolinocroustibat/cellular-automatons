@@ -50,7 +50,7 @@ export class CCA3D {
 		this.height = height
 		this.cubeDimension = resolution
 		this.cellSize = Math.min(width, height) / resolution / 4
-		this.cellFilling = 0.8
+		this.cellFilling = 1.0
 		this.threshold = threshold // 4 is good
 		this.colors = pickColors(colorsCount) // 10 is good
 		this.state = []
@@ -121,7 +121,9 @@ export class CCA3D {
 				if (object instanceof THREE.Mesh) {
 					object.geometry.dispose()
 					if (Array.isArray(object.material)) {
-						object.material.forEach((material) => material.dispose())
+						for (const material of object.material) {
+							material.dispose()
+						}
 					} else {
 						object.material.dispose()
 					}
@@ -197,13 +199,19 @@ export class CCA3D {
 				for (let x = 0; x < this.cubeDimension; x++) {
 					const randomColor =
 						this.colors[Math.floor(Math.random() * this.colors.length)]
-					this.state[z][y][x] = this.createCell(randomColor, x, y, z)
+					this.state[z][y][x] = this.createCell(randomColor, x, y, z, false)
 				}
 			}
 		}
 	}
 
-	private createCell(colorObj: Cell, x: number, y: number, z: number): Cell3D {
+	private createCell(
+		colorObj: Cell,
+		x: number,
+		y: number,
+		z: number,
+		wireframe: boolean,
+	): Cell3D {
 		const geometry = new THREE.BoxGeometry(
 			this.cellSize * this.cellFilling,
 			this.cellSize * this.cellFilling,
@@ -212,11 +220,27 @@ export class CCA3D {
 
 		const material = new THREE.MeshBasicMaterial({
 			transparent: true,
-			opacity: 0.4,
+			opacity: 0.1,
 			depthWrite: false,
+			// side: THREE.DoubleSide,  // Render both sides of faces
 		})
 
 		const mesh = new THREE.Mesh(geometry, material)
+
+		if (wireframe) {
+			// Add wireframe
+			const wireframeGeometry = new THREE.EdgesGeometry(geometry)
+			const wireframeMaterial = new THREE.LineBasicMaterial({
+				color: 0xffffff,
+				transparent: true,
+				opacity: 0.2,
+			})
+			const wireframe = new THREE.LineSegments(
+				wireframeGeometry,
+				wireframeMaterial,
+			)
+			mesh.add(wireframe)
+		}
 
 		this.updateCellColor(mesh, colorObj.colorRgb)
 
