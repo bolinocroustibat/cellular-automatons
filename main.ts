@@ -32,7 +32,7 @@ window.onload = () => {
 		title: "Parameters",
 		expanded: true,
 	})
-	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
+	const algoSelector = pane.addBinding({ algo: "cca-3D" }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
