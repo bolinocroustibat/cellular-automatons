@@ -4,7 +4,7 @@ import { Automaton2D } from "../automaton2d"
 export class EntropyAutomaton extends Automaton2D {
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
 		super(...args)
-		clearInterval(this.renderInterval)
+
 		// Initial random populating
 		this.setRandomStateAndRender()
 	}

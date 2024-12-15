@@ -5,11 +5,9 @@ import { Automaton2D } from "../automaton2d"
 export class CCA2D extends Automaton2D {
 	private threshold: number
 
-	constructor(threshold: number, ...args: any[]) {
+	constructor(threshold: number, ...args: ConstructorParameters<typeof Automaton2D>) {
 		super(...args)
 		this.threshold = threshold
-
-		clearInterval(this.renderInterval)
 
 		// Initial random populating
 		this.setRandomStateAndRender()

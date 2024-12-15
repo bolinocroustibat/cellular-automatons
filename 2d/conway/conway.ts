@@ -6,20 +6,11 @@ export class ConwayAutomaton extends Automaton2D {
 	protected colorOff: ColorObject
 	protected colorOn: ColorObject
 
-	constructor(
-		canvasEl: HTMLCanvasElement,
-		width: number,
-		height: number,
-		resolution: number,
-		colorsCount = 2,
-	) {
-		super(canvasEl, width, height, resolution, colorsCount)
-
+	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
+		super(...args)
 		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.colorOn = this.colors[1]
-
-		clearInterval(this.renderInterval)
 
 		// Initial random populating
 		this.setRandomStateAndRender()

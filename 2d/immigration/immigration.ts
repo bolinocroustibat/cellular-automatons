@@ -5,10 +5,9 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 	private aliveColors: ColorObject[]
 	private aliveColorIds: number[]
 
-	constructor(...args) {
-		// Modify the colorsCount to 3
-		args[4] = 3
+	constructor(...args: ConstructorParameters<typeof ConwayAutomaton>) {
 		super(...args)
+		this.colorsCount = 3 // Modify the colorsCount to 3
 		this.aliveColors = this.colors.slice(1)
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
 	}

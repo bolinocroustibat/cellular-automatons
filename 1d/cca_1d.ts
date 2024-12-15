@@ -7,7 +7,6 @@ export class CCA1D {
 	private canvasEl: HTMLCanvasElement
 	private width: number
 	private height: number
-	private colorsCount: number
 	private colors: ColorObject[]
 	private state: ColorObject[]
 	private ctx: CanvasRenderingContext2D
@@ -22,11 +21,9 @@ export class CCA1D {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.colorsCount = colorsCount
 		this.colors = pickColors(colorsCount)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, width, height)
-		clearInterval(this.renderInterval)
 		this.setRandomState()
 		this.render(0)
 	}

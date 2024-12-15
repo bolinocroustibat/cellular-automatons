@@ -7,18 +7,11 @@ export class LangtonAutomaton extends Automaton2D {
 	private orientationX: number
 	private orientationY: number
 
-	constructor(
-		canvasEl: HTMLCanvasElement,
-		width: number,
-		height: number,
-		resolution: number,
-		colorsCount = 2,
-	) {
-		super(canvasEl, width, height, resolution, colorsCount)
+	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
+
+		super(...args)
 		this.colorsCount = 2
 		this.colors = pickColors(this.colorsCount)
-
-		clearInterval(this.renderInterval)
 
 		this.setUniformStateAndRender()
 
