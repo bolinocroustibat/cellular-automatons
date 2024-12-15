@@ -288,36 +288,34 @@ window.onload = () => {
 	})
 }
 
-const reset = (): void => {
-	if (automaton) {
-		clearInterval(automaton.renderInterval)
+const cleanupAutomaton = (automaton: AutomatonBase): void => {
+	if (!automaton) return
+	if ("clear" in automaton) {
+		automaton.clear()
 	}
-	const paneState = pane.exportState()
-	// Convert Tweakpane state to a clean "settings" object
-	settings = {}
-	for (const s of paneState.children) {
+}
+
+const getSettings = (pane: Pane): Settings => {
+	const settings = {}
+	for (const s of pane.exportState().children) {
 		if (s.binding) settings[s.binding.key] = s.binding.value
 	}
+	return settings as Settings
+}
 
-	const canvasEl: HTMLCanvasElement | null = document.getElementById(
-		"canvas",
-	) as HTMLCanvasElement
-	const width: number = window.innerWidth
-	const height: number = window.innerHeight
+const createAutomaton = (
+	settings: Settings,
+	canvasEl: HTMLCanvasElement,
+	width: number,
+	height: number,
+): AutomatonBase => {
 	const resolution: number = settings.resolution || 5
 
-	// Create the context
 	switch (settings.algo) {
 		case "cca-1D":
-			automaton = new CCA1D(
-				canvasEl,
-				width,
-				height,
-				settings.cca1dColorsCount || 4,
-			)
-			break
+			return new CCA1D(canvasEl, width, height, settings.cca1dColorsCount || 4)
 		case "cca-2D":
-			automaton = new CCA2D(
+			return new CCA2D(
 				settings.cca2dThreshold,
 				canvasEl,
 				width,
@@ -325,29 +323,42 @@ const reset = (): void => {
 				resolution,
 				settings.cca2dColorsCount,
 			)
-			break
 		case "conway":
-			automaton = new ConwayAutomaton(canvasEl, width, height, resolution)
-			break
+			return new ConwayAutomaton(canvasEl, width, height, resolution)
 		case "immigration":
-			automaton = new ImmigrationAutomaton(canvasEl, width, height, resolution)
-			break
+			return new ImmigrationAutomaton(canvasEl, width, height, resolution)
 		case "quadlife":
-			automaton = new QuadLifeAutomaton(canvasEl, width, height, resolution)
-			break
+			return new QuadLifeAutomaton(canvasEl, width, height, resolution)
 		case "langton":
-			automaton = new LangtonAutomaton(canvasEl, width, height, resolution)
-			break
+			return new LangtonAutomaton(canvasEl, width, height, resolution)
 		case "entropy":
-			automaton = new EntropyAutomaton(
+			return new EntropyAutomaton(
 				canvasEl,
 				width,
 				height,
 				resolution,
 				settings.entropyColorsCount,
 			)
-			break
+		default:
+			throw new Error(`Unknown algorithm: ${settings.algo}`)
 	}
+}
+
+const reset = (): void => {
+	// Cleanup existing automaton
+	cleanupAutomaton(automaton)
+	automaton = undefined
+
+	// Get new settings
+	settings = getSettings(pane)
+
+	// Get canvas and dimensions
+	const canvasEl = document.getElementById("canvas") as HTMLCanvasElement
+	const width = window.innerWidth
+	const height = window.innerHeight
+
+	// Create new automaton
+	automaton = createAutomaton(settings, canvasEl, width, height)
 }
 
 window.onresize = (): void => reset()

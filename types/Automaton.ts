@@ -1,6 +1,6 @@
 export interface AutomatonBase {
-	renderInterval: number
+	renderInterval: NodeJS.Timer
 	start: (fps: number, maxIterations?: number) => void
-	clear: () => void
+	clear?: () => void
 	placePatternRandomly?: (pattern: number[][]) => void
 }

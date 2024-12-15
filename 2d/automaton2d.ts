@@ -14,7 +14,7 @@ export class Automaton2D {
 	protected colors: ColorObject[]
 	protected state: ColorObject[][]
 	protected ctx: CanvasRenderingContext2D
-	public renderInterval: number
+	renderInterval: NodeJS.Timer
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
@@ -36,6 +36,13 @@ export class Automaton2D {
 	}
 
 	clear(): void {
+		if (this.renderInterval) {
+			clearInterval(this.renderInterval)
+			this.renderInterval = undefined
+		}
+		if (this.ctx) {
+			this.ctx.clearRect(0, 0, this.width, this.height)
+		}
 		this.setUniformStateAndRender()
 	}
 

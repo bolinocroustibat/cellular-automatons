@@ -8,7 +8,6 @@ export class LangtonAutomaton extends Automaton2D {
 	private orientationY: number
 
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
-
 		super(...args)
 		this.colorsCount = 2
 		this.colors = pickColors(this.colorsCount)

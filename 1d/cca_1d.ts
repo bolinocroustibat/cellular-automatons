@@ -10,7 +10,7 @@ export class CCA1D {
 	private colors: ColorObject[]
 	private state: ColorObject[]
 	private ctx: CanvasRenderingContext2D
-	renderInterval: number
+	renderInterval: NodeJS.Timer
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
@@ -18,6 +18,7 @@ export class CCA1D {
 		height: number,
 		colorsCount: number,
 	) {
+		this.clear()
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
@@ -34,6 +35,16 @@ export class CCA1D {
 			const randomColor =
 				this.colors[Math.floor(Math.random() * this.colors.length)]
 			this.state[x] = randomColor
+		}
+	}
+
+	clear = (): void => {
+		if (this.renderInterval) {
+			clearInterval(this.renderInterval)
+			this.renderInterval = undefined
+		}
+		if (this.ctx) {
+			this.ctx.clearRect(0, 0, this.width, this.height)
 		}
 	}
 
