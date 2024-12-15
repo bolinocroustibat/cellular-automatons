@@ -11,53 +11,49 @@ export class CCA3D {
 	private cubeWidth: number
 	private cubeHeight: number
 	private cubeDepth: number
-	private cubeSize: number
+	private cellSize: number
 	private threshold: number
-	private colorsCount: number
 	private colors: ColorObject[]
 	private state: ColorObject[][][]
-	private ctx: CanvasRenderingContext2D
+	private rotationSpeed: number
 	private scene: THREE.Scene
 	renderInterval: NodeJS.Timer
 	private camera: THREE.PerspectiveCamera
 	private renderer: THREE.WebGLRenderer
+	private frameCount: number
+	private updateEveryNFrames: number
 
 	constructor(
 		canvasEl: HTMLCanvasElement,
 		width: number,
 		height: number,
-		cubeWidth: number,
-		cubeHeight: number,
-		cubeDepth: number,
 		threshold: number,
 		colorsCount: number,
 	) {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.cubeWidth = 20
-		this.cubeHeight = 20
-		this.cubeDepth = 20
-		this.cubeSize = 5
-		this.threshold = threshold
-		this.colorsCount = colorsCount
-		this.colors = pickColors(colorsCount)
+		this.cubeWidth = 15
+		this.cubeHeight = 15
+		this.cubeDepth = 15
+		this.cellSize = 10
+		this.threshold =4
+		this.colors = pickColors(10)
 		this.state = []
-		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
+		this.rotationSpeed = 0.0015
 		this.scene = new THREE.Scene()
-
-		// Calculate the center of the cube structure
-		const centerX = (this.cubeWidth * this.cubeSize) / 2
-		const centerY = (this.cubeHeight * this.cubeSize) / 2
-		const centerZ = (this.cubeDepth * this.cubeSize) / 2
+		this.frameCount = 0
+		this.updateEveryNFrames = 20
 
 		// Set up camera
 		this.camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
 		this.camera.position.set(0, 0, 300) // Position camera on Z axis only
 		this.camera.lookAt(0, 0, 0) // Look at center
 
-		// Center the scene
-		this.scene.position.set(-centerX, -centerY, -centerZ)
+		// Create a group to hold all cubes and center it
+		const group = new THREE.Group()
+		this.scene.add(group)
+		this.scene = group // Make the group our new scene reference
 
 		// Initialize renderer
 		this.renderer = new THREE.WebGLRenderer()
@@ -65,28 +61,35 @@ export class CCA3D {
 		this.canvasEl.replaceWith(this.renderer.domElement)
 		this.renderer.render(this.scene, this.camera)
 
+		// Initial random populating
+		this.setRandomStateAndRender()
+
 		// Start animating
 		const animate = () => {
 			requestAnimationFrame(animate)
 
+			// Increment frame counter
+			this.frameCount++
+
 			// Rotate the scene
-			this.scene.rotation.x += 0.002
-			this.scene.rotation.y += 0.002
-			this.scene.rotation.z += 0.002
+			this.scene.rotation.x += this.rotationSpeed
+			this.scene.rotation.y += this.rotationSpeed
+			this.scene.rotation.z += this.rotationSpeed
+
+			// Update cube state every N frames
+			if (this.frameCount % this.updateEveryNFrames === 0) {
+				this.update()
+			}
+
+			// Render every frame
 			this.renderer.render(this.scene, this.camera)
 		}
+
 		animate()
 
-		// DEBUG: add axes
-		const axesHelper = new THREE.AxesHelper(5)
-		this.scene.add(axesHelper)
-
-		// Initial random populating
-		this.setRandomStateAndRender()
-		// this.render(0)
 	}
 
-	setRandomStateAndRender = (): void => {
+	private setRandomStateAndRender = (): void => {
 		for (let z = 0; z < this.cubeDepth; z++) {
 			this.state[z] = []
 			for (let y = 0; y < this.cubeHeight; y++) {
@@ -94,40 +97,70 @@ export class CCA3D {
 				for (let x = 0; x < this.cubeWidth; x++) {
 					this.state[z][y][x] =
 						this.colors[Math.floor(Math.random() * this.colors.length)]
-					this.fillCube(this.state[z][y][x].colorRgb, x, y, z)
+					this.fillCell(this.state[z][y][x].colorRgb, x, y, z)
 				}
 			}
 		}
 	}
 
-	start = (intervalMs: number, maxIterations: number): void => {
-		if (this.state.length > 0) {
-			let i = 0
-			this.renderInterval = setInterval(() => {
-				if (++i === maxIterations) clearInterval(this.renderInterval)
-				this.updateState()
-			}, intervalMs)
+	private clearScene(): void {
+		// Remove all meshes from the scene
+		while (this.scene.children.length > 0) {
+			const object = this.scene.children[0];
+			if (object instanceof THREE.Mesh) {
+				if (object.geometry) {
+					object.geometry.dispose();
+				}
+				if (object.material) {
+					if (Array.isArray(object.material)) {
+						object.material.forEach(material => material.dispose());
+					} else {
+						object.material.dispose();
+					}
+				}
+			}
+			this.scene.remove(object);
 		}
 	}
 
-	updateState = (): void => {
-		const newState: ColorObject[][][] = []
+	private update = (): void => {
+		// Clear the scene before updating
+		this.clearScene()
+
+		// Initialize the new state array with proper structure
+		const newState: ColorObject[][][] = Array(this.cubeDepth)
+			.fill(null)
+			.map(() =>
+				Array(this.cubeHeight)
+					.fill(null)
+					.map(() => Array(this.cubeWidth).fill(null))
+			)
+
+		// Single loop to handle both state update and cell creation
 		for (let z = 0; z < this.cubeDepth; z++) {
 			for (let y = 0; y < this.cubeHeight; y++) {
 				for (let x = 0; x < this.cubeWidth; x++) {
+					const currentCell = this.state[z][y][x]
 					const neighbours = this.getNeighbours(x, y, z)
-					const nextColorId = nextCellColorId(this.state[z][y][x], this.colors)
+					const nextColorId = nextCellColorId(currentCell, this.colors)
+
+					// Count neighbors with the next color ID
 					const successorNeighboursCount = neighbours.filter(
 						(neighbour) => neighbour.id === nextColorId,
-					)
-					newState[z][y][x] =
-						successorNeighboursCount.length >= 1
-							? successorNeighboursCount[0]
-							: this.state[z][y][x]
-					this.fillCube(newState[z][y][x].colorRgb, x, y, z)
+					).length
+
+					// Update state based on threshold
+					newState[z][y][x] = successorNeighboursCount >= this.threshold
+						? this.colors.find(color => color.id === nextColorId)!
+						: currentCell
+
+					// Create all cells
+					this.fillCell(newState[z][y][x].colorRgb, x, y, z);
+
 				}
 			}
 		}
+
 		this.state = newState
 	}
 
@@ -151,35 +184,30 @@ export class CCA3D {
 		return this.state[modifiedZ][modifiedY][modifiedX]
 	}
 
-	private fillCube(
+	private fillCell(
 		colorRgb: [number, number, number],
 		x: number,
 		y: number,
 		z: number,
 	): void {
 		const geometry = new THREE.BoxGeometry(
-			this.cubeSize,
-			this.cubeSize,
-			this.cubeSize,
+			this.cellSize,
+			this.cellSize,
+			this.cellSize,
 		)
 		const material = new THREE.MeshBasicMaterial({
 			color: `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`,
 			transparent: true,
-			opacity: 0.5
+			opacity: 0.5,
+			depthWrite: false // This can help with transparency rendering
 		})
 		const cell = new THREE.Mesh(geometry, material)
-		cell.position.set(x * this.cubeSize, y * this.cubeSize, z * this.cubeSize)
+		// Position relative to center
+		const posX = (x - this.cubeWidth / 2) * this.cellSize
+		const posY = (y - this.cubeHeight / 2) * this.cellSize
+		const posZ = (z - this.cubeDepth / 2) * this.cellSize
+		cell.position.set(posX, posY, posZ)
 		this.scene.add(cell)
 	}
 
-	render = (): void => {
-		this.renderer.render(this.scene, this.camera) // Render the scene
-		for (let z = 0; z < this.cubeDepth; z++) {
-			for (let y = 0; y < this.cubeHeight; y++) {
-				for (let x = 0; x < this.cubeWidth; x++) {
-					this.fillCube(this.state[z][y][x].colorRgb, x, y, z)
-				}
-			}
-		}
-	}
 }
