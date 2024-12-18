@@ -52,14 +52,21 @@ jobs:
           commit_user_email: me@adriencarpentier.com
           commit_author: Adrien Carpentier <me@adriencarpentier.com>
 
-      - uses: oven-sh/setup-bun@v2
-        name: Install Bun
+      - name: Cache Bun dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
       - name: Install dependencies with Bun
-        shell: bash
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build for production with Bun and Vite
         shell: bash

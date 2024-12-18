@@ -18,7 +18,7 @@ jobs:
       - name: Cache Bun dependencies
         uses: actions/cache@v3
         with:
-          path: ~/.bun/cache
+          path: ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
             ${{ runner.os }}-bun-
@@ -29,7 +29,7 @@ jobs:
           bun-version: latest
 
       - name: Install dependencies with Bun
-        run: bun install
+        run: bun install --frozen-lockfile
 
       - name: Build for staging with Bun and Vite
         shell: bash
