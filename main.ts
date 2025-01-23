@@ -28,11 +28,20 @@ let settings: Settings
 let automaton: AutomatonBase
 
 window.onload = () => {
+	const getInitialAlgo = () => {
+		const path = window.location.pathname.slice(1); // Remove leading slash
+		const validAlgos = [
+			"cca-1D", "cca-2D", "cca-3D", "conway", 
+			"immigration", "quadlife", "langton", "entropy"
+		];
+		return validAlgos.includes(path) ? path : "cca-2D";
+	};
+
 	pane = new Pane({
 		title: "Parameters",
 		expanded: true,
 	})
-	const algoSelector = pane.addBinding({ algo: "cca-2D" }, "algo", {
+	const algoSelector = pane.addBinding({ algo: getInitialAlgo() }, "algo", {
 		index: 1,
 		label: "Algorithm",
 		options: {
@@ -225,6 +234,10 @@ window.onload = () => {
 	reset()
 
 	algoSelector.on("change", (event) => {
+		// Update URL when algorithm changes
+		const newUrl = `/${event.value}`;
+		window.history.pushState({}, '', newUrl);
+		
 		switch (event.value) {
 			case "cca-1D":
 				setCca1dBlades()
@@ -253,6 +266,14 @@ window.onload = () => {
 		}
 		reset()
 	})
+
+	// Handle browser back/forward navigation
+	window.addEventListener('popstate', () => {
+		const newAlgo = getInitialAlgo();
+		if (newAlgo !== settings.algo) {
+			algoSelector.value = newAlgo;
+		}
+	});
 
 	addBlinkerBtn.on("click", () => {
 		automaton.placePatternRandomly(blinkerPattern())
