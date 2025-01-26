@@ -17,6 +17,7 @@ export const setupControls = (pane: Pane) => {
             "Quad-Life": "quadlife",
             "Langton's ant": "langton",
             "2 dimensions Entropy Automaton": "entropy",
+            "Lenia": "lenia",
         },
     })
 
@@ -108,6 +109,25 @@ export const setupControls = (pane: Pane) => {
         disabled: true,
     })
 
+    // Add Lenia parameters
+    const leniaBlades = {
+        dt: pane.addBinding({ dt: 0.1 }, "dt", {
+            label: "Time Step",
+            min: 0.01,
+            max: 1.0,
+        }),
+        mu: pane.addBinding({ mu: 0.15 }, "mu", {
+            label: "Growth Center",
+            min: 0,
+            max: 1,
+        }),
+        sigma: pane.addBinding({ sigma: 0.015 }, "sigma", {
+            label: "Growth Width",
+            min: 0.001,
+            max: 0.1,
+        })
+    }
+
     const blades = [
         cca1dColorsCountBlade,
         cca2dColorsCountBlade,
@@ -160,6 +180,12 @@ export const setupControls = (pane: Pane) => {
             for (const blade of blades) blade.hidden = true
             entropyColorsCountBlade.hidden = false
             resolutionBlade.hidden = false
+        },
+        "lenia": () => {
+            for (const blade of blades) blade.hidden = true
+            leniaBlades.dt.hidden = false
+            leniaBlades.mu.hidden = false
+            leniaBlades.sigma.hidden = false
         }
     }
 
@@ -171,7 +197,8 @@ export const setupControls = (pane: Pane) => {
         "immigration": { fps: 25, maxIterations: 12000 },
         "quadlife": { fps: 25, maxIterations: 12000 },
         "langton": { fps: 3, maxIterations: 12000 },
-        "entropy": { fps: 25, maxIterations: 2500 }
+        "entropy": { fps: 25, maxIterations: 2500 },
+        "lenia": { fps: 60 }
     }
 
     return {

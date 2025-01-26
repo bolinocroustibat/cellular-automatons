@@ -8,6 +8,7 @@ import { ImmigrationAutomaton } from "../2d/immigration/immigration"
 import { QuadLifeAutomaton } from "../2d/quadlife/quadlife"
 import { LangtonAutomaton } from "../2d/langton/langton"
 import { EntropyAutomaton } from "../2d/entropy/entropy"
+import { LeniaAutomaton } from "../lenia/lenia"
 
 export const createAutomaton = (
     canvasEl: HTMLCanvasElement,
@@ -54,6 +55,8 @@ export const createAutomaton = (
                 resolution,
                 settings.entropyColorsCount,
             )
+        case "lenia":
+            return new LeniaAutomaton(canvasEl, width, height)
         default:
             throw new Error(`Unknown algorithm: ${settings.algo}`)
     }
