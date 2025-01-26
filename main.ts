@@ -71,7 +71,7 @@ window.onload = () => {
 		{ label: "Threshold", min: 1, max: 3, step: 1 },
 	)
 	const cca3dColorsCountBlade = pane.addBinding(
-		{ cca3dColorsCount: 8 },
+		{ cca3dColorsCount: 7 },
 		"cca3dColorsCount",
 		{ label: "Number of colors", min: 5, max: 10, step: 1 },
 	)
