@@ -20,6 +20,7 @@ export class CCA3D {
 	private colors: Cell[]
 	private readonly colorMap: Map<number, Cell>
 	private state: Cell3D[][][]
+	private bufferState: Cell3D[][][]
 	private initialRotationSpeed: number
 	private rotationDirectionX: number
 	private rotationDirectionY: number
@@ -54,6 +55,7 @@ export class CCA3D {
 		this.threshold = threshold // 4 is good
 		this.colors = pickColors(colorsCount) // 10 is good
 		this.state = []
+		this.bufferState = []
 		this.initialRotationSpeed = 0.004
 
 		// Pre-calculate values that are used often for performance
@@ -192,14 +194,19 @@ export class CCA3D {
 	}
 
 	private setInitialState = (): void => {
+		// Initialize both state arrays
 		for (let z = 0; z < this.cubeDimension; z++) {
 			this.state[z] = []
+			this.bufferState[z] = []
 			for (let y = 0; y < this.cubeDimension; y++) {
 				this.state[z][y] = []
+				this.bufferState[z][y] = []
 				for (let x = 0; x < this.cubeDimension; x++) {
-					const randomColor =
-						this.colors[Math.floor(Math.random() * this.colors.length)]
-					this.state[z][y][x] = this.createCell(randomColor, x, y, z, false)
+					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
+					const cell = this.createCell(randomColor, x, y, z, false)
+					this.state[z][y][x] = cell
+					// Initialize buffer with same properties but without mesh
+					this.bufferState[z][y][x] = { ...cell }
 				}
 			}
 		}
@@ -270,29 +277,39 @@ export class CCA3D {
 	}
 
 	private update = (): void => {
-		const newState = this.state.map((zLayer, z) =>
-			zLayer.map((yRow, y) =>
-				yRow.map((currentCell, x) => {
+		for (let z = 0; z < this.cubeDimension; z++) {
+			for (let y = 0; y < this.cubeDimension; y++) {
+				for (let x = 0; x < this.cubeDimension; x++) {
+					const currentCell = this.state[z][y][x]
 					const nextColorId = nextCellColorId(currentCell, this.colors)
 					const successorNeighboursCount = this.getNeighbours(x, y, z).filter(
-						(neighbour) => neighbour.id === nextColorId,
+						(neighbour) => neighbour.id === nextColorId
 					).length
 
 					if (successorNeighboursCount >= this.threshold) {
 						const newColor = this.colorMap.get(nextColorId) ?? currentCell
+						
+						// Update the buffer state
+						this.bufferState[z][y][x] = {
+							...newColor,
+							mesh: currentCell.mesh
+						}
 
+						// Update the visual if color changed
 						if (newColor.id !== currentCell.id && currentCell.mesh) {
 							// Use the utility method instead of inline color update
 							this.updateCellColor(currentCell.mesh, newColor.colorRgb)
 						}
-						return { ...newColor, mesh: currentCell.mesh }
+					} else {
+						// Keep the same state
+						this.bufferState[z][y][x] = currentCell
 					}
-					return currentCell
-				}),
-			),
-		)
+				}
+			}
+		}
 
-		this.state = newState
+		// Swap buffers
+		[this.state, this.bufferState] = [this.bufferState, this.state]
 	}
 
 	private getNeighbours(x: number, y: number, z: number): Cell[] {
