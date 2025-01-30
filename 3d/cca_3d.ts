@@ -202,7 +202,8 @@ export class CCA3D {
 				this.state[z][y] = []
 				this.bufferState[z][y] = []
 				for (let x = 0; x < this.cubeDimension; x++) {
-					const randomColor = this.colors[Math.floor(Math.random() * this.colors.length)]
+					const randomColor =
+						this.colors[Math.floor(Math.random() * this.colors.length)]
 					const cell = this.createCell(randomColor, x, y, z, false)
 					this.state[z][y][x] = cell
 					// Initialize buffer with same properties but without mesh
@@ -283,16 +284,16 @@ export class CCA3D {
 					const currentCell = this.state[z][y][x]
 					const nextColorId = nextCellColorId(currentCell, this.colors)
 					const successorNeighboursCount = this.getNeighbours(x, y, z).filter(
-						(neighbour) => neighbour.id === nextColorId
+						(neighbour) => neighbour.id === nextColorId,
 					).length
 
 					if (successorNeighboursCount >= this.threshold) {
 						const newColor = this.colorMap.get(nextColorId) ?? currentCell
-						
+
 						// Update the buffer state
 						this.bufferState[z][y][x] = {
 							...newColor,
-							mesh: currentCell.mesh
+							mesh: currentCell.mesh,
 						}
 
 						// Update the visual if color changed
@@ -309,7 +310,7 @@ export class CCA3D {
 		}
 
 		// Swap buffers
-		[this.state, this.bufferState] = [this.bufferState, this.state]
+		;[this.state, this.bufferState] = [this.bufferState, this.state]
 	}
 
 	private getNeighbours(x: number, y: number, z: number): Cell[] {
