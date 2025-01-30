@@ -2,7 +2,7 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import type { Cell } from "../types/ Cell"
 import { nextCellColorId } from "../utils/nextCellColorId"
-import { pickColors } from "../utils/pickColors"
+import { pickRandomColors } from "../utils/pickColors"
 
 interface Cell3D extends Cell {
 	mesh?: THREE.Mesh
@@ -53,7 +53,7 @@ export class CCA3D {
 		this.cellSize = Math.min(width, height) / resolution / 4
 		this.cellFilling = 1.0
 		this.threshold = threshold // 4 is good
-		this.colors = pickColors(colorsCount) // 10 is good
+		this.colors = pickRandomColors(colorsCount) // 10 is good
 		this.state = []
 		this.bufferState = []
 		this.initialRotationSpeed = 0.004
@@ -308,7 +308,6 @@ export class CCA3D {
 				}
 			}
 		}
-
 		// Swap buffers
 		;[this.state, this.bufferState] = [this.bufferState, this.state]
 	}

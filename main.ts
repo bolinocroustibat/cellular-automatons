@@ -21,11 +21,15 @@ import { LangtonAutomaton } from "./2d/langton/langton"
 import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
+import type { Movie } from "./types/MoviePalette"
 import type { Settings } from "./types/Settings"
+import { slugify } from "./utils/slugify"
 
 let pane: Pane
 let settings: Settings
 let automaton: AutomatonBase
+
+const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
 
 window.onload = () => {
 	const getInitialAlgo = () => {
@@ -66,6 +70,16 @@ window.onload = () => {
 		"cca1dColorsCount",
 		{ label: "Number of colors", min: 3, max: 5, step: 1 },
 	)
+	const paletteSelector = pane.addBlade({
+		view: "list",
+		label: "Color Palette",
+		options: [
+			{ text: "Random", value: null },
+			{ text: "Loading...", value: "loading" },
+		],
+		value: null,
+	})
+
 	const cca2dColorsCountBlade = pane.addBinding(
 		{ cca2dColorsCount: 8 },
 		"cca2dColorsCount",
@@ -162,6 +176,7 @@ window.onload = () => {
 
 	const blades = [
 		cca1dColorsCountBlade,
+		paletteSelector,
 		cca2dColorsCountBlade,
 		cca2dThresholdBlade,
 		cca3dColorsCountBlade,
@@ -174,64 +189,50 @@ window.onload = () => {
 	]
 
 	const setCca1dBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		cca1dColorsCountBlade.hidden = false
+		paletteSelector.hidden = false
 	}
 
 	const setCca2dBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		cca2dColorsCountBlade.hidden = false
 		cca2dThresholdBlade.hidden = false
 		resolutionBlade.hidden = false
+		paletteSelector.hidden = false
 	}
 
 	const setCca3dBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		cca3dColorsCountBlade.hidden = false
 		cca3dThresholdBlade.hidden = false
 		cca3dCubeDimensionBlade.hidden = false
 	}
 
 	const setConwayBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
 		conwayPatterns.hidden = false
 		clearBtn.hidden = false
 	}
 
 	const setImmigrationBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
 	}
 
 	const setQuadLifeBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
 	}
 
 	const setLangtonBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
 	}
 
 	const setEntropyBlades = () => {
-		for (const blade of blades) {
-			blade.hidden = true
-		}
+		for (const blade of blades) blade.hidden = true
 		entropyColorsCountBlade.hidden = false
 		resolutionBlade.hidden = false
 	}
@@ -347,6 +348,24 @@ window.onload = () => {
 				break
 		}
 	})
+
+	// Fetch palettes options
+	fetch(`${MOVIES_PALETTES_API}/movies`)
+		.then((response) => response.json())
+		.then((data) => {
+			const options = [
+				{ text: "Random", value: null },
+				...data.movies.map((movie) => ({
+					text: `${movie.title} (${movie.year || "N/A"})`,
+					value: slugify(movie.title),
+				})),
+			]
+			paletteSelector.options = options
+		})
+		.catch((error) => {
+			console.error("Failed to fetch movies:", error)
+			paletteSelector.options = [{ text: "Random", value: null }]
+		})
 }
 
 const cleanupAutomaton = (automaton: AutomatonBase): void => {

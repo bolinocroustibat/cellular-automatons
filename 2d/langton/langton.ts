@@ -1,4 +1,4 @@
-import { pickColors } from "../../utils/pickColors"
+import { pickRandomColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
 export class LangtonAutomaton extends Automaton2D {
@@ -10,7 +10,7 @@ export class LangtonAutomaton extends Automaton2D {
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
 		super(...args)
 		this.colorsCount = 2
-		this.colors = pickColors(this.colorsCount)
+		this.colors = pickRandomColors(this.colorsCount)
 
 		this.setUniformStateAndRender()
 

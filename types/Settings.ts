@@ -5,6 +5,7 @@ export interface Settings {
 	cca2dThreshold?: number
 	cca3dColorsCount?: number
 	cca3dThreshold?: number
+	palette?: string
 	cca3dCubeDimension?: number
 	entropyColorsCount?: number
 	resolution?: number
