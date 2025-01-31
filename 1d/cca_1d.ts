@@ -1,6 +1,6 @@
 import type { ColorObject } from "../types/ColorObject"
 import { nextCellColorId } from "../utils/nextCellColorId"
-import { pickRandomColors } from "../utils/pickColors"
+import { pickColors } from "../utils/pickColors"
 import { setupCanvas } from "../utils/setupCanvas"
 
 export class CCA1D {
@@ -22,7 +22,7 @@ export class CCA1D {
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.colors = pickRandomColors(colorsCount)
+		this.colors = pickColors(colorsCount)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, width, height)
 		this.setRandomState()

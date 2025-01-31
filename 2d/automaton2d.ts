@@ -1,5 +1,5 @@
 import type { ColorObject } from "../types/ColorObject"
-import { pickRandomColors } from "../utils/pickColors"
+import { pickColors } from "../utils/pickColors"
 import { randomInt } from "../utils/randomInt"
 import { setupCanvas } from "../utils/setupCanvas"
 
@@ -30,7 +30,7 @@ export class Automaton2D {
 		this.rowsCount = this.height / resolution
 		this.colsCount = this.width / resolution
 		this.colorsCount = colorsCount
-		this.colors = pickRandomColors(colorsCount)
+		this.colors = pickColors(colorsCount)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
 	}

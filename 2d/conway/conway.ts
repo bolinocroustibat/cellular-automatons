@@ -1,5 +1,5 @@
 import type { ColorObject } from "../../types/ColorObject"
-import { pickRandomColors } from "../../utils/pickColors"
+import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
 export class ConwayAutomaton extends Automaton2D {
@@ -8,7 +8,7 @@ export class ConwayAutomaton extends Automaton2D {
 
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
 		super(...args)
-		this.colors = pickRandomColors(this.colorsCount)
+		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.colorOn = this.colors[1]
 

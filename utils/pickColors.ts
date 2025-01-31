@@ -1,6 +1,6 @@
 import chroma from "chroma-js"
 import type { ColorObject } from "../types/ColorObject"
-import type { MoviePalette } from "../types/MoviePalette"
+import type { RGB } from "../types/MoviePalette"
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
 
@@ -37,49 +37,25 @@ export const pickRandomColors = (colorsCount: number): ColorObject[] => {
 	}))
 }
 
-export const pickColors = async (
+export const pickColors = (
 	colorsCount: number,
-	palette?: string,
-): Promise<ColorObject[]> => {
-	if (!palette) {
-		return pickRandomColors(colorsCount)
-	}
-
-	try {
-		// Fetch movie palette
-		const response = await fetch(`${MOVIES_PALETTES_API}/palettes/${palette}`)
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`)
-		}
-		const data = await response.json()
-
-		if (!data.palettes?.length) {
-			console.warn(`No palettes found for movie ${palette}`)
-			return pickRandomColors(colorsCount)
-		}
-
-		const firstPalette = data.palettes[0]
-		const paletteColors = firstPalette.colors
-		console.log(paletteColors.length)
-		console.log(colorsCount)
-
-		// Check if we have enough colors
-		if (paletteColors.length < colorsCount) {
+	paletteColors?: RGB[],
+): ColorObject[] => {
+	// If no palette colors provided or not enough colors, use random colors
+	if (!paletteColors || paletteColors.length < colorsCount) {
+		if (paletteColors) {
 			console.warn(
-				`Not enough colors in palette for ${palette} (needed: ${colorsCount}, got: ${paletteColors.length}). Using random colors instead.`,
+				`Not enough colors in palette (needed: ${colorsCount}, got: ${paletteColors.length}). Using random colors instead.`,
 			)
-			return pickRandomColors(colorsCount)
 		}
-
-		// Use palette colors
-		return Array.from({ length: colorsCount }, (_, i) => ({
-			id: i,
-			colorRgb: paletteColors[i],
-		}))
-	} catch (error) {
-		console.error("Failed to fetch movie palette:", error)
 		return pickRandomColors(colorsCount)
 	}
+
+	// Use palette colors
+	return Array.from({ length: colorsCount }, (_, i) => ({
+		id: i,
+		colorRgb: paletteColors[i],
+	}))
 }
 
 /*

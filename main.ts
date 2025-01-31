@@ -21,9 +21,14 @@ import { LangtonAutomaton } from "./2d/langton/langton"
 import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
-import type { Movie } from "./types/MoviePalette"
 import type { Settings } from "./types/Settings"
 import { slugify } from "./utils/slugify"
+
+interface StoredPalette {
+	colors: [number, number, number][]
+}
+
+const moviePalettes = new Map<string, StoredPalette>()
 
 let pane: Pane
 let settings: Settings
@@ -238,7 +243,7 @@ window.onload = () => {
 	}
 
 	setCca2dBlades()
-	reset()
+	void reset()
 
 	algoSelector.on("change", (event) => {
 		// Update URL when algorithm changes
@@ -271,7 +276,7 @@ window.onload = () => {
 				setEntropyBlades()
 				break
 		}
-		reset()
+		void reset()
 	})
 
 	// Handle browser back/forward navigation
@@ -316,7 +321,7 @@ window.onload = () => {
 		}
 	})
 	resetBtn.on("click", () => {
-		reset()
+		void reset()
 	})
 
 	startBtn.on("click", () => {
@@ -353,13 +358,24 @@ window.onload = () => {
 	fetch(`${MOVIES_PALETTES_API}/movies`)
 		.then((response) => response.json())
 		.then((data) => {
-			const options = [
-				{ text: "Random", value: null },
-				...data.movies.map((movie) => ({
-					text: `${movie.title} (${movie.year || "N/A"})`,
-					value: slugify(movie.title),
-				})),
-			]
+			const options = [{ text: "Random", value: null }]
+
+			// Filter movies with palettes and store their colors
+			data.movies.forEach((movie) => {
+				if (movie.palettes && movie.palettes.length > 0) {
+					const slug = slugify(movie.title)
+					// Store the palette colors
+					moviePalettes.set(slug, {
+						colors: movie.palettes[0].colors,
+					})
+					// Add to dropdown options
+					options.push({
+						text: `${movie.title} (${movie.year || "N/A"})`,
+						value: slug,
+					})
+				}
+			})
+
 			paletteSelector.options = options
 		})
 		.catch((error) => {
@@ -383,17 +399,26 @@ const getSettings = (pane: Pane): Settings => {
 	return settings as Settings
 }
 
-const createAutomaton = (
+const createAutomaton = async (
 	canvasEl: HTMLCanvasElement,
 	width: number,
 	height: number,
 	settings: Settings,
-): AutomatonBase => {
+): Promise<AutomatonBase> => {
 	const resolution: number = settings.resolution || 5
+	const paletteColors = settings.palette
+		? moviePalettes.get(settings.palette)?.colors
+		: undefined
 
 	switch (settings.algo) {
 		case "cca-1D":
-			return new CCA1D(canvasEl, width, height, settings.cca1dColorsCount || 4)
+			return await CCA1D.create(
+				canvasEl,
+				width,
+				height,
+				settings.cca1dColorsCount || 4,
+				paletteColors,
+			)
 		case "cca-2D":
 			return new CCA2D(
 				settings.cca2dThreshold,
@@ -433,7 +458,7 @@ const createAutomaton = (
 	}
 }
 
-const reset = (): void => {
+const reset = async (): Promise<void> => {
 	// Cleanup existing automaton
 	cleanupAutomaton(automaton)
 	automaton = undefined
@@ -447,7 +472,9 @@ const reset = (): void => {
 	const height = window.innerHeight
 
 	// Create new automaton
-	automaton = createAutomaton(canvasEl, width, height, settings)
+	automaton = await createAutomaton(canvasEl, width, height, settings)
 }
 
-window.onresize = (): void => reset()
+window.onresize = (): void => {
+	void reset()
+}
