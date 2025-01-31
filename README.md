@@ -1,8 +1,9 @@
 # Generative Animated Art algorithms
 
-- Cyclic Cellular Automaton (see https://en.wikipedia.org/wiki/Cyclic_cellular_automaton)
+- [Cyclic Cellular Automaton](https://en.wikipedia.org/wiki/Cyclic_cellular_automaton)
   - In 1 dimension
   - In 2 dimensions
+  - In 3 dimensions
 - Conway's game of Life
 - Immigration game ([Conway's game of life with 3 colors](https://conwaylife.com/ref/mniemiec/color.htm#c-imm))
 - Quad-Life ([Conway's game of life with 5 colors](https://conwaylife.com/ref/mniemiec/color.htm#c-quad))
