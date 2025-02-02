@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import type { Cell } from "../types/ Cell"
+import type { RGB } from "../types/MoviePalette"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
 
@@ -42,6 +43,7 @@ export class CCA3D {
 		resolution: number,
 		threshold: number,
 		colorsCount: number,
+		paletteColors?: RGB[], // Add optional palette colors
 	) {
 		// Clean everything
 		this.clear()
@@ -53,7 +55,7 @@ export class CCA3D {
 		this.cellSize = Math.min(width, height) / resolution / 4
 		this.cellFilling = 1.0
 		this.threshold = threshold // 4 is good
-		this.colors = pickColors(colorsCount) // 10 is good
+		this.colors = pickColors(colorsCount, paletteColors) // Pass palette colors
 		this.state = []
 		this.bufferState = []
 		this.initialRotationSpeed = 0.004

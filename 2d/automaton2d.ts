@@ -1,4 +1,5 @@
 import type { ColorObject } from "../types/ColorObject"
+import type { RGB } from "../types/MoviePalette"
 import { pickColors } from "../utils/pickColors"
 import { randomInt } from "../utils/randomInt"
 import { setupCanvas } from "../utils/setupCanvas"
@@ -22,6 +23,7 @@ export class Automaton2D {
 		height: number,
 		resolution: number,
 		colorsCount = 2,
+		paletteColors?: RGB[],
 	) {
 		this.canvasEl = canvasEl
 		this.width = width - (width % resolution)
@@ -30,7 +32,7 @@ export class Automaton2D {
 		this.rowsCount = this.height / resolution
 		this.colsCount = this.width / resolution
 		this.colorsCount = colorsCount
-		this.colors = pickColors(colorsCount)
+		this.colors = pickColors(colorsCount, paletteColors)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, this.width, this.height)
 	}
@@ -147,5 +149,10 @@ export class Automaton2D {
 				)
 			}
 		}
+	}
+
+	protected updateState(): void {
+		// This is an abstract method that should be implemented by child classes
+		throw new Error("updateState must be implemented by child class")
 	}
 }

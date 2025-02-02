@@ -4,7 +4,6 @@ import type { RGB } from "../types/MoviePalette"
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
 
-// Make this synchronous in case of direct use
 export const pickRandomColors = (colorsCount: number): ColorObject[] => {
 	// For 2 colors, ensure sufficient contrast
 	if (colorsCount === 2) {
@@ -41,6 +40,7 @@ export const pickColors = (
 	colorsCount: number,
 	paletteColors?: RGB[],
 ): ColorObject[] => {
+	console.log("paletteColors", paletteColors)
 	// If no palette colors provided or not enough colors, use random colors
 	if (!paletteColors || paletteColors.length < colorsCount) {
 		if (paletteColors) {

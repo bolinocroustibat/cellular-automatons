@@ -1,4 +1,5 @@
 import type { ColorObject } from "../types/ColorObject"
+import type { RGB } from "../types/MoviePalette"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
 import { setupCanvas } from "../utils/setupCanvas"
@@ -17,12 +18,13 @@ export class CCA1D {
 		width: number,
 		height: number,
 		colorsCount: number,
+		paletteColors?: RGB[],
 	) {
 		this.clear()
 		this.canvasEl = canvasEl
 		this.width = width
 		this.height = height
-		this.colors = pickColors(colorsCount)
+		this.colors = pickColors(colorsCount, paletteColors)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, width, height)
 		this.setRandomState()

@@ -1,4 +1,5 @@
-import { Pane } from "tweakpane"
+import { ListBladeApi, Pane } from "tweakpane"
+import type { BladeApi, ButtonApi } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
@@ -35,6 +36,7 @@ let settings: Settings
 let automaton: AutomatonBase
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
+const APP_VERSION = import.meta.env.VITE_APP_VERSION || "dev"
 
 window.onload = () => {
 	const getInitialAlgo = () => {
@@ -212,6 +214,7 @@ window.onload = () => {
 		cca3dColorsCountBlade.hidden = false
 		cca3dThresholdBlade.hidden = false
 		cca3dCubeDimensionBlade.hidden = false
+		paletteSelector.hidden = false
 	}
 
 	const setConwayBlades = () => {
@@ -393,9 +396,22 @@ const cleanupAutomaton = (automaton: AutomatonBase): void => {
 
 const getSettings = (pane: Pane): Settings => {
 	const settings = {}
-	for (const s of pane.exportState().children) {
-		if (s.binding) settings[s.binding.key] = s.binding.value
+	const state = pane.exportState()
+
+	// Handle regular bindings
+	for (const s of state.children) {
+		if (s.binding) {
+			settings[s.binding.key] = s.binding.value
+		}
 	}
+
+	// Handle palette selector specifically
+	const paletteState = state.children.find((s) => s.label === "Color Palette")
+	if (paletteState) {
+		settings["palette"] = paletteState.value
+	}
+
+	console.log("Settings:", settings) // Debug log
 	return settings as Settings
 }
 
@@ -410,9 +426,12 @@ const createAutomaton = async (
 		? moviePalettes.get(settings.palette)?.colors
 		: undefined
 
+	console.log("Creating automaton with palette:", settings.palette) // Debug log
+	console.log("Found palette colors:", paletteColors) // Debug log
+
 	switch (settings.algo) {
 		case "cca-1D":
-			return await CCA1D.create(
+			return new CCA1D(
 				canvasEl,
 				width,
 				height,
@@ -427,6 +446,7 @@ const createAutomaton = async (
 				height,
 				resolution,
 				settings.cca2dColorsCount,
+				paletteColors,
 			)
 		case "cca-3D":
 			return new CCA3D(
@@ -436,6 +456,7 @@ const createAutomaton = async (
 				settings.cca3dCubeDimension,
 				settings.cca3dThreshold,
 				settings.cca3dColorsCount,
+				paletteColors,
 			)
 		case "conway":
 			return new ConwayAutomaton(canvasEl, width, height, resolution)
