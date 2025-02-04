@@ -1,5 +1,4 @@
-import { ListBladeApi, Pane } from "tweakpane"
-import type { BladeApi, ButtonApi } from "tweakpane"
+import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
