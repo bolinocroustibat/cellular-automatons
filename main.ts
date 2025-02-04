@@ -23,12 +23,7 @@ import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
 import type { Settings } from "./types/Settings"
-import {
-	type StoredPalette,
-	fetchMoviePalettes,
-	moviePalettes,
-} from "./utils/fetchMoviePalettes"
-import { slugify } from "./utils/slugify"
+import { fetchMoviePalettes, moviePalettes } from "./utils/fetchMoviePalettes"
 
 let pane: Pane
 let settings: Settings
@@ -401,9 +396,6 @@ const createAutomaton = async (
 	const paletteColors = settings.palette
 		? moviePalettes.get(settings.palette)?.colors
 		: undefined
-
-	console.log("Creating automaton with palette:", settings.palette) // Debug log
-	console.log("Found palette colors:", paletteColors) // Debug log
 
 	switch (settings.algo) {
 		case "cca-1D":

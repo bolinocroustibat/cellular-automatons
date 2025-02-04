@@ -40,7 +40,13 @@ export const pickColors = (
 	colorsCount: number,
 	paletteColors?: RGB[],
 ): ColorObject[] => {
-	console.log("paletteColors", paletteColors)
+	if (paletteColors) {
+		const colors: ColorObject[] = []
+		for (let i = 0; i < Math.min(colorsCount, paletteColors.length); ++i) {
+			colors[i] = { id: i, colorRgb: paletteColors[i] }
+		}
+		return colors
+	}
 	// If no palette colors provided or not enough colors, use random colors
 	if (!paletteColors || paletteColors.length < colorsCount) {
 		if (paletteColors) {
