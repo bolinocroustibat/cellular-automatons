@@ -36,7 +36,6 @@ let settings: Settings
 let automaton: AutomatonBase
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
-const APP_VERSION = import.meta.env.VITE_APP_VERSION || "dev"
 
 window.onload = () => {
 	const getInitialAlgo = () => {
