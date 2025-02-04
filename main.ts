@@ -364,7 +364,7 @@ window.onload = () => {
 			const options = [{ text: "Random", value: null }]
 
 			// Filter movies with palettes and store their colors
-			data.movies.forEach((movie) => {
+			for (const movie of data.movies) {
 				if (movie.palettes && movie.palettes.length > 0) {
 					const slug = slugify(movie.title)
 					// Store the palette colors
@@ -377,7 +377,7 @@ window.onload = () => {
 						value: slug,
 					})
 				}
-			})
+			}
 
 			paletteSelector.options = options
 		})
