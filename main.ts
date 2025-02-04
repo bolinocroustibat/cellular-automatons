@@ -371,9 +371,9 @@ window.onload = () => {
 					moviePalettes.set(slug, {
 						colors: movie.palettes[0].colors,
 					})
-					// Add to dropdown options
+					// Add to dropdown options with conditional year
 					options.push({
-						text: `${movie.title} (${movie.year || "N/A"})`,
+						text: movie.year ? `${movie.title} (${movie.year})` : movie.title,
 						value: slug,
 					})
 				}
