@@ -8,7 +8,6 @@ export class ConwayAutomaton extends Automaton2D {
 
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
 		super(...args)
-		this.colors = pickColors(this.colorsCount)
 		this.colorOff = this.colors[0]
 		this.colorOn = this.colors[1]
 

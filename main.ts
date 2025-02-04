@@ -224,11 +224,15 @@ window.onload = () => {
 	const setImmigrationBlades = () => {
 		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
+		paletteSelector.hidden = false
+		clearBtn.hidden = false
 	}
 
 	const setQuadLifeBlades = () => {
 		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
+		paletteSelector.hidden = false
+		clearBtn.hidden = false
 	}
 
 	const setLangtonBlades = () => {
@@ -428,9 +432,23 @@ const createAutomaton = async (
 		case "conway":
 			return new ConwayAutomaton(canvasEl, width, height, resolution)
 		case "immigration":
-			return new ImmigrationAutomaton(canvasEl, width, height, resolution)
+			return new ImmigrationAutomaton(
+				canvasEl, 
+				width, 
+				height, 
+				resolution,
+				undefined,  // colorsCount (will be forced to 3)
+				paletteColors  // Pass palette colors
+			)
 		case "quadlife":
-			return new QuadLifeAutomaton(canvasEl, width, height, resolution)
+			return new QuadLifeAutomaton(
+				canvasEl, 
+				width, 
+				height, 
+				resolution,
+				undefined,  // colorsCount (will be forced to 5)
+				paletteColors  // Pass palette colors
+			)
 		case "langton":
 			return new LangtonAutomaton(canvasEl, width, height, resolution)
 		case "entropy":

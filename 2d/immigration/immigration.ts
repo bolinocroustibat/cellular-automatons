@@ -6,10 +6,11 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 	private aliveColorIds: number[]
 
 	constructor(...args: ConstructorParameters<typeof ConwayAutomaton>) {
-		super(...args)
-		this.colorsCount = 3 // Modify the colorsCount to 3
-		this.aliveColors = this.colors.slice(1)
+		const [canvasEl, width, height, resolution, _, paletteColors] = args
+		super(canvasEl, width, height, resolution, 3, paletteColors)
+		this.aliveColors = this.colors.slice(1)  // Last 2 colors for alive states
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
+		this.colorOff = this.colors[0]  // First color for dead state
 	}
 
 	private getMostFrequentAliveColor = (

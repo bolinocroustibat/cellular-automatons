@@ -6,10 +6,12 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 	private aliveColorIds: number[]
 
 	constructor(...args: ConstructorParameters<typeof ConwayAutomaton>) {
-		super(...args)
-		this.colorsCount = 5 // Modify the colorsCount to 5
-		this.aliveColors = this.colors.slice(1)
+		const [canvasEl, width, height, resolution, _, paletteColors] = args
+		// Use parent class's color handling, just force 5 colors
+		super(canvasEl, width, height, resolution, 5, paletteColors)
+		this.aliveColors = this.colors.slice(1)  // Last 4 colors for alive states
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
+		this.colorOff = this.colors[0]  // First color for dead state
 	}
 
 	private getQuadLifeColor = (
