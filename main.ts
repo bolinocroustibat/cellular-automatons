@@ -87,6 +87,31 @@ window.onload = () => {
 		value: null,
 	})
 
+	// Add onChange handler
+	paletteSelector.on("change", (ev) => {
+		// Update max colors based on palette
+		const paletteColors = ev.value ? moviePalettes.get(ev.value)?.colors : undefined
+		if (paletteColors) {
+			const maxColors = paletteColors.length
+			// Update max values for color count blades
+			cca1dColorsCountBlade.max = Math.min(maxColors, 5)  // Keep original max as upper limit
+			cca2dColorsCountBlade.max = Math.min(maxColors, 20)
+			cca3dColorsCountBlade.max = Math.min(maxColors, 10)
+			
+			// Adjust current values if they exceed new max
+			if (cca1dColorsCountBlade.value > maxColors) cca1dColorsCountBlade.value = maxColors
+			if (cca2dColorsCountBlade.value > maxColors) cca2dColorsCountBlade.value = maxColors
+			if (cca3dColorsCountBlade.value > maxColors) cca3dColorsCountBlade.value = maxColors
+		} else {
+			// Reset to original max values
+			cca1dColorsCountBlade.max = 5
+			cca2dColorsCountBlade.max = 20
+			cca3dColorsCountBlade.max = 10
+		}
+		
+		void reset() // Reset automaton with new palette
+	})
+
 	const cca2dColorsCountBlade = pane.addBinding(
 		{ cca2dColorsCount: 8 },
 		"cca2dColorsCount",
