@@ -395,7 +395,7 @@ const cleanupAutomaton = (automaton: AutomatonBase): void => {
 }
 
 const getSettings = (pane: Pane): Settings => {
-	const settings = {}
+	const settings: Partial<Settings> = {}
 	const state = pane.exportState()
 
 	// Handle regular bindings
@@ -408,10 +408,9 @@ const getSettings = (pane: Pane): Settings => {
 	// Handle palette selector specifically
 	const paletteState = state.children.find((s) => s.label === "Color Palette")
 	if (paletteState) {
-		settings["palette"] = paletteState.value
+		settings.palette = paletteState.value
 	}
 
-	console.log("Settings:", settings) // Debug log
 	return settings as Settings
 }
 
