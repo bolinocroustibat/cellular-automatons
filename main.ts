@@ -23,13 +23,12 @@ import { QuadLifeAutomaton } from "./2d/quadlife/quadlife"
 import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
 import type { Settings } from "./types/Settings"
+import {
+	type StoredPalette,
+	fetchMoviePalettes,
+	moviePalettes,
+} from "./utils/fetchMoviePalettes"
 import { slugify } from "./utils/slugify"
-
-interface StoredPalette {
-	colors: [number, number, number][]
-}
-
-const moviePalettes = new Map<string, StoredPalette>()
 
 let pane: Pane
 let settings: Settings
@@ -362,33 +361,7 @@ window.onload = () => {
 	})
 
 	// Fetch palettes options
-	fetch(`${MOVIES_PALETTES_API}/movies`)
-		.then((response) => response.json())
-		.then((data) => {
-			const options = [{ text: "Random", value: null }]
-
-			// Filter movies with palettes and store their colors
-			for (const movie of data.movies) {
-				if (movie.palettes && movie.palettes.length > 0) {
-					const slug = slugify(movie.title)
-					// Store the palette colors
-					moviePalettes.set(slug, {
-						colors: movie.palettes[0].colors,
-					})
-					// Add to dropdown options with conditional year
-					options.push({
-						text: movie.year ? `${movie.title} (${movie.year})` : movie.title,
-						value: slug,
-					})
-				}
-			}
-
-			paletteSelector.options = options
-		})
-		.catch((error) => {
-			console.error("Failed to fetch movies:", error)
-			paletteSelector.options = [{ text: "Random", value: null }]
-		})
+	void fetchMoviePalettes(paletteSelector, MOVIES_PALETTES_API)
 }
 
 const cleanupAutomaton = (automaton: AutomatonBase): void => {
