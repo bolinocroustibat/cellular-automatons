@@ -31,6 +31,9 @@ jobs:
   build-and-deploy:
     name: Deploy to prod because of tag ${{ github.ref_name }}
     runs-on: ubuntu-latest
+    environment: production
+    env:
+      VITE_MOVIES_PALETTES_API: "https://movies-palettes.adriencarpentier.com/api"
     needs: bump-version
     steps:
 
