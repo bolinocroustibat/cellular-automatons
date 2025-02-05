@@ -225,14 +225,12 @@ window.onload = () => {
 		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
 		paletteSelector.hidden = false
-		clearBtn.hidden = false
 	}
 
 	const setQuadLifeBlades = () => {
 		for (const blade of blades) blade.hidden = true
 		resolutionBlade.hidden = false
 		paletteSelector.hidden = false
-		clearBtn.hidden = false
 	}
 
 	const setLangtonBlades = () => {
@@ -338,7 +336,7 @@ window.onload = () => {
 				automaton.start(25, 2500)
 				break
 			case "cca-3D":
-				automaton.start(25)
+				automaton.start(12)
 				break
 			case "conway":
 				automaton.start(25, 12000)
