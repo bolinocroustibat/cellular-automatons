@@ -95,9 +95,9 @@ window.onload = () => {
 		{ label: "Threshold", min: 1, max: 3, step: 1 },
 	)
 	const cca3dColorsCountBlade = pane.addBinding(
-		{ cca3dColorsCount: 7 },
+		{ cca3dColorsCount: 5 },
 		"cca3dColorsCount",
-		{ label: "Number of colors", min: 5, max: 10, step: 1 },
+		{ label: "Number of colors", min: 4, max: 10, step: 1 },
 	)
 	const cca3dThresholdBlade = pane.addBinding(
 		{ cca3dThreshold: 4 },
@@ -105,7 +105,7 @@ window.onload = () => {
 		{ label: "Threshold", min: 4, max: 10, step: 1 },
 	)
 	const cca3dCubeDimensionBlade = pane.addBinding(
-		{ cca3dCubeDimension: 12 },
+		{ cca3dCubeDimension: 15 },
 		"cca3dCubeDimension",
 		{ label: "3D cube size", min: 5, max: 30, step: 1 },
 	)
