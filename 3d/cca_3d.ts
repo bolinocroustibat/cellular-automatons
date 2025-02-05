@@ -58,7 +58,7 @@ export class CCA3D {
 		this.colors = pickColors(colorsCount, paletteColors) // Pass palette colors
 		this.state = []
 		this.bufferState = []
-		this.initialRotationSpeed = 0.001
+		this.initialRotationSpeed = 0.0001
 
 		// Pre-calculate values that are used often for performance
 		this.halfCubeDimension = this.cubeDimension / 2
