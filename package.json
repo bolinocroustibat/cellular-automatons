@@ -10,6 +10,7 @@
 		"check": "biome check --write ."
 	},
 	"dependencies": {
+		"@sentry/browser": "^9.0.0",
 		"chroma-js": "^3.1.2",
 		"three": "^0.171.0",
 		"tweakpane": "^4.0.5"

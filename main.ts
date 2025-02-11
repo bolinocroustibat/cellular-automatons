@@ -23,12 +23,30 @@ import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
 import type { Settings } from "./types/Settings"
 import { fetchMoviePalettes, moviePalettes } from "./utils/fetchMoviePalettes"
+import * as Sentry from "@sentry/browser"
 
 let pane: Pane
 let settings: Settings
 let automaton: AutomatonBase
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
+
+// Initialize Sentry before any other code
+Sentry.init({
+	dsn: import.meta.env.VITE_SENTRY_DSN,
+	environment: import.meta.env.VITE_ENVIRONMENT,
+	release: APP_VERSION,
+	integrations: [
+		Sentry.browserTracingIntegration(),
+		Sentry.replayIntegration(),
+	],
+	// Tracing
+	tracesSampleRate: 1.0, //  Capture 100% of the transactions
+	// Session Replay
+	replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+	replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+})
+
 
 window.onload = () => {
 	const getInitialAlgo = () => {
@@ -393,72 +411,78 @@ const createAutomaton = async (
 	height: number,
 	settings: Settings,
 ): Promise<AutomatonBase> => {
-	const resolution: number = settings.resolution || 5
-	const paletteColors = settings.palette
-		? moviePalettes.get(settings.palette)?.colors
-		: undefined
+	try {
+		const resolution: number = settings.resolution || 5
+		const paletteColors = settings.palette
+			? moviePalettes.get(settings.palette)?.colors
+			: undefined
 
-	switch (settings.algo) {
-		case "cca-1D":
-			return new CCA1D(
-				canvasEl,
-				width,
-				height,
-				settings.cca1dColorsCount || 4,
-				paletteColors,
-			)
-		case "cca-2D":
-			return new CCA2D(
-				settings.cca2dThreshold,
-				canvasEl,
-				width,
-				height,
-				resolution,
-				settings.cca2dColorsCount,
-				paletteColors,
-			)
-		case "cca-3D":
-			return new CCA3D(
-				canvasEl,
-				width,
-				height,
-				settings.cca3dCubeDimension,
-				settings.cca3dThreshold,
-				settings.cca3dColorsCount,
-				paletteColors,
-			)
-		case "conway":
-			return new ConwayAutomaton(canvasEl, width, height, resolution)
-		case "immigration":
-			return new ImmigrationAutomaton(
-				canvasEl,
-				width,
-				height,
-				resolution,
-				undefined, // colorsCount (will be forced to 3)
-				paletteColors, // Pass palette colors
-			)
-		case "quadlife":
-			return new QuadLifeAutomaton(
-				canvasEl,
-				width,
-				height,
-				resolution,
-				undefined, // colorsCount (will be forced to 5)
-				paletteColors, // Pass palette colors
-			)
-		case "langton":
-			return new LangtonAutomaton(canvasEl, width, height, resolution)
-		case "entropy":
-			return new EntropyAutomaton(
-				canvasEl,
-				width,
-				height,
-				resolution,
-				settings.entropyColorsCount,
-			)
-		default:
-			throw new Error(`Unknown algorithm: ${settings.algo}`)
+		switch (settings.algo) {
+			case "cca-1D":
+				return new CCA1D(
+					canvasEl,
+					width,
+					height,
+					settings.cca1dColorsCount || 4,
+					paletteColors,
+				)
+			case "cca-2D":
+				return new CCA2D(
+					settings.cca2dThreshold,
+					canvasEl,
+					width,
+					height,
+					resolution,
+					settings.cca2dColorsCount,
+					paletteColors,
+				)
+			case "cca-3D":
+				return new CCA3D(
+					canvasEl,
+					width,
+					height,
+					settings.cca3dCubeDimension,
+					settings.cca3dThreshold,
+					settings.cca3dColorsCount,
+					paletteColors,
+				)
+			case "conway":
+				return new ConwayAutomaton(canvasEl, width, height, resolution)
+			case "immigration":
+				return new ImmigrationAutomaton(
+					canvasEl,
+					width,
+					height,
+					resolution,
+					undefined, // colorsCount (will be forced to 3)
+					paletteColors, // Pass palette colors
+				)
+			case "quadlife":
+				return new QuadLifeAutomaton(
+					canvasEl,
+					width,
+					height,
+					resolution,
+					undefined, // colorsCount (will be forced to 5)
+					paletteColors, // Pass palette colors
+				)
+			case "langton":
+				return new LangtonAutomaton(canvasEl, width, height, resolution)
+			case "entropy":
+				return new EntropyAutomaton(
+					canvasEl,
+					width,
+					height,
+					resolution,
+					settings.entropyColorsCount,
+				)
+			default:
+				throw new Error(`Unknown algorithm: ${settings.algo}`)
+		}
+	} catch (error) {
+		Sentry.captureException(error)
+		console.error("Failed to create automaton:", error)
+		throw error
 	}
 }
 
