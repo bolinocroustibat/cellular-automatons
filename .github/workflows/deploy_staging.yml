@@ -58,3 +58,13 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: sudo systemctl restart nginx.service
+
+      - name: Create Sentry "${{ github.ref_name }}" release
+        uses: getsentry/action-release@v1.7.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: "adrien-carpentier"
+          SENTRY_PROJECT: "cellular-automata"
+        with:
+          environment: staging
+          version: ${{ github.sha }}
