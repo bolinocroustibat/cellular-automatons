@@ -67,4 +67,4 @@ jobs:
           SENTRY_PROJECT: "cellular-automata"
         with:
           environment: staging
-          version: ${{ github.sha }}
+          version: ${{ github.ref_name }}
