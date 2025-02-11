@@ -431,21 +431,21 @@ const createAutomaton = async (
 			return new ConwayAutomaton(canvasEl, width, height, resolution)
 		case "immigration":
 			return new ImmigrationAutomaton(
-				canvasEl, 
-				width, 
-				height, 
+				canvasEl,
+				width,
+				height,
 				resolution,
-				undefined,  // colorsCount (will be forced to 3)
-				paletteColors  // Pass palette colors
+				undefined, // colorsCount (will be forced to 3)
+				paletteColors, // Pass palette colors
 			)
 		case "quadlife":
 			return new QuadLifeAutomaton(
-				canvasEl, 
-				width, 
-				height, 
+				canvasEl,
+				width,
+				height,
 				resolution,
-				undefined,  // colorsCount (will be forced to 5)
-				paletteColors  // Pass palette colors
+				undefined, // colorsCount (will be forced to 5)
+				paletteColors, // Pass palette colors
 			)
 		case "langton":
 			return new LangtonAutomaton(canvasEl, width, height, resolution)

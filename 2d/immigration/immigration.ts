@@ -8,9 +8,9 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 	constructor(...args: ConstructorParameters<typeof ConwayAutomaton>) {
 		const [canvasEl, width, height, resolution, _, paletteColors] = args
 		super(canvasEl, width, height, resolution, 3, paletteColors)
-		this.aliveColors = this.colors.slice(1)  // Last 2 colors for alive states
+		this.aliveColors = this.colors.slice(1) // Last 2 colors for alive states
 		this.aliveColorIds = this.aliveColors.map((color) => color.id)
-		this.colorOff = this.colors[0]  // First color for dead state
+		this.colorOff = this.colors[0] // First color for dead state
 	}
 
 	private getMostFrequentAliveColor = (
