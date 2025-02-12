@@ -5,6 +5,7 @@
       "name": "cyclic-cellular-automaton",
       "dependencies": {
         "@sentry/browser": "^9.0.0",
+        "@tweakpane/core": "^2.0.5",
         "chroma-js": "^3.1.2",
         "three": "^0.171.0",
         "tweakpane": "^4.0.5",
@@ -138,6 +139,8 @@
     "@sentry/browser": ["@sentry/browser@9.0.0", "", { "dependencies": { "@sentry-internal/browser-utils": "9.0.0", "@sentry-internal/feedback": "9.0.0", "@sentry-internal/replay": "9.0.0", "@sentry-internal/replay-canvas": "9.0.0", "@sentry/core": "9.0.0" } }, "sha512-+BgusObsLnHwiA+xLm9d3YmdzRXFSUTG7YSSZYZ94NpQdnQlEb6a0ER6abCzmxmKAhNykf5MzLrPRz65bL83WQ=="],
 
     "@sentry/core": ["@sentry/core@9.0.0", "", {}, "sha512-oaOOC1rQ5NHuOJ5ciw5NjdvmgG+q3UJS5v+s1d2eFzi/n5OpxULvqce4aG3XDBJ/Hu+fxW+fbVW96JwAKNk2Tg=="],
+
+    "@tweakpane/core": ["@tweakpane/core@2.0.5", "", {}, "sha512-punBgD5rKCF5vcNo6BsSOXiDR/NSs9VM7SG65QSLJIxfRaGgj54ree9zQW6bO3pNFf3AogiGgaNODUVQRk9YqQ=="],
 
     "@types/bun": ["@types/bun@1.2.2", "", { "dependencies": { "bun-types": "1.2.2" } }, "sha512-tr74gdku+AEDN5ergNiBnplr7hpDp3V1h7fqI2GcR/rsUaM39jpSeKH0TFibRvU0KwniRx5POgaYnaXbk0hU+w=="],
 
