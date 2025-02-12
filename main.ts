@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/browser"
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d/cca_1d"
+import { Rule30 } from "./1d/rule30/rule30"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
@@ -59,6 +60,7 @@ window.onload = () => {
 			"quadlife",
 			"langton",
 			"entropy",
+			"rule30",
 		]
 		return validAlgos.includes(path) ? path : "cca-2D"
 	}
@@ -72,6 +74,7 @@ window.onload = () => {
 		label: "Algorithm",
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "cca-1D",
+			"Elementary Cellular Automaton Rule 30": "rule30",
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
 			"3 dimensions Cyclic Cellular Automaton": "cca-3D",
 			"Conway's game of Life": "conway",
@@ -261,6 +264,11 @@ window.onload = () => {
 		resolutionBlade.hidden = false
 	}
 
+	const setRule30Blades = () => {
+		for (const blade of blades) blade.hidden = true
+		paletteSelector.hidden = false
+	}
+
 	setCca2dBlades()
 	void reset()
 
@@ -272,6 +280,9 @@ window.onload = () => {
 		switch (event.value) {
 			case "cca-1D":
 				setCca1dBlades()
+				break
+			case "rule30":
+				setRule30Blades()
 				break
 			case "cca-2D":
 				setCca2dBlades()
@@ -347,6 +358,9 @@ window.onload = () => {
 		clearInterval(automaton.renderInterval)
 		switch (settings.algo) {
 			case "cca-1D":
+				automaton.start(10)
+				break
+			case "rule30":
 				automaton.start(10)
 				break
 			case "cca-2D":
@@ -425,6 +439,8 @@ const createAutomaton = async (
 					settings.cca1dColorsCount || 4,
 					paletteColors,
 				)
+			case "rule30":
+				return new Rule30(canvasEl, width, height, paletteColors)
 			case "cca-2D":
 				return new CCA2D(
 					settings.cca2dThreshold,
