@@ -12,7 +12,7 @@ const VALID_ALGOS = [
     "rule110",
 ] as const
 
-export function getInitialAlgo(): string {
+export function getAlgorithmFromRoute(): string {
     const path = window.location.pathname.slice(1)
     return VALID_ALGOS.includes(path as typeof VALID_ALGOS[number]) ? path : "cca-2D"
 }

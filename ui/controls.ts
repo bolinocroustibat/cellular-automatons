@@ -16,6 +16,7 @@ import {
 import type { Automaton } from "../core/Automaton"
 import type { Settings } from "../types/Settings"
 import { fetchMoviePalettes } from "../utils/fetchMoviePalettes"
+import { getAlgorithmFromRoute } from "../utils/getAlgorithmFromRoute"
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
 
@@ -73,7 +74,7 @@ export class Controls {
 
 	private setupBlades(): void {
 		this.algoSelector = this.pane.addBinding(
-			{ algo: getAlgoFromRoute() },
+			{ algo: getAlgorithmFromRoute() },
 			"algo",
 			{
 				index: 1,
@@ -286,7 +287,7 @@ export class Controls {
 
 		// Handle browser back/forward navigation
 		window.addEventListener("popstate", () => {
-			const newAlgo = this.getInitialAlgo()
+			const newAlgo = getAlgorithmFromRoute()
 			if (newAlgo !== this.getSettings().algo) {
 				this.algoSelector.value = newAlgo
 			}

@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/browser"
 import { Automaton } from "./core/Automaton"
 import { Controls } from "./ui/controls"
-import { getInitialAlgo } from "./utils/getInitialAlgo"
+import { getAlgorithmFromRoute } from "./utils/getAlgorithmFromRoute"
 
 // Initialize Sentry before any other code
 Sentry.init({
@@ -46,7 +46,7 @@ const reset = async (): Promise<void> => {
 
 window.onload = async () => {
 	const canvasEl = document.getElementById("canvas") as HTMLCanvasElement
-	const initialAlgo = getInitialAlgo()
+	const initialAlgo = getAlgorithmFromRoute()
 	
 	// Create automaton with all needed settings for CCA3D
 	automaton = await Automaton.create(
