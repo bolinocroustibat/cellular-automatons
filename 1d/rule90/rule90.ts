@@ -22,28 +22,20 @@ export class Rule90 extends Automaton1D {
 		this.state[Math.floor(this.width / 2)] = this.colors[1] // black
 	}
 
-	protected update = (line: number): void => {
+	protected update(line: number): void {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
-			const left = this.getCellColor(x - 1)
-			const center = this.getCellColor(x)
-			const right = this.getCellColor(x + 1)
-
-			// Convert to binary pattern (0 = white, 1 = black)
 			const pattern =
-				(left.id === 1 ? 4 : 0) +
-				(center.id === 1 ? 2 : 0) +
-				(right.id === 1 ? 1 : 0)
+				(this.getCellColor(x - 1).id === 1 ? 4 : 0) +
+				(this.getCellColor(x).id === 1 ? 2 : 0) +
+				(this.getCellColor(x + 1).id === 1 ? 1 : 0)
 
-			// Rule 90:
-			// 111 -> 0    011 -> 1    101 -> 0    001 -> 1
-			// 110 -> 1    010 -> 0    100 -> 1    000 -> 0
-			const newStateId = [0, 1, 0, 1, 1, 0, 1, 0][pattern]
+			// Pattern index:     0   1   2   3   4   5   6   7
+			// Binary pattern:  000 001 010 011 100 101 110 111
+			const newStateId = [0,  1,  0,  1,  1,  0,  1,  0][pattern]
 			newState[x] = this.colors[newStateId]
-
-			// Render directly to the canvas
-			this.fillPixel(this.state[x].colorRgb, x, line)
 		}
 		this.state = newState
+		this.render(line)  // Use parent's render method
 	}
 }

@@ -24,27 +24,18 @@ export class Rule110 extends Automaton1D {
 
 	protected update(line: number): void {
 		const newState = new Array(this.width)
-
 		for (let x = 0; x < this.width; x++) {
-			const left = this.getCellColor(x - 1)
-			const center = this.getCellColor(x)
-			const right = this.getCellColor(x + 1)
-
-			// Convert neighborhood to pattern number (0-7)
 			const pattern =
-				(left.id === 1 ? 4 : 0) +
-				(center.id === 1 ? 2 : 0) +
-				(right.id === 1 ? 1 : 0)
+				(this.getCellColor(x - 1).id === 1 ? 4 : 0) +
+				(this.getCellColor(x).id === 1 ? 2 : 0) +
+				(this.getCellColor(x + 1).id === 1 ? 1 : 0)
 
-			// Rule 110:
-			// 111 -> 0    011 -> 1    101 -> 1    001 -> 1
-			// 110 -> 1    010 -> 1    100 -> 0    000 -> 0
-			const newStateId = [0, 1, 1, 1, 0, 1, 1, 0][pattern]
+			// Pattern index:     0   1   2   3   4   5   6   7
+			// Binary pattern:  000 001 010 011 100 101 110 111
+			const newStateId = [0,  1,  1,  1,  0,  1,  1,  0][pattern]
 			newState[x] = this.colors[newStateId]
-
-			// Render directly to the canvas
-			this.fillPixel(this.state[x].colorRgb, x, line)
 		}
 		this.state = newState
+		this.render(line)  // Use parent's render method
 	}
 }

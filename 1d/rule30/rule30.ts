@@ -22,29 +22,19 @@ export class Rule30 extends Automaton1D {
 		this.state[Math.floor(this.width / 2)] = this.colors[1] // black
 	}
 
-	protected update = (line: number): void => {
+	protected update(line: number): void {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
-			// Get the three cells above (previous line)
-			const left = this.getCellColor(x - 1)
-			const center = this.getCellColor(x)
-			const right = this.getCellColor(x + 1)
-
-			// Convert to binary pattern (0 = white, 1 = black)
 			const pattern =
-				(left.id === 1 ? 4 : 0) +
-				(center.id === 1 ? 2 : 0) +
-				(right.id === 1 ? 1 : 0)
+				(this.getCellColor(x - 1).id === 1 ? 4 : 0) +
+				(this.getCellColor(x).id === 1 ? 2 : 0) +
+				(this.getCellColor(x + 1).id === 1 ? 1 : 0)
 
-			// Apply Rule 30:
-			// 111 -> 0    011 -> 0    101 -> 0    001 -> 1
-			// 110 -> 0    010 -> 1    100 -> 1    000 -> 0
+			// Apply Rule 30
 			const newStateId = [0, 1, 1, 1, 1, 0, 0, 0][pattern]
 			newState[x] = this.colors[newStateId]
-
-			// Render directly to the canvas
-			this.fillPixel(this.state[x].colorRgb, x, line)
 		}
 		this.state = newState
+		this.render(line)  // Use parent's render method instead of fillPixel
 	}
 }
