@@ -1,8 +1,17 @@
-import type { RGB } from "../../types/MoviePalette"
 import { nextCellColorId } from "../../utils/nextCellColorId"
 import { Automaton1D } from "../automaton1d"
 
 export class CCA1D extends Automaton1D {
+	protected setInitialState(): void {
+		// Random initialization for CCA
+		if (!this.state) this.state = []
+		for (let x = 0; x < this.width; x++) {
+			const randomColor =
+				this.colors[Math.floor(Math.random() * this.colors.length)]
+			this.state[x] = randomColor
+		}
+	}
+
 	protected update = (line: number): void => {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {

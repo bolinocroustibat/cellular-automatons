@@ -2,6 +2,7 @@ import * as Sentry from "@sentry/browser"
 import { Pane } from "tweakpane"
 import { CCA1D } from "./1d/cca_1d/cca_1d"
 import { Rule30 } from "./1d/rule30/rule30"
+import { Rule90 } from "./1d/rule90/rule90"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
@@ -61,6 +62,7 @@ window.onload = () => {
 			"langton",
 			"entropy",
 			"rule30",
+			"rule90",
 		]
 		return validAlgos.includes(path) ? path : "cca-2D"
 	}
@@ -75,6 +77,7 @@ window.onload = () => {
 		options: {
 			"1 dimension Cyclic Cellular Automaton": "cca-1D",
 			"Elementary Cellular Automaton Rule 30": "rule30",
+			"Sierpinski Triangle (Rule 90)": "rule90",
 			"2 dimensions Cyclic Cellular Automaton": "cca-2D",
 			"3 dimensions Cyclic Cellular Automaton": "cca-3D",
 			"Conway's game of Life": "conway",
@@ -269,6 +272,11 @@ window.onload = () => {
 		paletteSelector.hidden = false
 	}
 
+	const setRule90Blades = () => {
+		for (const blade of blades) blade.hidden = true
+		paletteSelector.hidden = false
+	}
+
 	setCca2dBlades()
 	void reset()
 
@@ -283,6 +291,9 @@ window.onload = () => {
 				break
 			case "rule30":
 				setRule30Blades()
+				break
+			case "rule90":
+				setRule90Blades()
 				break
 			case "cca-2D":
 				setCca2dBlades()
@@ -363,6 +374,9 @@ window.onload = () => {
 			case "rule30":
 				automaton.start(10)
 				break
+			case "rule90":
+				automaton.start(10)
+				break
 			case "cca-2D":
 				automaton.start(25, 2500)
 				break
@@ -441,6 +455,8 @@ const createAutomaton = async (
 				)
 			case "rule30":
 				return new Rule30(canvasEl, width, height, paletteColors)
+			case "rule90":
+				return new Rule90(canvasEl, width, height, paletteColors)
 			case "cca-2D":
 				return new CCA2D(
 					settings.cca2dThreshold,

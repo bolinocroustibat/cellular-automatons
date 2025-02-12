@@ -26,7 +26,7 @@ export abstract class Automaton1D {
 		this.colors = pickColors(colorsCount, paletteColors)
 		this.state = []
 		this.ctx = setupCanvas(this.canvasEl, width, height)
-		this.setRandomState()
+		this.setInitialState()
 		this.render(0)
 	}
 
@@ -54,14 +54,7 @@ export abstract class Automaton1D {
 		}
 	}
 
-	protected setRandomState = (): void => {
-		if (!this.state) this.state = []
-		for (let x = 0; x < this.width; x++) {
-			const randomColor =
-				this.colors[Math.floor(Math.random() * this.colors.length)]
-			this.state[x] = randomColor
-		}
-	}
+	protected abstract setInitialState(): void
 
 	protected getCellColor = (x: number): Cell => {
 		const modifiedX = x === -1 ? this.width - 1 : x === this.width ? 0 : x
