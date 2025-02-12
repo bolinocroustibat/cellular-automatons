@@ -1,5 +1,4 @@
 import type { Cell } from "../../types/Cell"
-import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
 export class ConwayAutomaton extends Automaton2D {

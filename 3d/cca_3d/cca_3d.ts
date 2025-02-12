@@ -1,5 +1,5 @@
 import type { Cell } from "../../types/Cell"
-import type { RGB } from "../../types/MoviePalette"
+import type { RGB } from "../../types/RGB"
 import { nextCellColorId } from "../../utils/nextCellColorId"
 import { Automaton3D } from "../automaton3d"
 

@@ -1,5 +1,5 @@
 import type { Cell } from "../types/Cell"
-import type { RGB } from "../types/MoviePalette"
+import type { RGB } from "../types/RGB"
 import { pickColors } from "../utils/pickColors"
 import { setupCanvas } from "../utils/setupCanvas"
 
