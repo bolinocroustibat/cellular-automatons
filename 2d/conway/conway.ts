@@ -11,7 +11,7 @@ export class ConwayAutomaton extends Automaton2D {
 		this.colorOn = this.colors[1]
 
 		// Initial random populating
-		this.setRandomStateAndRender()
+		this.setRandomState()
 
 		// Manual populating
 		this.canvasEl.addEventListener("mousedown", (event: MouseEvent) => {
@@ -73,5 +73,55 @@ export class ConwayAutomaton extends Automaton2D {
 			}
 		}
 		this.state = newState
+	}
+
+	protected setupWebGL(): void {
+		// ... vertex shader stays the same ...
+
+		// Custom fragment shader for Conway's rules
+		const fragmentShaderSource = `
+			precision mediump float;
+			uniform sampler2D u_state;
+			uniform vec2 u_resolution;
+			
+			bool isAlive(vec4 color) {
+				return color.r > 0.5;  // Using red channel to determine alive/dead
+			}
+
+			int countAliveNeighbors(vec2 coord) {
+				int count = 0;
+				for(int y = -1; y <= 1; y++) {
+					for(int x = -1; x <= 1; x++) {
+						if(x == 0 && y == 0) continue;
+						vec2 neighbor = coord + vec2(x, y) / u_resolution;
+						if(isAlive(texture2D(u_state, neighbor))) count++;
+					}
+				}
+				return count;
+			}
+			
+			void main() {
+				vec2 coord = gl_FragCoord.xy / u_resolution;
+				bool currentlyAlive = isAlive(texture2D(u_state, coord));
+				int neighbors = countAliveNeighbors(coord);
+				
+				// Conway's rules
+				bool alive = false;
+				if(currentlyAlive) {
+					alive = (neighbors == 2 || neighbors == 3);
+				} else {
+					alive = (neighbors == 3);
+				}
+				
+				gl_FragColor = alive ? vec4(1.0, 1.0, 1.0, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
+			}
+		`
+
+		// ... rest of setup code ...
+	}
+
+	// Canvas fallback implementation stays the same
+	protected computeNextCellState(x: number, y: number): Cell {
+		// ... existing implementation ...
 	}
 }

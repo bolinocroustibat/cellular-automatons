@@ -13,26 +13,16 @@ export class CCA2D extends Automaton2D {
 		this.threshold = threshold
 
 		// Initial random populating
-		this.setRandomStateAndRender()
+		this.setRandomState()
+		this.render()
 	}
 
-	updateState = (): void => {
+	protected updateState = (): void => {
 		const newState: Cell[][] = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
-				const neighbours: Cell[] = this.getNeighborsColors(x, y)
-				const nextColorId: number = nextCellColorId(
-					this.state[y][x],
-					this.colors,
-				)
-				const successorNeighboursCount: Cell[] = neighbours.filter(
-					(neighbour) => neighbour.id === nextColorId,
-				)
-				newState[y][x] =
-					successorNeighboursCount.length >= this.threshold
-						? successorNeighboursCount[0]
-						: this.state[y][x]
+				newState[y][x] = this.computeNextCellState(x, y)
 
 				// Update canvas pixels
 				// Optimization - fill pixels only if color value changes from previous state
@@ -46,5 +36,20 @@ export class CCA2D extends Automaton2D {
 			}
 		}
 		this.state = newState
+	}
+
+	// Add the required abstract method implementation
+	protected computeNextCellState(x: number, y: number): Cell {
+		const neighbours: Cell[] = this.getNeighborsColors(x, y)
+		const nextColorId: number = nextCellColorId(
+			this.state[y][x],
+			this.colors,
+		)
+		const successorNeighboursCount: Cell[] = neighbours.filter(
+			(neighbour) => neighbour.id === nextColorId,
+		)
+		return successorNeighboursCount.length >= this.threshold
+			? successorNeighboursCount[0]
+			: this.state[y][x]
 	}
 }
