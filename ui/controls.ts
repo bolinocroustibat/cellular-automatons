@@ -26,30 +26,30 @@ export class Controls {
 	private onReset: () => Promise<void>
 
 	// Core controls
-	private algoSelector: BladeApi<{ algo: string }>
+	private algoSelector: BladeApi
 	private paletteSelector: ListApi<string | null>
-	private resolutionBlade: BladeApi<{ resolution: number }>
+	private resolutionBlade: BladeApi
 	private clearBtn: ButtonApi
 	private resetBtn: ButtonApi
 	private startBtn: ButtonApi
 
 	// CCA1D controls
-	private cca1dColorsCountBlade: BladeApi<{ cca1dColorsCount: number }>
+	private cca1dColorsCountBlade: BladeApi
 
 	// CCA2D controls
-	private cca2dColorsCountBlade: BladeApi<{ cca2dColorsCount: number }>
-	private cca2dThresholdBlade: BladeApi<{ cca2dThreshold: number }>
+	private cca2dColorsCountBlade: BladeApi
+	private cca2dThresholdBlade: BladeApi
 
 	// CCA3D controls
-	private cca3dColorsCountBlade: BladeApi<{ cca3dColorsCount: number }>
-	private cca3dThresholdBlade: BladeApi<{ cca3dThreshold: number }>
-	private cca3dCubeDimensionBlade: BladeApi<{ cca3dCubeDimension: number }>
+	private cca3dColorsCountBlade: BladeApi
+	private cca3dThresholdBlade: BladeApi
+	private cca3dCubeDimensionBlade: BladeApi
 
 	// Conway controls
 	private conwayPatterns: FolderApi
 
 	// Entropy controls
-	private entropyColorsCountBlade: BladeApi<{ entropyColorsCount: number }>
+	private entropyColorsCountBlade: BladeApi
 
 	// Collection of all blades for visibility management
 	private blades: BladeController[]
