@@ -12,7 +12,7 @@ export class CCA1D extends Automaton1D {
 		}
 	}
 
-	protected update = (line: number): void => {
+	protected update(line: number): void {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
 			const neighbours = [
@@ -31,10 +31,8 @@ export class CCA1D extends Automaton1D {
 				successorNeighboursCount >= 1 && successorNeighbor
 					? successorNeighbor
 					: this.state[x]
-
-			// Render directly to the canvas to avoid another loop
-			this.fillPixel(this.state[x].colorRgb, x, line)
 		}
 		this.state = newState
+		this.render(line)  // Use render instead of direct pixel manipulation
 	}
 }
