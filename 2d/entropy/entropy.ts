@@ -9,9 +9,7 @@ export class EntropyAutomaton extends Automaton2D {
 		this.setRandomStateAndRender()
 	}
 
-	private getMostFrequentColor = (
-		colors: Cell[],
-	): Cell | null => {
+	private getMostFrequentColor = (colors: Cell[]): Cell | null => {
 		if (colors.length === 0) return null
 
 		// Count occurrences of each color id

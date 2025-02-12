@@ -14,9 +14,7 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 		this.colorOff = this.colors[0] // First color for dead state
 	}
 
-	private getQuadLifeColor = (
-		aliveNeighbours: Cell[],
-	): Cell | null => {
+	private getQuadLifeColor = (aliveNeighbours: Cell[]): Cell | null => {
 		if (aliveNeighbours.length === 0) return null
 
 		// Count occurrences of each color

@@ -1,10 +1,9 @@
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
-import type { RGB } from "../types/MoviePalette"
 import type { Cell, Cell3D } from "../types/Cell"
+import type { RGB } from "../types/MoviePalette"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
-
 
 export class CCA3D {
 	private canvasEl: HTMLCanvasElement
