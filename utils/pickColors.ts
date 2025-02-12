@@ -1,10 +1,10 @@
 import chroma from "chroma-js"
-import type { ColorObject } from "../types/ColorObject"
+import type { Cell } from "../types/Cell"
 import type { RGB } from "../types/MoviePalette"
 
 const MOVIES_PALETTES_API = import.meta.env.VITE_MOVIES_PALETTES_API
 
-export const pickRandomColors = (colorsCount: number): ColorObject[] => {
+export const pickRandomColors = (colorsCount: number): Cell[] => {
 	// For 2 colors, ensure sufficient contrast
 	if (colorsCount === 2) {
 		const getRandomColor = () =>
@@ -39,9 +39,9 @@ export const pickRandomColors = (colorsCount: number): ColorObject[] => {
 export const pickColors = (
 	colorsCount: number,
 	paletteColors?: RGB[],
-): ColorObject[] => {
+): Cell[] => {
 	if (paletteColors) {
-		const colors: ColorObject[] = []
+		const colors: Cell[] = []
 		for (let i = 0; i < Math.min(colorsCount, paletteColors.length); ++i) {
 			colors[i] = { id: i, colorRgb: paletteColors[i] }
 		}
@@ -65,9 +65,9 @@ export const pickColors = (
 }
 
 /*
-export const pickSpectralColors = (colorsCount: number): ColorObject[] => {
+export const pickSpectralColors = (colorsCount: number): Cell[] => {
 	const chromaColors = chroma.scale('Spectral').colors(colorsCount)
-	const colors: ColorObject[] = []
+	const colors: Cell[] = []
 	
 	for (let i = 0; i < chromaColors.length; ++i) {
 		const colorRgb = chroma(chromaColors[i]).rgb()

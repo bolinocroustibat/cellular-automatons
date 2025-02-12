@@ -1,4 +1,4 @@
-import type { ColorObject } from "../../types/ColorObject"
+import type { Cell } from "../../types/Cell"
 import { nextCellColorId } from "../../utils/nextCellColorId"
 import { Automaton2D } from "../automaton2d"
 
@@ -17,16 +17,16 @@ export class CCA2D extends Automaton2D {
 	}
 
 	updateState = (): void => {
-		const newState: ColorObject[][] = []
+		const newState: Cell[][] = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
-				const neighbours: ColorObject[] = this.getNeighborsColors(x, y)
+				const neighbours: Cell[] = this.getNeighborsColors(x, y)
 				const nextColorId: number = nextCellColorId(
 					this.state[y][x],
 					this.colors,
 				)
-				const successorNeighboursCount: ColorObject[] = neighbours.filter(
+				const successorNeighboursCount: Cell[] = neighbours.filter(
 					(neighbour) => neighbour.id === nextColorId,
 				)
 				newState[y][x] =

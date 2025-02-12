@@ -1,8 +1,8 @@
-import type { ColorObject } from "../../types/ColorObject"
+import type { Cell } from "../../types/Cell"
 import { ConwayAutomaton } from "../conway/conway"
 
 export class ImmigrationAutomaton extends ConwayAutomaton {
-	private aliveColors: ColorObject[]
+	private aliveColors: Cell[]
 	private aliveColorIds: number[]
 
 	constructor(...args: ConstructorParameters<typeof ConwayAutomaton>) {
@@ -14,8 +14,8 @@ export class ImmigrationAutomaton extends ConwayAutomaton {
 	}
 
 	private getMostFrequentAliveColor = (
-		aliveNeighbours: ColorObject[],
-	): ColorObject | null => {
+		aliveNeighbours: Cell[],
+	): Cell | null => {
 		if (aliveNeighbours.length === 0) return null
 		const occurences = {}
 		let mostFrequentColor = aliveNeighbours[0]

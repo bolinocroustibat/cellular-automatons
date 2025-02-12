@@ -1,4 +1,4 @@
-import type { ColorObject } from "../types/ColorObject"
+import type { Cell } from "../types/Cell"
 import type { RGB } from "../types/MoviePalette"
 import { nextCellColorId } from "../utils/nextCellColorId"
 import { pickColors } from "../utils/pickColors"
@@ -8,8 +8,8 @@ export class CCA1D {
 	private canvasEl: HTMLCanvasElement
 	private width: number
 	private height: number
-	private colors: ColorObject[]
-	private state: ColorObject[]
+	private colors: Cell[]
+	private state: Cell[]
 	private ctx: CanvasRenderingContext2D
 	renderInterval: NodeJS.Timer
 
@@ -58,7 +58,7 @@ export class CCA1D {
 		}, intervalMs)
 	}
 
-	getCellColor = (x: number): ColorObject => {
+	getCellColor = (x: number): Cell => {
 		const modifiedX = x === -1 ? this.width - 1 : x === this.width ? 0 : x
 		return this.state[modifiedX]
 	}

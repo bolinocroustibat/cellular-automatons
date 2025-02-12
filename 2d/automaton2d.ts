@@ -1,4 +1,4 @@
-import type { ColorObject } from "../types/ColorObject"
+import type { Cell } from "../types/Cell"
 import type { RGB } from "../types/MoviePalette"
 import { pickColors } from "../utils/pickColors"
 import { randomInt } from "../utils/randomInt"
@@ -12,8 +12,8 @@ export class Automaton2D {
 	protected colorsCount: number
 	protected rowsCount: number
 	protected colsCount: number
-	protected colors: ColorObject[]
-	protected state: ColorObject[][]
+	protected colors: Cell[]
+	protected state: Cell[][]
 	protected ctx: CanvasRenderingContext2D
 	renderInterval: NodeJS.Timer
 
@@ -107,7 +107,7 @@ export class Automaton2D {
 		}
 	}
 
-	getCellColor = (x: number, y: number): ColorObject => {
+	getCellColor = (x: number, y: number): Cell => {
 		const modifiedX =
 			x === -1 ? this.colsCount - 1 : x === this.colsCount ? 0 : x
 		const modifiedY =
@@ -115,7 +115,7 @@ export class Automaton2D {
 		return this.state[modifiedY][modifiedX]
 	}
 
-	getNeighborsColors = (x: number, y: number): ColorObject[] => {
+	getNeighborsColors = (x: number, y: number): Cell[] => {
 		return [
 			this.getCellColor(x - 1, y - 1),
 			this.getCellColor(x, y - 1),

@@ -1,8 +1,8 @@
-import type { ColorObject } from "../types/ColorObject"
+import type { Cell } from "../types/Cell"
 
 export const nextCellColorId = (
-	cell: ColorObject,
-	colors: ColorObject[],
+	cell: Cell,
+	colors: Cell[],
 ): number => {
 	const cellId = cell.id
 	if (cellId >= colors.length - 1) return 0

@@ -1,10 +1,10 @@
-import type { ColorObject } from "../../types/ColorObject"
+import type { Cell } from "../../types/Cell"
 import { pickColors } from "../../utils/pickColors"
 import { Automaton2D } from "../automaton2d"
 
 export class ConwayAutomaton extends Automaton2D {
-	protected colorOff: ColorObject
-	protected colorOn: ColorObject
+	protected colorOff: Cell
+	protected colorOn: Cell
 
 	constructor(...args: ConstructorParameters<typeof Automaton2D>) {
 		super(...args)
@@ -36,7 +36,7 @@ export class ConwayAutomaton extends Automaton2D {
 	}
 
 	protected updateState = (): void => {
-		const newState: ColorObject[][] = []
+		const newState: Cell[][] = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {

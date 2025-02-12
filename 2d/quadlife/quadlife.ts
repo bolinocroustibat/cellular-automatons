@@ -1,8 +1,8 @@
-import type { ColorObject } from "../../types/ColorObject"
+import type { Cell } from "../../types/Cell"
 import { ConwayAutomaton } from "../conway/conway"
 
 export class QuadLifeAutomaton extends ConwayAutomaton {
-	private aliveColors: ColorObject[]
+	private aliveColors: Cell[]
 	private aliveColorIds: number[]
 
 	constructor(...args: ConstructorParameters<typeof ConwayAutomaton>) {
@@ -15,19 +15,19 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 	}
 
 	private getQuadLifeColor = (
-		aliveNeighbours: ColorObject[],
-	): ColorObject | null => {
+		aliveNeighbours: Cell[],
+	): Cell | null => {
 		if (aliveNeighbours.length === 0) return null
 
 		// Count occurrences of each color
-		const occurrences = new Map<ColorObject, number>()
+		const occurrences = new Map<Cell, number>()
 		for (const color of aliveNeighbours) {
 			occurrences.set(color, (occurrences.get(color) || 0) + 1)
 		}
 
 		// Find the maximum occurrence count
 		let maxCount = 0
-		let mostFrequentColors: ColorObject[] = []
+		let mostFrequentColors: Cell[] = []
 		occurrences.forEach((count, color) => {
 			if (count > maxCount) {
 				maxCount = count
@@ -53,14 +53,14 @@ export class QuadLifeAutomaton extends ConwayAutomaton {
 	}
 
 	protected updateState = (): void => {
-		const newState: ColorObject[][] = []
+		const newState: Cell[][] = []
 		for (let y = 0; y < this.rowsCount; ++y) {
 			newState[y] = []
 			for (let x = 0; x < this.colsCount; ++x) {
 				const neighbours = this.getNeighborsColors(x, y)
 
 				// Analyse neighbors info
-				const aliveNeighbours: ColorObject[] = []
+				const aliveNeighbours: Cell[] = []
 				for (const cell of neighbours) {
 					if (this.aliveColorIds.includes(cell.id)) {
 						aliveNeighbours.push(cell)
