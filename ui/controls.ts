@@ -61,7 +61,7 @@ export class Controls {
 		this.setupBlades()
 		this.setupEventListeners()
 		this.setCca2dBlades() // Default view
-		
+
 		void fetchMoviePalettes(this.paletteSelector, MOVIES_PALETTES_API)
 	}
 

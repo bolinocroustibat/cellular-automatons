@@ -47,17 +47,17 @@ const reset = async (): Promise<void> => {
 window.onload = async () => {
 	const canvasEl = document.getElementById("canvas") as HTMLCanvasElement
 	const initialAlgo = getAlgorithmFromRoute()
-	
-	// Create automaton with all needed settings for CCA3D
+
+	// Create automaton with all needed settings
 	automaton = await Automaton.create(
 		canvasEl,
 		window.innerWidth,
 		window.innerHeight,
 		{
 			algo: initialAlgo,
-			cca3dColorsCount: 5,  // Add default values
-			cca3dThreshold: 4,
-			cca3dCubeDimension: 15
+			cca2dColorsCount: 8,
+			cca2dThreshold: 2, // Add default threshold
+			resolution: 5,
 		},
 	)
 	controls = new Controls(automaton, reset)
