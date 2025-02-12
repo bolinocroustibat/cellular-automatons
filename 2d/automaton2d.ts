@@ -48,7 +48,7 @@ export class Automaton2D {
 		this.setUniformStateAndRender()
 	}
 
-	setUniformStateAndRender = (): void => {
+	protected setUniformStateAndRender = (): void => {
 		// Initial empty state populating, create state AND render the canvas
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
@@ -63,7 +63,7 @@ export class Automaton2D {
 		}
 	}
 
-	setRandomStateAndRender = (): void => {
+	protected setRandomStateAndRender = (): void => {
 		// Initial random populating, create state AND render the canvas
 		for (let y = 0; y < this.rowsCount; ++y) {
 			for (let x = 0; x < this.colsCount; ++x) {
@@ -107,7 +107,16 @@ export class Automaton2D {
 		}
 	}
 
-	getCellColor = (x: number, y: number): Cell => {
+	protected fillSquare = (
+		colorRgb: [number, number, number],
+		x: number,
+		y: number,
+	): void => {
+		this.ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
+		this.ctx.fillRect(x, y, this.resolution, this.resolution)
+	}
+
+	protected getCellColor = (x: number, y: number): Cell => {
 		const modifiedX =
 			x === -1 ? this.colsCount - 1 : x === this.colsCount ? 0 : x
 		const modifiedY =
@@ -115,7 +124,7 @@ export class Automaton2D {
 		return this.state[modifiedY][modifiedX]
 	}
 
-	getNeighborsColors = (x: number, y: number): Cell[] => {
+	protected getNeighborsColors = (x: number, y: number): Cell[] => {
 		return [
 			this.getCellColor(x - 1, y - 1),
 			this.getCellColor(x, y - 1),
@@ -128,15 +137,6 @@ export class Automaton2D {
 			this.getCellColor(x, y + 1),
 			this.getCellColor(x + 1, y + 1),
 		]
-	}
-
-	fillSquare = (
-		colorRgb: [number, number, number],
-		x: number,
-		y: number,
-	): void => {
-		this.ctx.fillStyle = `rgb(${colorRgb[0]},${colorRgb[1]},${colorRgb[2]})`
-		this.ctx.fillRect(x, y, this.resolution, this.resolution)
 	}
 
 	render = (): void => {

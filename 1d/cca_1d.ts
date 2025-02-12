@@ -31,7 +31,7 @@ export class CCA1D {
 		this.render(0)
 	}
 
-	setRandomState = (): void => {
+	private setRandomState = (): void => {
 		if (!this.state) this.state = []
 		for (let x = 0; x < this.width; x++) {
 			const randomColor =
@@ -58,12 +58,12 @@ export class CCA1D {
 		}, intervalMs)
 	}
 
-	getCellColor = (x: number): Cell => {
+	private getCellColor = (x: number): Cell => {
 		const modifiedX = x === -1 ? this.width - 1 : x === this.width ? 0 : x
 		return this.state[modifiedX]
 	}
 
-	changeState = (line: number): void => {
+	private changeState = (line: number): void => {
 		const newState = []
 		for (let x = 0; x < this.width; x++) {
 			const neighbours = [
@@ -85,7 +85,7 @@ export class CCA1D {
 		this.state = newState
 	}
 
-	fillPixel = (
+	private fillPixel = (
 		colorRgb: [number, number, number],
 		x: number,
 		y: number,
