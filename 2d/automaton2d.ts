@@ -16,12 +16,12 @@ export abstract class Automaton2D {
 	protected state: Cell[][]
 	protected ctx: CanvasRenderingContext2D
 	protected gl: WebGLRenderingContext
+	protected stateTextures: [WebGLTexture, WebGLTexture]
+	protected currentTextureIndex: number = 0
+	private framebuffers: [WebGLFramebuffer, WebGLFramebuffer]
 	private vertexShader: WebGLShader
 	private fragmentShader: WebGLShader
 	private shaderProgram: WebGLProgram
-	private stateTextures: [WebGLTexture, WebGLTexture]
-	private framebuffers: [WebGLFramebuffer, WebGLFramebuffer]
-	private currentTextureIndex: number = 0
 	private resolutionLocation: WebGLUniformLocation
 	private stateLocation: WebGLUniformLocation
 	renderInterval: NodeJS.Timer
@@ -48,6 +48,9 @@ export abstract class Automaton2D {
 		this.colsCount = this.width
 		this.state = []
 
+		// Initialize state before WebGL setup
+		this.setRandomState()
+
 		// Try WebGL first, fall back to Canvas
 		this.gl = canvasEl.getContext('webgl')
 		if (this.gl) {
@@ -56,7 +59,6 @@ export abstract class Automaton2D {
 			this.ctx = setupCanvas(this.canvasEl, width, height)
 		}
 
-		this.setRandomState()
 		this.render()
 	}
 
@@ -169,7 +171,7 @@ export abstract class Automaton2D {
 		return texture
 	}
 
-	private updateTextureFromState(texture: WebGLTexture): void {
+	protected updateTextureFromState(texture: WebGLTexture): void {
 		const textureData = new Uint8Array(this.width * this.height * 4)
 		for (let y = 0; y < this.height; y++) {
 			for (let x = 0; x < this.width; x++) {
@@ -320,9 +322,14 @@ export abstract class Automaton2D {
 			// WebGL rendering
 			this.gl.clear(this.gl.COLOR_BUFFER_BIT)
 
+			// Bind the current texture
+			this.gl.activeTexture(this.gl.TEXTURE0)
+			this.gl.bindTexture(this.gl.TEXTURE_2D, this.stateTextures[this.currentTextureIndex])
+
 			// Draw
 			this.gl.useProgram(this.shaderProgram)
 			this.gl.uniform2f(this.resolutionLocation, this.width * this.resolution, this.height * this.resolution)
+			this.gl.uniform1i(this.stateLocation, 0)  // Tell shader to use texture unit 0
 			this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4)
 		} else {
 			// Canvas fallback
