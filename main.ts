@@ -1,5 +1,6 @@
+import * as Sentry from "@sentry/browser"
 import { Pane } from "tweakpane"
-import { CCA1D } from "./1d/cca_1d"
+import { CCA1D } from "./1d/cca_1d/cca_1d"
 import { CCA2D } from "./2d/cca_2d/cca_2d"
 import { ConwayAutomaton } from "./2d/conway/conway"
 import { gosperGliderGunPattern } from "./2d/conway/patterns/guns"
@@ -23,7 +24,6 @@ import { CCA3D } from "./3d/cca_3d"
 import type { AutomatonBase } from "./types/Automaton"
 import type { Settings } from "./types/Settings"
 import { fetchMoviePalettes, moviePalettes } from "./utils/fetchMoviePalettes"
-import * as Sentry from "@sentry/browser"
 
 let pane: Pane
 let settings: Settings
@@ -46,7 +46,6 @@ Sentry.init({
 	replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
 	replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
 })
-
 
 window.onload = () => {
 	const getInitialAlgo = () => {
