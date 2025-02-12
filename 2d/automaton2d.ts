@@ -4,7 +4,7 @@ import { pickColors } from "../utils/pickColors"
 import { randomInt } from "../utils/randomInt"
 import { setupCanvas } from "../utils/setupCanvas"
 
-export class Automaton2D {
+export abstract class Automaton2D {
 	protected canvasEl: HTMLCanvasElement
 	protected width: number
 	protected height: number
@@ -151,8 +151,5 @@ export class Automaton2D {
 		}
 	}
 
-	protected updateState(): void {
-		// This is an abstract method that should be implemented by child classes
-		throw new Error("updateState must be implemented by child class")
-	}
+	protected abstract updateState(): void
 }
