@@ -1,4 +1,4 @@
-export type RGB = [number, number, number]
+import type { RGB } from "./RGB"
 
 export interface Movie {
 	id: number
